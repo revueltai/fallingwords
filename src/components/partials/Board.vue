@@ -20,11 +20,11 @@ export default defineComponent({
     const board = ref(null)
 
     // Methods
-    const position = () => {
+    const setPosition = () => {
       const boardEl = board.value
       const UIElementsHeight = store.getters['game/uiElementsHeight']
-      const documentHeight = document.documentElement.getBoundingClientRect().height
-      const boardHeight = documentHeight - UIElementsHeight.header - UIElementsHeight.footer
+      const documentHeight: number = document.documentElement.getBoundingClientRect().height
+      const boardHeight: number = documentHeight - UIElementsHeight.header - UIElementsHeight.footer
 
       boardEl.style.top = `${UIElementsHeight.header}px`
       boardEl.style.height = `${boardHeight}px`
@@ -32,19 +32,19 @@ export default defineComponent({
 
     // Event Handlers
     const handleResize = (() => {
-      position()
+      setPosition()
     })
 
     // Hooks
     onMounted (() => {
       nextTick(() => {
         handleResize()
-        window.addEventListener("resize", handleResize, false)
+        window.addEventListener('resize', handleResize, false)
       })
     })
 
     onBeforeUnmount (() => {
-      window.removeEventListener("resize", handleResize, false)
+      window.removeEventListener('resize', handleResize, false)
     })
 
     return {

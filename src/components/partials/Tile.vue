@@ -49,6 +49,9 @@ export default defineComponent({
     }
   },
   setup (props) {
+    let posX: number = 0
+    let posY: number = 0
+    let raf: number = 0
 
     // Injects
     const store = useStore()
@@ -60,7 +63,6 @@ export default defineComponent({
     const letterInWord = ref(false)
     let disableRAF = ref(false)
     const fps = ref(null)
-    let raf = null
 
     // Computed
     const speed = computed(() => store.getters['game/speed'])
@@ -70,8 +72,8 @@ export default defineComponent({
 
     const cssClass = computed(() => {
       return hasActivePowerup.value
-        ?  getClassnameForPowerupType()
-        :  getClassnameForTileType()
+        ? getClassnameForPowerupType()
+        : getClassnameForTileType()
     })
 
     const displayLetter = computed(() => {
@@ -122,6 +124,10 @@ export default defineComponent({
       }
     }
 
+    const setPosition = () => {
+      tile.value.style.transform = `translate(${posX}px, ${posY}px)`
+    }
+
     const isCollidingWithCharacter = () => {
       const tileEl = tile.value
       const tileRect = tileEl.getBoundingClientRect()
@@ -161,9 +167,8 @@ export default defineComponent({
     }
 
     const move = () => {
-      let posY = parseInt(tile.value.style.top)
       posY += speed.value
-      tile.value.style.top = `${posY}px`
+      setPosition()
     }
 
     const remove = () => {
@@ -172,7 +177,7 @@ export default defineComponent({
       store.dispatch('game/getTile')
     }
 
-    const removeTile = (directRemoval = true) => {
+    const removeTile = (directRemoval: boolean = true) => {
       if (directRemoval) {
         remove()
         return
@@ -181,15 +186,14 @@ export default defineComponent({
       tile.value.addEventListener('transitionend', remove)
     }
 
-    const setPosition = () => {
+    const updatePosition = () => {
       const boardRect = document.documentElement.getBoundingClientRect()
       const tileRect = tile.value.getBoundingClientRect()
 
-      const posY = Math.round(Math.random() * 1000 * -1)
-      const posx = Math.round(Math.random() * (boardRect.width - tileRect.width))
+      posY = Math.round(Math.random() * 1000 * -1)
+      posX = Math.round(Math.random() * (boardRect.width - tileRect.width))
 
-      tile.value.style.top = `${posY}px`
-      tile.value.style.left = `${posx}px`
+      setPosition()
     }
 
     const animateNewFrame = () => {
@@ -242,7 +246,7 @@ export default defineComponent({
       nextTick(() => {
         fps.value = Math.floor(Math.random() * (60 - 24) + 24)
         letterInWord.value = isWordLetter()
-        setPosition()
+        updatePosition()
         raf = requestAnimationFrame(handleRAF)
       })
     })
