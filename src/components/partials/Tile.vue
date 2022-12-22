@@ -1,0 +1,331 @@
+<template>
+  <div
+    v-if="visible"
+    ref="tile"
+    :class="cssClass"
+    class="absolute top-24 left-80 w-48 transform transition-transform"
+  >
+    <div
+      ref="tileWrapper"
+      class="tile rounded-full w-48 h-48 border"
+    >
+      <div class="relative w-full h-full">
+        <div class="flex items-center justify-center h-full uppercase text-h5">
+          <span v-if="displayLetter">
+            {{ displayLetter }}
+          </span>
+
+          <cicon
+            v-else
+            :name="displayPowerup"
+            type="fill"
+            size="large"
+          />
+        </div>
+      </div>
+    </div>
+  </div>
+</template>
+
+<script lang="ts">
+import { ref, computed, watch, defineComponent, onMounted, onBeforeUnmount, nextTick } from 'vue'
+import { useStore } from 'vuex'
+import { isLetterInWord } from '../../store/game.utils'
+
+export default defineComponent({
+  name: 'Tile',
+  props: {
+    boardRef: {
+      type: Object,
+      default: null
+    },
+    characterRef: {
+      type: Object,
+      default: null
+    },
+    tile: {
+      type: Object,
+      required: true
+    }
+  },
+  setup (props) {
+
+    // Injects
+    const store = useStore()
+
+    // Refs
+    const tile = ref(null)
+    const tileWrapper = ref(null)
+    const visible = ref(true)
+    const letterInWord = ref(false)
+    let disableRAF = ref(false)
+    const fps = ref(null)
+    let raf = null
+
+    // Computed
+    const speed = computed(() => store.getters['game/speed'])
+    const activePowerup = computed(() => store.getters['game/roundActivePowerupType'])
+    const hasActivePowerup = computed(() => !!activePowerup.value)
+    const isPowerupTile = computed(() => !!props.tile.powerup)
+
+    const cssClass = computed(() => {
+      return hasActivePowerup.value
+        ?  getClassnameForPowerupType()
+        :  getClassnameForTileType()
+    })
+
+    const displayLetter = computed(() => {
+      return props.tile.letter
+    })
+
+    const displayPowerup = computed(() => {
+      if (isPowerupTile.value) {
+        return props.tile.powerup.name
+      }
+
+      return null
+    })
+
+    // Methods
+    const isWordLetter = () => {
+      if (isPowerupTile.value) {
+        return false
+      }
+
+      const word = store.getters['game/roundWordGuess']
+      return isLetterInWord(props.tile.letter, word)
+    }
+
+    const getClassnameForTileType = () => {
+      return isPowerupTile.value
+        ? 'type__powerup'
+        : 'type__letter'
+    }
+
+    const getClassnameForPowerupType = () => {
+      const ap = activePowerup.value
+
+      switch (ap) {
+        case 'ice':
+          return `type__powerup-${ap}`
+
+        case 'fire':
+          return letterInWord.value
+            ? `type__powerup-${ap}`
+            : getClassnameForTileType()
+
+        case 'wind':
+          return [
+            getClassnameForTileType(),
+            'type__powerup-wind'
+          ]
+      }
+    }
+
+    const isCollidingWithCharacter = () => {
+      const tileEl = tile.value
+      const tileRect = tileEl.getBoundingClientRect()
+      const characterRect = props.characterRef.character.getBoundingClientRect()
+
+      const p1 = tileRect.left < characterRect.left + characterRect.width
+      const p2 = tileRect.left + tileRect.width > characterRect.left
+      const p3 = tileRect.top < characterRect.bottom + characterRect.height
+      const p4 = tileRect.top + tileRect.height > characterRect.bottom
+
+      if (p1 && p2 && p3 && p4) {
+        disableRAF.value = true
+        tileEl.classList.add('scale-0')
+
+        store.dispatch('game/checkTile', props.tile)
+      }
+
+      return disableRAF.value
+    }
+
+    const isOutOfBounds = () => {
+      const tileRect = tile.value.getBoundingClientRect()
+      const limitY = document.documentElement.getBoundingClientRect().height
+
+      if (tileRect.y > limitY) {
+        disableRAF.value = true
+      }
+
+      return disableRAF.value
+    }
+
+    const doAnimation = () => {
+      const isPlaying = store.getters['game/matchIsPlaying']
+      const isVisible = visible.value
+
+      return isVisible && isPlaying
+    }
+
+    const move = () => {
+      let posY = parseInt(tile.value.style.top)
+      posY += speed.value
+      tile.value.style.top = `${posY}px`
+    }
+
+    const remove = () => {
+      visible.value = false
+      store.dispatch('game/deleteTile', props.tile)
+      store.dispatch('game/getTile')
+    }
+
+    const removeTile = (directRemoval = true) => {
+      if (directRemoval) {
+        remove()
+        return
+      }
+
+      tile.value.addEventListener('transitionend', remove)
+    }
+
+    const setPosition = () => {
+      const boardRect = document.documentElement.getBoundingClientRect()
+      const tileRect = tile.value.getBoundingClientRect()
+
+      const posY = Math.round(Math.random() * 1000 * -1)
+      const posx = Math.round(Math.random() * (boardRect.width - tileRect.width))
+
+      tile.value.style.top = `${posY}px`
+      tile.value.style.left = `${posx}px`
+    }
+
+    const animateNewFrame = () => {
+      setTimeout(() => {
+        raf = requestAnimationFrame(handleRAF)
+      }, 1000 / fps.value)
+    }
+
+    // Watchers
+    watch(activePowerup, (type) => {
+      switch (type) {
+        case 'wind':
+          const duration = store.getters['game/matchPowerupsDuration']
+          const tileWrapperRef = tileWrapper.value
+
+          tileWrapperRef.style.animationDuration = `${duration}ms`
+          tileWrapperRef.addEventListener('animationend', handleAnimationEnd)
+          break
+      }
+    })
+
+    // Event Handlers
+    const handleRAF = () => {
+      if (doAnimation()) {
+        let tileOutOfBounds = null
+
+        move()
+
+        const tileCollidesWithCharacter = isCollidingWithCharacter()
+
+        if (!tileCollidesWithCharacter) {
+          tileOutOfBounds = isOutOfBounds()
+        }
+
+        if (tileCollidesWithCharacter || tileOutOfBounds) {
+          removeTile(tileOutOfBounds)
+          cancelAnimationFrame(raf)
+        } else {
+          animateNewFrame()
+        }
+      }
+    }
+
+    const handleAnimationEnd = () => {
+      removeTile()
+    }
+
+    // Hooks
+    onMounted (() => {
+      nextTick(() => {
+        fps.value = Math.floor(Math.random() * (60 - 24) + 24)
+        letterInWord.value = isWordLetter()
+        setPosition()
+        raf = requestAnimationFrame(handleRAF)
+      })
+    })
+
+    onBeforeUnmount (() => {
+      cancelAnimationFrame(raf)
+      tile.value.removeEventListener('transitionend', remove)
+      tileWrapper.value.addEventListener('animationend', handleAnimationEnd)
+    })
+
+    return {
+      fps,
+      visible,
+      tile,
+      tileWrapper,
+      cssClass,
+      displayLetter,
+      displayPowerup,
+      disableRAF,
+      handleRAF
+    }
+  }
+})
+</script>
+
+<style scoped>
+@keyframes powerupWind {
+  0% {
+    opacity: 1;
+    transform: translateX(0);
+  }
+
+  100% {
+    filter: blur(4px);
+    opacity: 0;
+    transform: translateX(-25%);
+  }
+}
+
+/* Default */
+.type__letter .tile,
+.type__powerup .tile {
+  @apply border bg-secondary;
+}
+
+.type__letter .tile {
+  @apply border-info;
+}
+
+.type__powerup .tile {
+  @apply border-primary;
+}
+
+/* Powerups Shared */
+.type__powerup-fire,
+.type__powerup-ice,
+.type__powerup-ice .tile {
+  @apply bg-no-repeat;
+}
+
+/* ICE Powerup */
+.type__powerup-ice {
+  height: 53px;
+  background-image: url('/images/tile/powerup-ice__deco2.svg');
+  background-position: center bottom;
+}
+
+.type__powerup-ice .tile {
+  @apply border-primary text-primary-lighter bg-secondary;
+  background-image: url('/images/tile/powerup-ice__deco1.svg');
+  background-position: center top;
+}
+
+/* FIRE Powerup */
+.type__powerup-fire .tile {
+  @apply border-warning text-yellow-200 bg-secondary;
+  box-shadow: inset 0 0 6px 0 var(--c-danger),
+              0 0 6px 0 var(--c-warning);
+}
+
+.type__powerup-wind .tile {
+  animation-name: powerupWind;
+  animation-timing-function: ease-out;
+  animation-direction: forwards;
+}
+</style>

@@ -1,0 +1,33 @@
+@import url("https://fonts.googleapis.com/css2?family=Lexend:wght@600;700;800&display=swap");
+
+:root {
+  --c-black: #000;
+  --c-white: #fff;
+  --c-grey: #787878;
+  --c-primary: #038dfb;
+  --c-primary-lighter: #4bafff;
+  --c-secondary: #05050f;
+  --c-tertiary: #13132b;
+  --c-quaternary: #ebeffa;
+  --c-quinary: #242468;
+  --c-warning: #ffad41;
+  --c-success: #5efa59;
+  --c-danger: #ff4241;
+  --c-info: #5a09d9;
+  --c-info-alternative: #ca29f0;
+}
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+html,
+body {
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+  height: 100%;
+}
+
+body {
+  @apply bg-secondary text-white;
+}
