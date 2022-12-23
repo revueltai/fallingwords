@@ -1,25 +1,24 @@
 <template>
-  <div class="fixed top-0 bottom-0 w-full h-full bg-repeat ui-bg">
-
+  <div class="ui-bg">
     <template v-if="isUIReady">
       <dash :boardRef="board" />
 
-        <character
-          ref="character"
-          :boardRef="board"
-        />
+      <character
+        ref="character"
+        :boardRef="board"
+      />
 
-        <template v-for="tile in tiles">
-          <tile
-            v-if="tile"
-            :tile="tile"
-            :boardRef="board"
-            :characterRef="character"
-          />
-        </template>
+      <template v-for="tile in tiles">
+        <tile
+          v-if="tile"
+          :tile="tile"
+          :boardRef="board"
+          :characterRef="character"
+        />
+      </template>
     </template>
 
-    <div class="fixed z-3 bottom-0 w-full h-104 bg-gradient-to-b from-transparent to-secondary via-secondary"/>
+    <div class="ui-fade-zone"/>
 
     <board ref="board" />
   </div>
@@ -99,7 +98,12 @@ export default defineComponent({
 
 <style scoped>
 .ui-bg {
+  @apply fixed top-0 bottom-0 w-full h-full bg-repeat;
   background-image: url('/images/ui/bg-game.svg');
   background-size: 100px;
+}
+
+.ui-fade-zone {
+  @apply fixed bottom-0 w-full h-104 bg-gradient-to-b from-transparent to-secondary via-secondary;
 }
 </style>

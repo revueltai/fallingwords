@@ -21,6 +21,10 @@
 @tailwind components;
 @tailwind utilities;
 
+* {
+  user-select: none;
+}
+
 html,
 body {
   -webkit-font-smoothing: antialiased;

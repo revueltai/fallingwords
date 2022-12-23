@@ -2,15 +2,15 @@
   <div
     v-if="visible"
     ref="tile"
-    :class="cssClass"
-    class="absolute top-24 left-80 w-48 transform transition-transform"
+    :class="cssClasses"
+    class="tile"
   >
     <div
       ref="tileWrapper"
-      class="tile rounded-full w-48 h-48 border"
+      class="tile__wrapper"
     >
-      <div class="relative w-full h-full">
-        <div class="flex items-center justify-center h-full uppercase text-h5">
+      <div class="tile__wrapper-item">
+        <div class="tile__content">
           <span v-if="displayLetter">
             {{ displayLetter }}
           </span>
@@ -70,7 +70,7 @@ export default defineComponent({
     const hasActivePowerup = computed(() => !!activePowerup.value)
     const isPowerupTile = computed(() => !!props.tile.powerup)
 
-    const cssClass = computed(() => {
+    const cssClasses = computed(() => {
       return hasActivePowerup.value
         ? getClassnameForPowerupType()
         : getClassnameForTileType()
@@ -262,7 +262,7 @@ export default defineComponent({
       visible,
       tile,
       tileWrapper,
-      cssClass,
+      cssClasses,
       displayLetter,
       displayPowerup,
       disableRAF,
@@ -286,24 +286,39 @@ export default defineComponent({
   }
 }
 
+.tile {
+  @apply absolute top-24 left-80 w-48 transform transition-transform;
+}
+
+.tile__wrapper {
+  @apply rounded-full w-48 h-48 border;
+}
+.tile__wrapper-item {
+  @apply relative w-full h-full;
+}
+
+.tile__content {
+  @apply flex items-center justify-center h-full uppercase text-h5;
+}
+
 /* Default */
-.type__letter .tile,
-.type__powerup .tile {
+.type__letter .tile__wrapper,
+.type__powerup .tile__wrapper {
   @apply border bg-secondary;
 }
 
-.type__letter .tile {
+.type__letter .tile__wrapper {
   @apply border-info;
 }
 
-.type__powerup .tile {
-  @apply border-primary;
+.type__powerup .tile__wrapper {
+  @apply border-primary animate-pulse;
 }
 
 /* Powerups Shared */
 .type__powerup-fire,
 .type__powerup-ice,
-.type__powerup-ice .tile {
+.type__powerup-ice .tile__wrapper {
   @apply bg-no-repeat;
 }
 
@@ -314,20 +329,20 @@ export default defineComponent({
   background-position: center bottom;
 }
 
-.type__powerup-ice .tile {
+.type__powerup-ice .tile__wrapper {
   @apply border-primary text-primary-lighter bg-secondary;
   background-image: url('/images/tile/powerup-ice__deco1.svg');
   background-position: center top;
 }
 
 /* FIRE Powerup */
-.type__powerup-fire .tile {
+.type__powerup-fire .tile__wrapper {
   @apply border-warning text-yellow-200 bg-secondary;
   box-shadow: inset 0 0 6px 0 var(--c-danger),
               0 0 6px 0 var(--c-warning);
 }
 
-.type__powerup-wind .tile {
+.type__powerup-wind .tile__wrapper {
   animation-name: powerupWind;
   animation-timing-function: ease-out;
   animation-direction: forwards;

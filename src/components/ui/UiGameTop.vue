@@ -21,7 +21,7 @@
             name="heart-full"
             type="fill"
             size="xxLarge"
-            class=""
+            class="animate-pulse"
           />
 
           <cbadge

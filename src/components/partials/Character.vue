@@ -1,7 +1,7 @@
 <template>
   <div
     ref="character"
-    :class="!isMobile() ? 'transition-transform origin-center ease-in-out' : ''"
+    :class="!isMobile() ? 'transition-transform origin-center linear' : ''"
     class="character"
   >
     <img
@@ -15,6 +15,7 @@
 <script lang="ts">
 import { ref, computed, nextTick, onMounted, onBeforeUnmount, defineComponent } from 'vue'
 import { useStore } from 'vuex'
+import { isMobile } from '../../utils/game.utils'
 
 interface Character {
   el: HTMLElement;
@@ -43,14 +44,10 @@ export default defineComponent({
 
     // Computed
     const isPlaying = computed(() => store.getters['game/matchIsPlaying'])
-    const offset = computed(() => store.getters['game/offset'])
-    const characterExpression = computed(() => store.getters['game/expression'])
+    const offset = computed(() => store.getters['gameCharacter/offset'])
+    const characterExpression = computed(() => store.getters['gameCharacter/expression'])
 
     // Methods
-    const isMobile = () => {
-      return /Mobi/.test(navigator.userAgent)
-    }
-
     const removeTilt = () => {
       characterImage.value.classList.remove('tilt__left', 'tilt__right')
     }
@@ -86,9 +83,24 @@ export default defineComponent({
 
       switch (event.key) {
         case 'ArrowLeft':
+        case 'ArrowRight':
+        case 'a':
+        case 'A':
+        case 'd':
+        case 'D':
+          setExpression('open')
+          break
+      }
+
+      switch (event.key) {
+        case 'ArrowLeft':
+        case 'a':
+        case 'A':
           return character.rect.left - distance
 
         case 'ArrowRight':
+        case 'D':
+        case 'd':
           return character.rect.right + distance
       }
     }
@@ -99,7 +111,7 @@ export default defineComponent({
     }
 
     const setExpression = (newState: string) => {
-      store.dispatch('game/setExpression', newState)
+      store.dispatch('gameCharacter/setExpression', newState)
     }
 
     const repositionCharacter = () => {
@@ -141,7 +153,6 @@ export default defineComponent({
     const handleMove = (event: CharacterEvent) => {
       if (isPlaying.value) {
         updateCharacterPosition(event)
-        setExpression('open')
         removeTilt()
         addTilt()
       }
@@ -154,6 +165,10 @@ export default defineComponent({
     const handleStart = (event: TouchEvent) => {
       if (isPlaying.value) {
         previousX = getPositionXFromTouch(event)
+
+        if (event instanceof TouchEvent) {
+          setExpression('open')
+        }
       }
     }
 
@@ -162,6 +177,10 @@ export default defineComponent({
         setExpression('idle')
         removeTilt()
       }
+    }
+
+    const initCharacter = () => {
+      repositionCharacter()
     }
 
     // Hooks
@@ -179,7 +198,7 @@ export default defineComponent({
           window.addEventListener('keydown', handleMove, false)
         }
 
-        handleResize()
+        initCharacter()
       })
     })
 
@@ -192,8 +211,8 @@ export default defineComponent({
         boardEl.removeEventListener('touchend', handleEnd)
         boardEl.removeEventListener('touchmove', handleMove)
       } else {
-        window.addEventListener('keyup', handleEnd)
-        window.addEventListener('keydown', handleMove)
+        window.removeEventListener('keyup', handleEnd)
+        window.removeEventListener('keydown', handleMove)
       }
     })
 
@@ -213,7 +232,7 @@ export default defineComponent({
 
 <style scoped>
 .character {
-  @apply fixed border-primary w-64 h-64;
+  @apply fixed border-primary w-64 h-64 animate-fade-in;
 }
 .tilt__left {
   @apply rotate-12;

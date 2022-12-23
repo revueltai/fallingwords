@@ -1,7 +1,7 @@
 <template>
   <div
     ref="line"
-    class="fixed w-full border border-info border-dashed opacity-30"
+    class="dash-line"
   />
 </template>
 
@@ -24,7 +24,7 @@ export default defineComponent({
 
     // Refs
     const line = ref(null)
-    const offset = computed(() => store.getters['game/offset'])
+    const offset = computed(() => store.getters['gameCharacter/offset'])
 
     // Methods
     const setPosition = () => {
@@ -42,8 +42,8 @@ export default defineComponent({
     // Hooks
     onMounted (() => {
       nextTick(() => {
-        handleResize()
         window.addEventListener('resize', handleResize, false)
+        handleResize()
       })
     })
 
@@ -58,3 +58,9 @@ export default defineComponent({
   }
 })
 </script>
+
+<style scoped>
+.dash-line {
+  @apply fixed w-full border border-info border-dashed opacity-30;
+}
+</style>

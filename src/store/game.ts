@@ -10,7 +10,7 @@ import {
 const defaults = {
   matchLives: 4,
   duration: 5000,
-  speed: 3
+  speed: 4
 }
 
 export default {
@@ -19,16 +19,6 @@ export default {
   state: () => {
     return {
       speed: defaults.speed,
-      offset: 90,
-      expression: 'idle',
-      expressions: {
-        idle: 'MouthIdle.svg',
-        open: 'MouthOpen.svg',
-        chew: 'MouthChew.svg',
-        like: 'MouthLike.svg',
-        dislike: 'MouthDislike.svg',
-        love: 'MouthLikeHeart.svg'
-      },
       powerups: {
         life: 'heart-full',
         fire: 'powerup-fire',
@@ -58,7 +48,7 @@ export default {
       matchWordsList: [],
       matchRoundsTotal: 0,
       matchRoundsCurrent: 0,
-      roundTotalAvailableLetters: 5,
+      roundTotalAvailableLetters: 8,
       roundWordOriginal: null,
       roundWordGuess: [],
       roundBoardTiles: [],
@@ -74,7 +64,6 @@ export default {
     offset: state => state.offset,
     speed: state => state.speed,
     powerups: state => state.powerups,
-    expression: state => `/images/character/${state.expressions[state.expression]}`,
     matchStates: state => state.matchStates,
     matchState: state => state.matchState,
     matchIsPlaying: state => state.matchState === state.matchStates.playing,
@@ -138,10 +127,6 @@ export default {
 
     SET_SPEED(state, payload) {
       state.speed = payload
-    },
-
-    SET_CHARACTER_EXPRESSION(state, payload) {
-      state.expression = payload
     },
 
     SET_MATCH_STATE(state, payload) {
@@ -240,8 +225,7 @@ export default {
         }
       }
 
-      // Animate character
-      dispatch('setChewExpressions', newExpression)
+      dispatch('gameCharacter/setChewExpressions', newExpression, { root: true })
     },
 
     checkGameOver({ commit, getters }) {
@@ -252,42 +236,6 @@ export default {
 
     getTile({ commit }) {
       commit('CREATE_TILE')
-    },
-
-    setExpression({ commit }, payload) {
-      commit('SET_CHARACTER_EXPRESSION', payload)
-    },
-
-    setChewExpressions({ commit }, payload) {
-      commit('SET_CHARACTER_EXPRESSION', 'chew')
-
-      setTimeout(() => {
-        commit('SET_CHARACTER_EXPRESSION', 'idle')
-      }, 50)
-
-      setTimeout(() => {
-        commit('SET_CHARACTER_EXPRESSION', 'chew')
-      }, 80)
-
-      setTimeout(() => {
-        commit('SET_CHARACTER_EXPRESSION', 'idle')
-      }, 100)
-
-      setTimeout(() => {
-        commit('SET_CHARACTER_EXPRESSION', 'chew')
-      }, 150)
-
-      setTimeout(() => {
-        commit('SET_CHARACTER_EXPRESSION', 'idle')
-      }, 200)
-
-      setTimeout(() => {
-        commit('SET_CHARACTER_EXPRESSION', payload)
-      }, 300)
-
-      setTimeout(() => {
-        commit('SET_CHARACTER_EXPRESSION', 'open')
-      }, 900)
     },
 
     deleteTile({ commit }, tile) {
