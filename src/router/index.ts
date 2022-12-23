@@ -3,8 +3,13 @@ import { createRouter, createWebHistory } from 'vue-router'
 const routes = [
   {
     path: '/',
-    name: 'GameView',
-    component: () => import('@/views/GameView.vue')
+    name: 'Splash',
+    component: () => import('@/views/Splash.vue')
+  },
+  {
+    path: '/game',
+    name: 'Game',
+    component: () => import('@/views/Game.vue')
   }
 ]
 

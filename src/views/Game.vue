@@ -15,7 +15,7 @@ import UiGameBoard from '../components/ui/UiGameBoard.vue'
 import UiGamePowerupBar from '../components/ui/UiGamePowerupBar.vue'
 
 export default defineComponent({
-  name: 'GameBoard',
+  name: 'Game',
   components: {
     UiGameTop,
     UiGameBottom,
