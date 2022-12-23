@@ -3,7 +3,12 @@
     ref="footer"
     class="ui-footer"
   >
-    <div class="ui-footer__left">
+    <div
+      class="ui-footer__left"
+        v-anim="'slide-x-left'"
+        v-anim-delay="400"
+        v-anim-duration="1200"
+    >
       <cbutton
         :has-background="false"
         icon-only

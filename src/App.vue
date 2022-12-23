@@ -1,11 +1,17 @@
 <template>
-  <router-view />  
+  <router-view />
 </template>
 
 <script lang="ts">
-import { defineComponent } from 'vue'
+import { onMounted, defineComponent } from 'vue'
+import { vAnimController } from 'vue-simple-transitions'
 
 export default defineComponent({
-  name: 'App'
+  name: 'App',
+  setup() {
+    onMounted(() => {
+      vAnimController()
+    })
+  }
 })
 </script>
