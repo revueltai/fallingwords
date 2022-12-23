@@ -3,17 +3,13 @@
     <template v-if="isUIReady">
       <dash :boardRef="board" />
 
-      <character
-        ref="character"
-        :boardRef="board"
-      />
+      <character :board-ref="board" />
 
       <template v-for="tile in tiles">
         <tile
           v-if="tile"
           :tile="tile"
-          :boardRef="board"
-          :characterRef="character"
+          :board-ref="board"
         />
       </template>
     </template>

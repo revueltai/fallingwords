@@ -7,7 +7,7 @@
   >
     <div
       ref="tileWrapper"
-      class="tile__wrapper"
+      class="tile__wrapper transform transition-transform duration-150"
     >
       <div class="tile__wrapper-item">
         <div class="tile__content">
@@ -39,10 +39,6 @@ export default defineComponent({
       type: Object,
       default: null
     },
-    characterRef: {
-      type: Object,
-      default: null
-    },
     tile: {
       type: Object,
       required: true
@@ -66,6 +62,7 @@ export default defineComponent({
 
     // Computed
     const speed = computed(() => store.getters['game/speed'])
+    const characterEl = computed(() => store.getters['gameCharacter/collisionEl'])
     const activePowerup = computed(() => store.getters['game/roundActivePowerupType'])
     const hasActivePowerup = computed(() => !!activePowerup.value)
     const isPowerupTile = computed(() => !!props.tile.powerup)
@@ -130,19 +127,20 @@ export default defineComponent({
 
     const isCollidingWithCharacter = () => {
       const tileEl = tile.value
+      const tileWrapperEl = tileWrapper.value
       const tileRect = tileEl.getBoundingClientRect()
-      const characterRect = props.characterRef.character.getBoundingClientRect()
+      const characterElRect = characterEl.value.getBoundingClientRect()
 
-      const p1 = tileRect.left < characterRect.left + characterRect.width
-      const p2 = tileRect.left + tileRect.width > characterRect.left
-      const p3 = tileRect.top < characterRect.bottom + characterRect.height
-      const p4 = tileRect.top + tileRect.height > characterRect.bottom
+      const p1 = tileRect.left < characterElRect.left + characterElRect.width
+      const p2 = tileRect.left + tileRect.width > characterElRect.left
+      const p3 = tileRect.top < characterElRect.bottom + characterElRect.height
+      const p4 = tileRect.top + tileRect.height > characterElRect.bottom
 
       if (p1 && p2 && p3 && p4) {
         disableRAF.value = true
-        tileEl.classList.add('scale-0')
-
         store.dispatch('game/checkTile', props.tile)
+
+        tileWrapperEl.classList.add('scale-0')
       }
 
       return disableRAF.value
@@ -287,7 +285,7 @@ export default defineComponent({
 }
 
 .tile {
-  @apply absolute top-24 left-80 w-48 transform transition-transform;
+  @apply absolute top-24 left-80 w-48 ;
 }
 
 .tile__wrapper {

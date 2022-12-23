@@ -4,10 +4,16 @@
     :class="!isMobile() ? 'transition-transform origin-center linear' : ''"
     class="character"
   >
+    <div
+      ref="characterCollisionEl"
+      class="character__collision-area"
+    />
+
     <img
       ref="characterImage"
       :src="characterExpression"
-      class="transform transition-transform duration-500 ease-in-out"
+      :class="isLoaded ? 'opacity-100' : ''"
+      class="transform transition-all opacity-0 duration-200 ease-in-out"
     >
   </div>
 </template>
@@ -41,6 +47,8 @@ export default defineComponent({
     const store = useStore()
     const character = ref(null)
     const characterImage = ref(null)
+    const characterCollisionEl = ref(null)
+    const isLoaded = ref(false)
 
     // Computed
     const isPlaying = computed(() => store.getters['game/matchIsPlaying'])
@@ -181,6 +189,10 @@ export default defineComponent({
 
     const initCharacter = () => {
       repositionCharacter()
+      store.dispatch('gameCharacter/setCollisionElement', characterCollisionEl.value)
+      setTimeout(() => {
+        isLoaded.value = true
+      }, 500)
     }
 
     // Hooks
@@ -219,7 +231,9 @@ export default defineComponent({
     return {
       character,
       characterImage,
+      characterCollisionEl,
       characterExpression,
+      isLoaded,
       isMobile,
       handleResize,
       handleMove,
@@ -232,7 +246,11 @@ export default defineComponent({
 
 <style scoped>
 .character {
-  @apply fixed border-primary w-64 h-64 animate-fade-in;
+  @apply fixed border-primary w-64 h-64;
+}
+
+.character__collision-area {
+  @apply absolute w-32 h-24 left-1/4 bottom-2 opacity-50;
 }
 .tilt__left {
   @apply rotate-12;

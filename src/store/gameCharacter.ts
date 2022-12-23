@@ -4,6 +4,7 @@ export default {
   state: () => {
     return {
       offset: 90,
+      collisionEl: 0,
       expression: 'idle',
       expressions: {
         idle: 'MouthIdle.svg',
@@ -20,16 +21,25 @@ export default {
     uiElementsHeight: (state: { uiElementsHeight: number }) => state.uiElementsHeight,
     offset: (state: { offset: number }) => state.offset,
     speed: (state: { speed: number }) => state.speed,
+    collisionEl: (state: { collisionEl: HTMLElement }) => state.collisionEl,
     expression: (state: { expression: string, expressions: { [key: string]: string } }) => `/images/character/${state.expressions[state.expression]}`
   },
 
   mutations: {
     SET_CHARACTER_EXPRESSION(state: { expression: string }, expression: string) {
       state.expression = expression
+    },
+
+    SET_COLLISION_ELEMENT(state: { collisionEl: HTMLElement }, collisionEl: HTMLElement) {
+      state.collisionEl = collisionEl
     }
   },
 
   actions: {
+    setCollisionElement({ commit }, collisionEl: HTMLElement) {
+      commit('SET_COLLISION_ELEMENT', collisionEl)
+    },
+
     setExpression({ commit }, expression: string) {
       commit('SET_CHARACTER_EXPRESSION', expression)
     },
