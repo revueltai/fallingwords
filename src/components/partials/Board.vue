@@ -1,7 +1,7 @@
 <template>
   <div
     ref="board"
-    class="fixed w-full bg-transparent top-0 h-24"
+    class="board"
   />
 </template>
 
@@ -23,8 +23,9 @@ export default defineComponent({
     const setPosition = () => {
       const boardEl = board.value
       const UIElementsHeight = store.getters['game/uiElementsHeight']
-      const documentHeight: number = document.documentElement.getBoundingClientRect().height
-      const boardHeight: number = documentHeight - UIElementsHeight.header - UIElementsHeight.footer
+      const canvasEl = store.getters['app/canvasEl']
+      const canvasHeight: number = canvasEl.getBoundingClientRect().height
+      const boardHeight: number = canvasHeight - UIElementsHeight.header - UIElementsHeight.footer
 
       boardEl.style.top = `${UIElementsHeight.header}px`
       boardEl.style.height = `${boardHeight}px`
@@ -54,3 +55,9 @@ export default defineComponent({
   }
 })
 </script>
+
+<style scoped>
+.board {
+  @apply absolute w-full bg-transparent top-0 h-24;
+}
+</style>

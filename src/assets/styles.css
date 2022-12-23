@@ -29,9 +29,23 @@ html,
 body {
   -webkit-font-smoothing: antialiased;
   text-rendering: optimizeLegibility;
-  height: 100%;
+  @apply h-full;
 }
 
 body {
-  @apply bg-secondary text-white;
+  @apply bg-black text-white;
+}
+
+#app {
+  @apply w-full h-full items-center justify-center;
+}
+
+.fade-enter-active,
+.fade-leave-active {
+  transition: opacity 1s ease-in-out;
+}
+
+.fade-enter, 
+.fade-leave-to {
+  opacity: 0;
 }

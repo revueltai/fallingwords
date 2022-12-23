@@ -61,6 +61,6 @@ export default defineComponent({
 
 <style scoped>
 .dash-line {
-  @apply fixed w-full border border-info border-dashed opacity-30;
+  @apply absolute w-full border border-info border-dashed opacity-30;
 }
 </style>

@@ -38,7 +38,7 @@ export default defineComponent({
       default: 'center'
     },
     to: {
-      type: Object,
+      type: [String, Object],
       default: null
     },
     disabled: {

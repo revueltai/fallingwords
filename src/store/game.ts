@@ -35,7 +35,7 @@ export default {
       matchLives: defaults.matchLives,
       matchPowerups: {
         fire: 3,
-        ice: 0,
+        ice: 3,
         wind: 3
       },
       uiElementsHeight: {},

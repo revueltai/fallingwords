@@ -5,8 +5,8 @@
   >
     <div
       class="ui-footer__left"
-        v-anim="'slide-x-left'"
-        v-anim-delay="400"
+        v-anim="'fade-in'"
+        v-anim-delay="2400"
         v-anim-duration="1200"
     >
       <cbutton
@@ -24,6 +24,7 @@
     <div class="ui-footer__center">
       <cbutton
         v-for="powerup in powerups"
+        :key="powerup.id"
         :disabled="isActive"
         :has-background="false"
         icon-only
@@ -154,7 +155,7 @@ export default defineComponent({
 
 <style scoped>
 .ui-footer {
-  @apply fixed flex justify-between w-full bottom-0;
+  @apply absolute flex justify-between w-full bottom-0;
 }
 
 .ui-footer__left,

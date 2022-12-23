@@ -103,12 +103,12 @@ export default defineComponent({
       switch (event.key) {
         case 'ArrowLeft':
         case 'a':
-        case 'A':
+        case 'A':                    
           return character.rect.left - distance
 
         case 'ArrowRight':
-        case 'D':
-        case 'd':
+          case 'D':
+          case 'd':          
           return character.rect.right + distance
       }
     }
@@ -246,7 +246,7 @@ export default defineComponent({
 
 <style scoped>
 .character {
-  @apply fixed border-primary w-64 h-64;
+  @apply absolute border-primary w-64 h-64;
 }
 
 .character__collision-area {

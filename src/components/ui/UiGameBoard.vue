@@ -94,12 +94,12 @@ export default defineComponent({
 
 <style scoped>
 .ui-bg {
-  @apply fixed top-0 bottom-0 w-full h-full bg-repeat;
+  @apply absolute top-0 bottom-0 w-full h-full bg-repeat;
   background-image: url('/images/ui/bg-game.svg');
   background-size: 100px;
 }
 
 .ui-fade-zone {
-  @apply fixed bottom-0 w-full h-104 bg-gradient-to-b from-transparent to-secondary via-secondary;
+  @apply absolute bottom-0 w-full h-104 bg-gradient-to-b from-transparent to-secondary via-secondary;
 }
 </style>

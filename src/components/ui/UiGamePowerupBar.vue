@@ -1,7 +1,7 @@
 <template>
   <div
     v-if="isActive"
-    class="fixed flex items-center top-112 left-12"
+    class="ui-powerup-bar"
   >
     <div
       :class="cssClass"
@@ -31,14 +31,13 @@ import { useStore } from 'vuex'
 
 export default defineComponent({
   name: 'UiGamePowerupBar',
-  setup (props) {
+  setup () {
     // Injects
     const store = useStore()
 
     // Refs
     const barAnimation = 'a__powerup-cooldown'
     const bar = ref(null)
-    let raf = null
 
     // Computed
     const isActive = computed(() => store.getters['game/roundHasActivePowerup'])
@@ -73,7 +72,7 @@ export default defineComponent({
       nextTick(() => {
         const barRef = bar.value
         barRef.classList.add(barAnimation)
-        barRef.addEventListener('animationend', handleAnimationEnd)
+        barRef.addEventListener('animationend', handleAnimationEnd)      
       })
     }
 
@@ -97,7 +96,9 @@ export default defineComponent({
     // Hooks
     onBeforeUnmount (() => {
       const barRef = bar.value
-      barRef.removeEventListener('animationend', handleAnimationEnd)
+      if (barRef) {
+        barRef.removeEventListener('animationend', handleAnimationEnd)
+      }    
     })
 
     return {
@@ -127,5 +128,9 @@ export default defineComponent({
   animation-name: powerupCooldown;
   animation-timing-function: ease-out;
   animation-direction: forwards;
+}
+
+.ui-powerup-bar {
+  @apply absolute flex items-center top-112 left-12;
 }
 </style>
