@@ -4,7 +4,7 @@ export default {
   state: () => {
     return {
       offset: 90,
-      collisionEl: 0,
+      collisionEl: null,
       expression: 'idle',
       expressions: {
         idle: 'MouthIdle.svg',

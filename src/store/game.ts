@@ -1,6 +1,6 @@
 import { findIndex } from 'lodash'
 import {
-  createLettersArr,
+  createWord,
   createBoardLetters,
   getBoardLetter,
   isLetterInWord,
@@ -9,8 +9,11 @@ import {
 
 const defaults = {
   matchLives: 4,
-  duration: 5000,
-  speed: 4
+  speed: 4,
+  availableLetters: 8,
+  powerupDuration: 8000,
+  powerupSpawn: 20,
+  wordLetterSpawn: 2
 }
 
 export default {
@@ -32,11 +35,11 @@ export default {
       matchLives: defaults.matchLives,
       matchPowerups: {
         fire: 3,
-        ice: 3,
+        ice: 0,
         wind: 3
       },
       uiElementsHeight: {},
-      matchPowerupsDuration: defaults.duration,
+      matchPowerupsDuration: defaults.powerupDuration,
       matchStates: {
         loading: 'loading',
         starting: 'starting',
@@ -48,10 +51,12 @@ export default {
       matchWordsList: [],
       matchRoundsTotal: 0,
       matchRoundsCurrent: 0,
-      roundTotalAvailableLetters: 8,
+      roundTotalAvailableLetters: defaults.availableLetters,
       roundWordOriginal: null,
       roundWordGuess: [],
       roundBoardTiles: [],
+      roundPowerupSpawnChance: defaults.powerupSpawn,
+      roundWordLetterSpawnChance: defaults.wordLetterSpawn,
       roundActivePowerup: {
         active: false,
         type: null
@@ -96,7 +101,9 @@ export default {
 
     POWERUP_AMOUNT_DECREASE(state, payload) {
       const newCount = state.matchPowerups[payload] - 1
-      state.matchPowerups[payload] = (newCount > 0) ? newCount : 0
+      state.matchPowerups[payload] = (newCount > 0)
+        ? newCount
+        : 0
     },
 
     POWERUP_ACTIVATE(state, payload) {
@@ -153,8 +160,15 @@ export default {
       const totalLetters = state.roundTotalAvailableLetters
 
       state.roundWordOriginal = word.original
-      state.roundWordGuess = createLettersArr(word.learn)
-      state.roundBoardTiles = createBoardLetters(state.powerups, locales.learn, state.roundWordGuess, totalLetters)
+      state.roundWordGuess = createWord(word.learn)
+      state.roundBoardTiles = createBoardLetters(
+        state.powerups,
+        locales.learn,
+        state.roundWordGuess,
+        totalLetters,
+        state.roundPowerupSpawnChance,
+        state.roundWordLetterSpawnChance
+      )
     },
 
     SET_LETTER_AS_GUESSED(state, payload) {
@@ -174,7 +188,13 @@ export default {
     },
 
     CREATE_TILE(state) {
-      const newTile = getBoardLetter(state.powerups, state.matchLocales.learn, state.roundWordGuess)
+      const newTile = getBoardLetter(
+        state.powerups,
+        state.matchLocales.learn,
+        state.roundWordGuess,
+        state.roundPowerupSpawnChance,
+        state.roundWordLetterSpawnChance
+      )
       state.roundBoardTiles.push(newTile)
     }
   },

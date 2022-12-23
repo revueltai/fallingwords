@@ -9,17 +9,17 @@ import type {
 } from '@project/interfaces'
 import alphabets from '../configs/alphabets.json'
 
-const spawnPowerup = (): boolean => {
-  return setSpawnChance(10)
+const spawnPowerup = (spawnChance: number): boolean => {
+  return getSpawnChance(spawnChance)
 }
 
-const spawnWordLetter = (): boolean => {
-  return setSpawnChance(2)
+const spawnWordLetter = (spawnChance: number): boolean => {
+  return getSpawnChance(spawnChance)
 }
 
-const setSpawnChance = (range: number): boolean => {
-  const chance = getRandomNum(range)
-  return chance === 1
+const getSpawnChance = (range: number): boolean => {
+  const spawnChance = getRandomNum(range)
+  return spawnChance === 1
 }
 
 const getRandomNum = (range: number): number => {
@@ -27,10 +27,10 @@ const getRandomNum = (range: number): number => {
 }
 
 const getPendingLettersInWord = (word: Word): string => {
-  const arr = word.filter((l: Letter) => !l.guessed)
+  const pendingLetters = word.filter((l: Letter) => !l.guessed)
     .map(l => l.letter)
 
-  return arr.join('')
+  return pendingLetters.join('')
 }
 
 const createPowerup = (powerups: Powerups): Powerup => {
@@ -44,12 +44,12 @@ const createPowerup = (powerups: Powerups): Powerup => {
   }
 }
 
-const createLetter = (locale: MatchLocale, roundWordGuess: Word): string => {
+const createLetter = (locale: MatchLocale, roundWordGuess: Word, wordLetterSpawnChance: number): string => {
   const a = alphabets[locale]
   const pendingLetters = getPendingLettersInWord(roundWordGuess)
   let letter = null
 
-  if (spawnWordLetter() || !pendingLetters) {
+  if (spawnWordLetter(wordLetterSpawnChance) || !pendingLetters) {
     letter = a.charAt(getRandomNum(a.length))
   } else {
     letter = pendingLetters.charAt(getRandomNum(pendingLetters.length))
@@ -67,17 +67,23 @@ export const getLetterIndexInWord = (letter: string, word: Word): number => {
   return findIndex(word, (l: Letter) => !l.guessed && l.letter.toLowerCase() === letter.toLowerCase())
 }
 
-export const getBoardLetter = (powerups: Powerups, locale: MatchLocale, roundWordGuess: Word): BoardLetter => {
+export const getBoardLetter = (
+  powerups: Powerups,
+  locale: MatchLocale,
+  roundWordGuess: Word,
+  powerupSpawnChance: number,
+  wordLetterSpawnChance: number
+): BoardLetter => {
   let type = null
   let letter = null
   let powerup = null
 
-  if (spawnPowerup()) {
+  if (spawnPowerup(powerupSpawnChance)) {
     type = 'powerup'
     powerup = createPowerup(powerups)
   } else {
     type = 'letter'
-    letter = createLetter(locale, roundWordGuess)
+    letter = createLetter(locale, roundWordGuess, wordLetterSpawnChance)
   }
 
   return {
@@ -88,20 +94,29 @@ export const getBoardLetter = (powerups: Powerups, locale: MatchLocale, roundWor
   }
 }
 
-export const createBoardLetters = (powerups: Powerups, locale: MatchLocale, roundWordGuess: Word, total: number): BoardLetter[] => {
-  const output = []
+export const createBoardLetters = (
+  powerups: Powerups,
+  locale: MatchLocale,
+  roundWordGuess: Word,
+  total: number,
+  powerupSpawnChance: number,
+  wordLetterSpawnChance: number
+): BoardLetter[] => {
+  const boardLetters = []
 
   for (let i = 0; i < total; i++) {
-    output.push(getBoardLetter(powerups, locale, roundWordGuess))
+    boardLetters.push(
+      getBoardLetter(powerups, locale, roundWordGuess, powerupSpawnChance, wordLetterSpawnChance)
+    )
   }
 
-  return output
+  return boardLetters
 }
 
-export const createLettersArr = (word: string): Word => {
-  const arr = word.split('')
+export const createWord = (word: string): Word => {
+  const letters = word.split('')
 
-  return arr.map((letter: string): Letter => {
+  return letters.map((letter: string): Letter => {
     return {
       letter,
       guessed: false
