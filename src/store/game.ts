@@ -9,8 +9,8 @@ import {
 
 const defaults = {
   matchLives: 4,
-  speed: 3,
-  availableLetters: 28,
+  speed: 8,
+  availableLetters: 8,
   powerupDuration: 8000,
   powerupSpawn: 20,
   wordLetterSpawn: 2

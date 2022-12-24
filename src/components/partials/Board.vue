@@ -65,6 +65,6 @@ export default defineComponent({
 
 <style scoped>
 .board {
-  @apply absolute bg-transparent;
+  @apply absolute bg-transparent left-0;
 }
 </style>

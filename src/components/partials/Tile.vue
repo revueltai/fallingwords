@@ -120,7 +120,23 @@ export default defineComponent({
     }
 
     const setPosition = () => {
-      tile.value.style.transform = `translate(${posX}px, ${posY}px)`
+      if (tile.value) {
+        tile.value.style.transform = `translate(${posX}px, ${posY}px)`        
+      }
+    }
+
+    const setCoordinates = () => {
+      const boardRect: DOMRect = boardEl.value.getBoundingClientRect()
+      const tileRect: DOMRect = tile.value.getBoundingClientRect()
+      console.log(boardRect.width);
+      
+      posX = Math.round(Math.random() * (boardRect.width - tileRect.width))
+      
+      if (posX > 550) {
+        console.log(posX);        
+      }
+      
+      posY = Math.round(Math.random() * boardRect.height * -1)
     }
 
     const isCollidingWithCharacter = () => {
@@ -182,14 +198,6 @@ export default defineComponent({
       tile.value.addEventListener('transitionend', remove)
     }
 
-    const initPosition = () => {
-      const boardRect: DOMRect = boardEl.value.getBoundingClientRect()
-      const tileRect: DOMRect = tile.value.getBoundingClientRect()
-
-      posX = Math.round(Math.random() * (boardRect.width - tileRect.width))
-      posY = Math.round(Math.random() * 1000 * -1)
-    }
-
     const animateNewFrame = () => {
       setTimeout(() => {
         raf = requestAnimationFrame(handleRAF)
@@ -200,11 +208,11 @@ export default defineComponent({
     watch(activePowerup, (type) => {
       switch (type) {
         case 'wind':
+          const tileWrapperEl: HTMLElement = tileWrapper.value
           const duration = store.getters['game/matchPowerupsDuration']
-          const tileWrapperRef = tileWrapper.value
 
-          tileWrapperRef.style.animationDuration = `${duration}ms`
-          tileWrapperRef.addEventListener('animationend', handleAnimationEnd)
+          tileWrapperEl.style.animationDuration = `${duration}ms`
+          tileWrapperEl.addEventListener('animationend', handleAnimationEnd)
           break
       }
     })
@@ -235,14 +243,18 @@ export default defineComponent({
       removeTile()
     }
 
-    // Hooks
-    onMounted (() => {
+    const initialize = () => {
       nextTick(() => {
-        initPosition()
+        setCoordinates()
+        letterInWord.value = isWordLetter()      
         fps.value = Math.floor(Math.random() * (60 - 24) + 24)
-        letterInWord.value = isWordLetter()
         raf = requestAnimationFrame(handleRAF)
       })
+    }
+
+    // Hooks
+    onMounted (() => {      
+      initialize()
     })
 
     onBeforeUnmount (() => {
@@ -281,14 +293,15 @@ export default defineComponent({
 }
 
 .tile {
-  @apply absolute top-24 left-80 w-48 h-48;
+  @apply absolute top-24 left-80 w-48 h-48 origin-center;
+  will-change: transform;
 }
 
 .tile__wrapper {
   @apply rounded-full w-48 h-48 border;
 }
 .tile__wrapper-item {
-  @apply relative w-full h-full;
+  @apply relative h-full flex items-center justify-center;
 }
 
 .tile__content {

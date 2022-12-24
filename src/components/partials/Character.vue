@@ -51,11 +51,27 @@ export default defineComponent({
     const boardEl = computed(() => store.getters['gameBoard/boardEl'])
 
     // Methods
+    const isValidKeyboardKey = (key: string): boolean => {
+      switch (key) {
+        case 'ArrowLeft':
+        case 'ArrowRight':
+        case 'a':
+        case 'A':
+        case 'd':
+        case 'D':
+          return true
+      }
+
+      return false
+    }
+
     const removeTilt = () => {
       characterImage.value.classList.remove('tilt__left', 'tilt__right')
     }
 
-    const addTilt = () => {
+    const addTilt = (event: CharacterEvent) => {
+      removeTilt()
+
       const deltaX = previousX - posX
       previousX = posX
 
@@ -84,15 +100,8 @@ export default defineComponent({
     const getPositionXFromArrowKeys = (event: KeyboardEvent, character: Character): number => {
       const distance: number = 1
 
-      switch (event.key) {
-        case 'ArrowLeft':
-        case 'ArrowRight':
-        case 'a':
-        case 'A':
-        case 'd':
-        case 'D':
-          setExpression('open')
-          break
+      if (isValidKeyboardKey(event.key)) {
+        setExpression('open')
       }
 
       switch (event.key) {
@@ -155,9 +164,17 @@ export default defineComponent({
     // Event Handlers
     const handleMove = (event: CharacterEvent) => {
       if (isPlaying.value) {
-        updateCharacterPosition(event)
-        removeTilt()
-        addTilt()
+        updateCharacterPosition(event) 
+        
+        if (event instanceof TouchEvent) {
+          addTilt(event)                 
+          return
+        }
+        
+        if (event instanceof KeyboardEvent && isValidKeyboardKey(event.key)) {
+          addTilt(event)                 
+          return
+        }
       }
     }
 
