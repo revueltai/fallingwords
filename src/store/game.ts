@@ -8,8 +8,8 @@ import {
 } from './game.utils'
 
 const defaults = {
-  matchLives: 4,
-  speed: 8,
+  matchLives: 99,
+  speed: 3,
   availableLetters: 8,
   powerupDuration: 8000,
   powerupSpawn: 20,

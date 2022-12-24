@@ -131,11 +131,6 @@ export default defineComponent({
       console.log(boardRect.width);
       
       posX = Math.round(Math.random() * (boardRect.width - tileRect.width))
-      
-      if (posX > 550) {
-        console.log(posX);        
-      }
-      
       posY = Math.round(Math.random() * boardRect.height * -1)
     }
 
@@ -293,7 +288,7 @@ export default defineComponent({
 }
 
 .tile {
-  @apply absolute top-24 left-80 w-48 h-48 origin-center;
+  @apply absolute top-0 left-0 w-48 h-48 origin-center;
   will-change: transform;
 }
 

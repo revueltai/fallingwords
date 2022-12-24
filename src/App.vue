@@ -57,7 +57,6 @@ export default defineComponent({
 
 <style>
 .app__wrapper {
-  @apply relative w-full h-full bg-secondary border rounded-xl border-tertiary;
-  /* @apply relative w-full h-full overflow-hidden bg-secondary border rounded-xl border-tertiary; */
+  @apply relative w-full h-full overflow-hidden bg-secondary border rounded-xl border-tertiary;
 }
 </style>
