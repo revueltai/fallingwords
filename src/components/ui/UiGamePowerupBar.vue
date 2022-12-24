@@ -70,7 +70,7 @@ export default defineComponent({
     // Methods
     const activatePowerupBar = () => {
       nextTick(() => {
-        const barRef = bar.value
+        const barRef: HTMLElement = bar.value
         barRef.classList.add(barAnimation)
         barRef.addEventListener('animationend', handleAnimationEnd)      
       })
@@ -95,7 +95,7 @@ export default defineComponent({
 
     // Hooks
     onBeforeUnmount (() => {
-      const barRef = bar.value
+      const barRef: HTMLElement = bar.value
       if (barRef) {
         barRef.removeEventListener('animationend', handleAnimationEnd)
       }    

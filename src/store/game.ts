@@ -1,3 +1,11 @@
+import {
+  BoardUIElements, 
+  MatchStates, 
+  MatchLocales, 
+  BoardLetter, 
+  Word, 
+  PowerupTypes 
+} from '@project/interfaces'
 import { findIndex } from 'lodash'
 import {
   createWord,
@@ -7,11 +15,12 @@ import {
   getLetterIndexInWord
 } from './game.utils'
 
+
 const defaults = {
   matchLives: 99,
   speed: 3,
   availableLetters: 8,
-  powerupDuration: 8000,
+  powerupDuration: 1000,
   powerupSpawn: 20,
   wordLetterSpawn: 2
 }
@@ -92,25 +101,27 @@ export default {
 
     LIVES_DECREASE(state) {
       const newLives = state.matchLives - 1
-      state.matchLives = (newLives > 0) ? newLives : 0
+      state.matchLives = (newLives > 0) 
+        ? newLives 
+        : 0
     },
 
-    POWERUP_AMOUNT_INCREASE(state, payload) {
-      state.matchPowerups[payload]++
+    POWERUP_AMOUNT_INCREASE(state, type: PowerupTypes) {      
+      state.matchPowerups[type]++
     },
 
-    POWERUP_AMOUNT_DECREASE(state, payload) {
-      const newCount = state.matchPowerups[payload] - 1
-      state.matchPowerups[payload] = (newCount > 0)
+    POWERUP_AMOUNT_DECREASE(state, type: PowerupTypes) {
+      const newCount = state.matchPowerups[type] - 1
+      state.matchPowerups[type] = (newCount > 0)
         ? newCount
         : 0
     },
 
-    POWERUP_ACTIVATE(state, payload) {
+    POWERUP_ACTIVATE(state, type: PowerupTypes) {
       state.roundActivePowerup.active = true
-      state.roundActivePowerup.type = payload
+      state.roundActivePowerup.type = type
 
-      switch (payload) {
+      switch (type) {
         case 'fire':
           break
 
@@ -129,24 +140,24 @@ export default {
       state.roundActivePowerup.active = false
       state.roundActivePowerup.type = null
       state.speed = defaults.speed
-      state.matchPowerupsDuration = defaults.duration
+      state.matchPowerupsDuration = defaults.powerupDuration
     },
 
-    SET_SPEED(state, payload) {
-      state.speed = payload
+    SET_SPEED(state, speed: number) {      
+      state.speed = speed
     },
 
-    SET_MATCH_STATE(state, payload) {
-      state.matchState = payload
+    SET_MATCH_STATE(state, matchState: MatchStates) {
+      state.matchState = matchState
     },
 
-    SET_MATCH_WORDS(state, payload) {
-      state.matchWordsList = payload
-      state.matchRoundsTotal = payload.length
+    SET_MATCH_WORDS(state, wordsList: MatchLocales[]) {
+      state.matchWordsList = wordsList
+      state.matchRoundsTotal = wordsList.length
     },
 
-    SET_MATCH_LOCALES(state, payload) {
-      state.matchLocales = payload
+    SET_MATCH_LOCALES(state: { matchLocales: MatchLocales }, locales: MatchLocales) {
+      state.matchLocales = locales
     },
 
     SET_MATCH_LIVES(state) {
@@ -171,8 +182,8 @@ export default {
       )
     },
 
-    SET_LETTER_AS_GUESSED(state, payload) {
-      state.roundWordGuess[payload].guessed = true
+    SET_LETTER_AS_GUESSED(state, wordIndex: number) {      
+      state.roundWordGuess[wordIndex].guessed = true
     },
 
     SET_UI_ELEMENT_HEIGHT(state, payload) {
@@ -182,8 +193,8 @@ export default {
       }
     },
 
-    DELETE_TILE(state, payload) {
-      const index = findIndex(state.roundBoardTiles, tile => tile && tile.id === payload.id)
+    DELETE_TILE(state: { roundBoardTiles: BoardLetter[] }, payload: BoardLetter) {
+      const index: number = findIndex(state.roundBoardTiles, (tile: BoardLetter) => tile && tile.id === payload.id)
       state.roundBoardTiles[index] = null
     },
 
@@ -208,21 +219,21 @@ export default {
       commit('LIVES_DECREASE')
     },
 
-    increasePowerup({ commit }, powerupType) {
+    increasePowerup({ commit }, powerupType: PowerupTypes) {
       commit('POWERUP_AMOUNT_INCREASE', powerupType)
     },
 
-    decreasePowerup({ commit }, powerupType) {
+    decreasePowerup({ commit }, powerupType: PowerupTypes) {
       commit('POWERUP_AMOUNT_DECREASE', powerupType)
     },
 
-    checkTile({ commit, getters, dispatch }, tile) {
-      const word = getters.roundWordGuess
-      let newExpression = null
+    checkTile({ commit, getters, dispatch }, tile: BoardLetter) {      
+      const word: Word = getters.roundWordGuess      
+      let newExpression: string
 
       if (tile.letter) {
         // Check letter
-        const letterInWord = isLetterInWord(tile.letter, word)
+        const letterInWord: boolean = isLetterInWord(tile.letter, word)
 
         if (letterInWord) {
           newExpression = 'like'
@@ -236,7 +247,7 @@ export default {
       } else {
         // Check powerup
         newExpression = 'love'
-        const type = tile.powerup.type
+        const type: string = tile.powerup.type
 
         if (type === 'live') {
           dispatch('increaseLives')
@@ -258,11 +269,11 @@ export default {
       commit('CREATE_TILE')
     },
 
-    deleteTile({ commit }, tile) {
-      commit('DELETE_TILE', tile)
+    deleteTile({ commit }, letter: BoardLetter) {
+      commit('DELETE_TILE', letter)
     },
 
-    activatePoweup({ commit, getters, dispatch }, type) {
+    activatePoweup({ commit, getters, dispatch }, type: PowerupTypes) {      
       const hasPowerupsOfType = getters.matchPowerups[type] > 0
 
       if (!getters.roundHasActivePowerup && hasPowerupsOfType) {
@@ -275,8 +286,8 @@ export default {
       commit('POWERUP_DEACTIVATE')
     },
 
-    setUIElementHeight({ commit }, payload) {
-      commit('SET_UI_ELEMENT_HEIGHT', payload)
+    setUIElementHeight({ commit }, uiElement: BoardUIElements) {
+      commit('SET_UI_ELEMENT_HEIGHT', uiElement)
     },
 
     initMatch({ commit, getters }, payload) {

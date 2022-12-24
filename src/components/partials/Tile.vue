@@ -128,7 +128,6 @@ export default defineComponent({
     const setCoordinates = () => {
       const boardRect: DOMRect = boardEl.value.getBoundingClientRect()
       const tileRect: DOMRect = tile.value.getBoundingClientRect()
-      console.log(boardRect.width);
       
       posX = Math.round(Math.random() * (boardRect.width - tileRect.width))
       posY = Math.round(Math.random() * boardRect.height * -1)
