@@ -32,13 +32,7 @@ type CharacterEvent = TouchEvent | KeyboardEvent
 
 export default defineComponent({
   name: 'Character',
-  props: {
-    boardRef: {
-      type: Object,
-      default: null
-    },
-  },
-  setup (props) {
+  setup () {
     let previousX: number = 0
     let posX: number = 0
     let posY: number = 0
@@ -54,6 +48,7 @@ export default defineComponent({
     const isPlaying = computed(() => store.getters['game/matchIsPlaying'])
     const offset = computed(() => store.getters['gameCharacter/offset'])
     const characterExpression = computed(() => store.getters['gameCharacter/expression'])
+    const boardEl = computed(() => store.getters['gameBoard/boardEl'])
 
     // Methods
     const removeTilt = () => {
@@ -71,8 +66,8 @@ export default defineComponent({
       characterImage.value.classList.add(`tilt__${direction}`)
     }
 
-    const getBoardData = (): DOMRect => {
-      return props.boardRef.board.getBoundingClientRect()
+    const getBoardRect = (): DOMRect => {
+      return boardEl.value.getBoundingClientRect()
     }
 
     const getCharacterData = (): Character => {
@@ -123,7 +118,7 @@ export default defineComponent({
     }
 
     const repositionCharacter = () => {
-      const boardRect = getBoardData()
+      const boardRect: DOMRect = getBoardRect()
       const { rect } = getCharacterData()
 
       posX = (boardRect.width / 2) - (rect.width / 2)
@@ -133,9 +128,9 @@ export default defineComponent({
     }
 
     const updateCharacterPosition = (event: CharacterEvent) => {
-      let cX: number
-      const boardRect = getBoardData()
+      const boardRect: DOMRect = getBoardRect()
       const character: Character = getCharacterData()
+      let cX: number
 
       if (event instanceof TouchEvent) {
         cX = getPositionXFromTouch(event)
@@ -189,7 +184,7 @@ export default defineComponent({
 
     const initCharacter = () => {
       repositionCharacter()
-      store.dispatch('gameCharacter/setCollisionElement', characterCollisionEl.value)
+      store.dispatch('gameCharacter/setElement', characterCollisionEl.value)
       setTimeout(() => {
         isLoaded.value = true
       }, 500)
@@ -201,10 +196,10 @@ export default defineComponent({
         window.addEventListener('resize', handleResize, false)
 
         if (isMobile()) {
-          const boardEl = props.boardRef.board
-          boardEl.addEventListener('touchstart', handleStart, { passive: true })
-          boardEl.addEventListener('touchend', handleEnd, false)
-          boardEl.addEventListener('touchmove', handleMove, { passive: true })
+          const board: HTMLElement = boardEl.value
+          board.addEventListener('touchstart', handleStart, { passive: true })
+          board.addEventListener('touchend', handleEnd, false)
+          board.addEventListener('touchmove', handleMove, { passive: true })
         } else {
           window.addEventListener('keyup', handleEnd, false)
           window.addEventListener('keydown', handleMove, false)
@@ -218,10 +213,10 @@ export default defineComponent({
       window.removeEventListener('resize', handleResize)
 
       if (isMobile()) {
-        const boardEl = props.boardRef.board
-        boardEl.removeEventListener('touchstart', handleStart)
-        boardEl.removeEventListener('touchend', handleEnd)
-        boardEl.removeEventListener('touchmove', handleMove)
+        const board: HTMLElement = boardEl.value
+        board.removeEventListener('touchstart', handleStart)
+        board.removeEventListener('touchend', handleEnd)
+        board.removeEventListener('touchmove', handleMove)
       } else {
         window.removeEventListener('keyup', handleEnd)
         window.removeEventListener('keydown', handleMove)

@@ -35,10 +35,6 @@ import { isLetterInWord } from '../../store/game.utils'
 export default defineComponent({
   name: 'Tile',
   props: {
-    boardRef: {
-      type: Object,
-      default: null
-    },
     tile: {
       type: Object,
       required: true
@@ -61,8 +57,10 @@ export default defineComponent({
     const fps = ref(null)
 
     // Computed
+    const characterEl = computed(() => store.getters['gameCharacter/characterEl'])
+    const boardEl = computed(() => store.getters['gameBoard/boardEl'])
+    const canvasEl = computed(() => store.getters['app/canvasEl'])
     const speed = computed(() => store.getters['game/speed'])
-    const characterEl = computed(() => store.getters['gameCharacter/collisionEl'])
     const activePowerup = computed(() => store.getters['game/roundActivePowerupType'])
     const hasActivePowerup = computed(() => !!activePowerup.value)
     const isPowerupTile = computed(() => !!props.tile.powerup)
@@ -126,15 +124,15 @@ export default defineComponent({
     }
 
     const isCollidingWithCharacter = () => {
-      const tileEl = tile.value
-      const tileWrapperEl = tileWrapper.value
-      const tileRect = tileEl.getBoundingClientRect()
-      const characterElRect = characterEl.value.getBoundingClientRect()
+      const tileEl: HTMLElement = tile.value
+      const tileWrapperEl: HTMLElement = tileWrapper.value
+      const tileRect: DOMRect = tileEl.getBoundingClientRect()
+      const characterElRect: DOMRect = characterEl.value.getBoundingClientRect()
 
-      const p1 = tileRect.left < characterElRect.left + characterElRect.width
-      const p2 = tileRect.left + tileRect.width > characterElRect.left
-      const p3 = tileRect.top < characterElRect.bottom + characterElRect.height
-      const p4 = tileRect.top + tileRect.height > characterElRect.bottom
+      const p1: boolean = tileRect.left < characterElRect.left + characterElRect.width
+      const p2: boolean = tileRect.left + tileRect.width > characterElRect.left
+      const p3: boolean = tileRect.top < characterElRect.bottom + characterElRect.height
+      const p4: boolean = tileRect.top + tileRect.height > characterElRect.bottom
 
       if (p1 && p2 && p3 && p4) {
         disableRAF.value = true
@@ -147,10 +145,10 @@ export default defineComponent({
     }
 
     const isOutOfBounds = () => {
-      const tileRect = tile.value.getBoundingClientRect()
-      const limitY = document.documentElement.getBoundingClientRect().height
+      const tileRect: DOMRect = tile.value.getBoundingClientRect()
+      const limit: number = canvasEl.value.getBoundingClientRect().height
 
-      if (tileRect.y > limitY) {
+      if (tileRect.y > limit) {
         disableRAF.value = true
       }
 
@@ -184,14 +182,12 @@ export default defineComponent({
       tile.value.addEventListener('transitionend', remove)
     }
 
-    const updatePosition = () => {
-      const boardRect = document.documentElement.getBoundingClientRect()
-      const tileRect = tile.value.getBoundingClientRect()
+    const initPosition = () => {
+      const boardRect: DOMRect = boardEl.value.getBoundingClientRect()
+      const tileRect: DOMRect = tile.value.getBoundingClientRect()
 
-      posY = Math.round(Math.random() * 1000 * -1)
       posX = Math.round(Math.random() * (boardRect.width - tileRect.width))
-
-      setPosition()
+      posY = Math.round(Math.random() * 1000 * -1)
     }
 
     const animateNewFrame = () => {
@@ -242,9 +238,9 @@ export default defineComponent({
     // Hooks
     onMounted (() => {
       nextTick(() => {
+        initPosition()
         fps.value = Math.floor(Math.random() * (60 - 24) + 24)
         letterInWord.value = isWordLetter()
-        updatePosition()
         raf = requestAnimationFrame(handleRAF)
       })
     })
@@ -285,7 +281,7 @@ export default defineComponent({
 }
 
 .tile {
-  @apply absolute top-24 left-80 w-48 ;
+  @apply absolute top-24 left-80 w-48 h-48;
 }
 
 .tile__wrapper {

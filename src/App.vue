@@ -5,7 +5,10 @@
         ref="appWrapper"
         class="app__wrapper"
       >
-        <component :is="Component" />
+        <component
+          v-if="isLoaded"
+          :is="Component" 
+        />
       </div>
     </transition>
   </router-view>
@@ -22,6 +25,7 @@ export default defineComponent({
     const store = useStore()
 
     const appWrapper = ref(null)
+    const isLoaded = ref(false)
 
     const canvasMaxWidth = computed(() => store.getters['app/canvasMaxWidth'])
     const canvasMaxHeight = computed(() => store.getters['app/canvasMaxHeight'])
@@ -34,8 +38,9 @@ export default defineComponent({
 
     const initialize = () => {
       vAnimController()
-      setCanvasSize()
-      store.dispatch('app/setCanvasElement', appWrapper.value)
+      setCanvasSize()      
+      store.dispatch('app/setElement', appWrapper.value)
+      isLoaded.value = true
     }
 
     onMounted(() => {
@@ -43,7 +48,8 @@ export default defineComponent({
     })
 
     return {
-      appWrapper
+      appWrapper,
+      isLoaded
     }
   }
 })

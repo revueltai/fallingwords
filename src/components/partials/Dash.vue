@@ -11,13 +11,7 @@ import { useStore } from 'vuex'
 
 export default defineComponent({
   name: 'Dash',
-  props: {
-    boardRef: {
-      type: Object,
-      default: null
-    },
-  },
-  setup (props) {
+  setup () {
 
     // Injects
     const store = useStore()
@@ -25,13 +19,14 @@ export default defineComponent({
     // Refs
     const line = ref(null)
     const offset = computed(() => store.getters['gameCharacter/offset'])
+    const boardEl = computed(() => store.getters['gameBoard/boardEl'])
 
     // Methods
-    const setPosition = () => {
-      const boardRect = props.boardRef.board.getBoundingClientRect()
+    const setPosition = () => {      
+      const boardRect: DOMRect = boardEl.value.getBoundingClientRect()
+      const posY: number = (boardRect.height * offset.value / 100)
       const lineEl = line.value
-      const middleY = (boardRect.height * offset.value / 100)
-      lineEl.style.top = `${middleY}px`
+      lineEl.style.top = `${posY}px`
     }
 
     // Event Handlers

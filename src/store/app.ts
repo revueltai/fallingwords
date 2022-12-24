@@ -12,18 +12,18 @@ export default {
   getters: {
     canvasMaxWidth: (state: { canvasMaxWidth: number }) => state.canvasMaxWidth,
     canvasMaxHeight: (state: { canvasMaxHeight: number }) => state.canvasMaxHeight,
-    canvasEl: (state: { canvasEl: HTMLElement }) => state.canvasEl,
+    canvasEl: (state: { canvasEl: HTMLElement }) => state.canvasEl
   },
 
   mutations: {
-    SET_CANVAS_ELEMENT(state: { canvasEl: HTMLElement }, canvasEl: HTMLElement) {
+    SET_ELEMENT(state: { canvasEl: HTMLElement }, canvasEl: HTMLElement) {
       state.canvasEl = canvasEl
     }
   },
 
   actions: {
-    setCanvasElement({ commit }, canvasEl: HTMLElement) {
-      commit('SET_CANVAS_ELEMENT', canvasEl)
+    setElement({ commit }, canvasEl: HTMLElement) {
+      commit('SET_ELEMENT', canvasEl)
     }
   }
 }

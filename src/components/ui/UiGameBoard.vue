@@ -1,22 +1,24 @@
 <template>
   <div class="ui-bg">
     <template v-if="isUIReady">
-      <dash :boardRef="board" />
+      <dash />
 
-      <character :board-ref="board" />
+      <character />
 
-      <template v-for="tile in tiles">
+      <template 
+        v-for="tile in tiles"
+        :key="tile"
+      >
         <tile
           v-if="tile"
           :tile="tile"
-          :board-ref="board"
         />
       </template>
     </template>
 
     <div class="ui-fade-zone"/>
 
-    <board ref="board" />
+    <board />
   </div>
 </template>
 
@@ -58,17 +60,18 @@ export default defineComponent({
 
     // Refs
     const isUIReady = ref(false)
-    const board = ref(null)
-    const character = ref(null)
 
     // Computed
     const tiles = computed(() => store.getters['game/roundBoardTiles'])
 
     // Methods
-    const initMatch = () => {
-      store.dispatch('game/initMatch', {
-        words: dummyWords,
-        locales: dummyLocales
+    const initialize = () => {
+      nextTick(() => {
+        isUIReady.value = true
+        store.dispatch('game/initMatch', {
+          words: dummyWords,
+          locales: dummyLocales
+        })
       })
     }
 
@@ -76,16 +79,11 @@ export default defineComponent({
 
     // Hooks
     onMounted (() => {
-      nextTick(() => {
-        isUIReady.value = true
-        initMatch()
-      })
+      initialize()
     })
 
     return {
       isUIReady,
-      board,
-      character,
       tiles
     }
   }
