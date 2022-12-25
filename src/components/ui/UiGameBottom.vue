@@ -3,7 +3,12 @@
     ref="footer"
     class="ui-footer"
   >
-    <div class="ui-footer__left">
+    <div
+      class="ui-footer__left"
+        v-anim="'fade-in'"
+        v-anim-delay="2400"
+        v-anim-duration="1200"
+    >
       <cbutton
         :has-background="false"
         icon-only
@@ -17,32 +22,7 @@
     </div>
 
     <div class="ui-footer__center">
-      <cbutton
-        v-for="powerup in powerups"
-        :disabled="isActive"
-        :has-background="false"
-        icon-only
-        class="block relative -mt-24 animate-fade-in"
-        @click="activatePowerup(powerup.id)"
-      >
-        <cicon
-          :name="powerup.name"
-          size="xxxLarge"
-          type="fill"
-        />
-
-        <cbadge
-          :value="powerup.count"
-          class="absolute z-2 bottom-8 right-8"
-        />
-
-        <div
-          v-if="!isMobile()"
-          class="ui-footer__powerup-key"
-        >
-          {{ powerup.keyboardKey }}
-        </div>
-      </cbutton>
+      <ui-game-bottom-powerups />
     </div>
 
     <div class="ui-footer__right">
@@ -60,88 +40,31 @@
 </template>
 
 <script lang="ts">
-import { ref, computed, onMounted, onBeforeUnmount, defineComponent } from 'vue'
+import { ref, onMounted, defineComponent } from 'vue'
 import { useStore } from 'vuex'
-import { isMobile } from '../../utils/game.utils'
-
-interface PowerupButton {
-  id: string;
-  name: string;
-  count: number;
-  keyboardKey: string;
-}
+import UiGameBottomPowerups from './UiGameBottomPowerups.vue'
 
 export default defineComponent({
   name: 'UiGameBottom',
+  components: {
+    UiGameBottomPowerups
+  },
   setup () {
     // Injects
     const store = useStore()
 
     // Refs
     const footer = ref(null)
-    const keyboardKeys = ['1', '2', '3']
-
-    // Computed
-    const isActive = computed(() => !!store.getters['game/roundActivePowerupType'])
-
-    const powerups = computed(() => {
-      const output: PowerupButton[] = []
-      const powerupsCounters = store.getters['game/matchPowerups']
-
-      let count: number = 0
-      for (const [key, value] of Object.entries(powerupsCounters)) {
-        if (key !== 'life') {
-          output.push({
-            id: key,
-            name: `powerup-${key}`,
-            count: value as number,
-            keyboardKey: keyboardKeys[count]
-          })
-
-          count++
-        }
-      }
-
-      return output
-    })
-
-    // Methods
-    const activatePowerup = (id: string) => {
-      store.dispatch('game/activatePoweup', id)
-    }
-
-    // Event Handlers
-    const handleKeydown = (event: KeyboardEvent) => {
-      for (const powerup of powerups.value) {
-        if (event.key === powerup.keyboardKey) {
-          activatePowerup(powerup.id);
-        }
-      }
-    }
 
     // Hooks
     onMounted(() => {
-      if (!isMobile()) {
-        window.addEventListener('keydown', handleKeydown)
-      }
-
       store.dispatch('game/setUIElementHeight', {
         footer: footer.value.getBoundingClientRect().height
       })
     })
 
-    onBeforeUnmount(() => {
-      if (!isMobile()) {
-        window.removeEventListener('keydown', handleKeydown)
-      }
-    })
-
     return {
-      footer,
-      powerups,
-      isMobile,
-      isActive,
-      activatePowerup
+      footer      
     }
   }
 })
@@ -149,7 +72,7 @@ export default defineComponent({
 
 <style scoped>
 .ui-footer {
-  @apply fixed flex justify-between w-full bottom-0;
+  @apply absolute flex justify-between w-full bottom-0;
 }
 
 .ui-footer__left,
@@ -168,10 +91,5 @@ export default defineComponent({
 
 .ui-footer__right {
   @apply border-l rounded-tl-24;
-}
-.ui-footer__powerup-key {
-  @apply absolute bottom-3 left-1.5 w-16 h-16 bg-secondary border border-quinary rounded-4 flex items-center justify-center;
-  font-size: 8px;
-  line-height: normal;
 }
 </style>

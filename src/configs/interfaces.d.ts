@@ -1,7 +1,14 @@
-declare module '@project/interfaces' {
-  export interface Letter {
-    letter: string;
-    guessed: boolean;
+declare module '@project/interfaces' {  
+  // Types
+  export type MatchLocale = null | string
+  export type MatchStates = 'loading' | 'starting' | 'paused' | 'playing' | 'gameover'
+  export type PowerupTypes = 'fire' | 'life' | 'ice' | 'wind'
+  export type Word = Letter[]
+
+  // Interfaces
+  export interface BoardUIElements {
+    header: number;
+    footer: number;
   }
 
   export interface BoardLetter {
@@ -9,6 +16,11 @@ declare module '@project/interfaces' {
     type: string;
     letter: string;
     powerup: Powerup;
+  }
+
+  export interface Letter {
+    letter: string;
+    guessed: boolean;
   }
 
   export interface Powerups {
@@ -23,21 +35,15 @@ declare module '@project/interfaces' {
     type: string;
   }
 
+  export interface PowerupConf {
+    id: string;
+    asset: string;
+    duration: number;
+  }
+
   export interface MatchLocales {
     original: MatchLocale;
     learn: MatchLocale;
   }
-
-  export interface MatchStates {
-    loading: 'loading';
-    starting: 'starting';
-    paused: 'paused';
-    playing: 'playing';
-    gameover: 'gameover';
-  }
-
-  export type Word = Letter[]
-
-  export type MatchLocale = null | string
 }
 

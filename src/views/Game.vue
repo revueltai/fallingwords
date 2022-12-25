@@ -1,10 +1,10 @@
 <template>
-  <div class="relative">
+  <section>
     <ui-game-board />
     <ui-game-top />
     <ui-game-bottom />
     <ui-game-powerup-bar />
-  </div>
+  </section>
 </template>
 
 <script lang="ts">

@@ -1,12 +1,12 @@
 <template>
   <div
     ref="board"
-    class="fixed w-full bg-transparent top-0 h-24"
+    class="board"
   />
 </template>
 
 <script lang="ts">
-import { ref, nextTick, onMounted, onBeforeUnmount, defineComponent } from 'vue'
+import { ref, computed, nextTick, onMounted, onBeforeUnmount, defineComponent } from 'vue'
 import { useStore } from 'vuex'
 
 export default defineComponent({
@@ -18,15 +18,18 @@ export default defineComponent({
 
     // Refs
     const board = ref(null)
+    const UIElementsHeight = computed(() => store.getters['game/uiElementsHeight'])
+    const canvasEl = computed(() => store.getters['app/canvasEl'])
 
     // Methods
     const setPosition = () => {
-      const boardEl = board.value
-      const UIElementsHeight = store.getters['game/uiElementsHeight']
-      const documentHeight: number = document.documentElement.getBoundingClientRect().height
-      const boardHeight: number = documentHeight - UIElementsHeight.header - UIElementsHeight.footer
+      const boardEl = board.value      
+      const canvasRect: DOMRect = canvasEl.value.getBoundingClientRect()
+      const boardHeight: number = canvasRect.height - UIElementsHeight.value.header - UIElementsHeight.value.footer
+      const boardWidth: number = canvasRect.width
 
-      boardEl.style.top = `${UIElementsHeight.header}px`
+      boardEl.style.top = `${UIElementsHeight.value.header}px`
+      boardEl.style.width = `${boardWidth}px`
       boardEl.style.height = `${boardHeight}px`
     }
 
@@ -35,12 +38,17 @@ export default defineComponent({
       setPosition()
     })
 
-    // Hooks
-    onMounted (() => {
-      nextTick(() => {
+    const initialize = () => {    
+      nextTick(() => {        
         handleResize()
         window.addEventListener('resize', handleResize, false)
+        store.dispatch('gameBoard/setElement', board.value)      
       })
+    }
+
+    // Hooks
+    onMounted (() => {
+      initialize()      
     })
 
     onBeforeUnmount (() => {
@@ -54,3 +62,9 @@ export default defineComponent({
   }
 })
 </script>
+
+<style scoped>
+.board {
+  @apply absolute bg-transparent left-0;
+}
+</style>

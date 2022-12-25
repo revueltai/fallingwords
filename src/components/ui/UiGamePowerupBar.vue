@@ -1,25 +1,25 @@
 <template>
   <div
     v-if="isActive"
-    class="fixed flex items-center top-112 left-12"
+    class="ui-powerup-bar"
   >
     <div
       :class="cssClass"
-      class="static z-10 border-quinary flex items-center justify-center rounded-full w-32 h-32"
+      class="ui-powerup-bar__icon"
     >
       <cicon
-        :name="name"
+        :name="powerupAsset"
         size="medium"
         type="fill"
       />
     </div>
 
-    <div class="-ml-2 relative rounded-tr-full rounded-br-full w-48 h-16">
+    <div class="ui-powerup-bar__bar">
       <div
         ref="bar"
         :class="cssClass"
         :style="cssStyle"
-        class="rounded-tr-full rounded-br-full w-full h-full"
+        class="ui-powerup-bar__bar-timer"
       />
     </div>
   </div>
@@ -31,33 +31,35 @@ import { useStore } from 'vuex'
 
 export default defineComponent({
   name: 'UiGamePowerupBar',
-  setup (props) {
+  setup () {
+    
     // Injects
     const store = useStore()
 
     // Refs
     const barAnimation = 'a__powerup-cooldown'
     const bar = ref(null)
-    let raf = null
 
     // Computed
+    const powerups = computed(() => store.getters['game/powerups'])
     const isActive = computed(() => store.getters['game/roundHasActivePowerup'])
-    const type = computed(() => store.getters['game/roundActivePowerupType'])
+    const powerupType = computed(() => store.getters['game/roundActivePowerupType'])
     const duration = computed(() => store.getters['game/matchPowerupsDuration'])
-    const name = computed(() => store.getters['game/powerups'][type.value])
+    const powerupAsset = computed(() => powerups.value[powerupType.value].asset)
     const cssClass = computed(() => {
+      const { fire, ice, wind } = powerups.value
       let color = null
 
-      switch (type.value) {
-        case 'fire':
+      switch (powerupType.value) {
+        case fire.id:
           color = 'warning'
           break
 
-        case 'ice':
+        case ice.id:
           color = 'primary'
           break
 
-        case 'wind':
+        case wind.id:
           color = 'quinary'
           break
       }
@@ -71,9 +73,9 @@ export default defineComponent({
     // Methods
     const activatePowerupBar = () => {
       nextTick(() => {
-        const barRef = bar.value
+        const barRef: HTMLElement = bar.value
         barRef.classList.add(barAnimation)
-        barRef.addEventListener('animationend', handleAnimationEnd)
+        barRef.addEventListener('animationend', handleAnimationEnd)      
       })
     }
 
@@ -96,14 +98,16 @@ export default defineComponent({
 
     // Hooks
     onBeforeUnmount (() => {
-      const barRef = bar.value
-      barRef.removeEventListener('animationend', handleAnimationEnd)
+      const barRef: HTMLElement = bar.value
+      if (barRef) {
+        barRef.removeEventListener('animationend', handleAnimationEnd)
+      }    
     })
 
     return {
       bar,
       isActive,
-      name,
+      powerupAsset,
       duration,
       cssClass,
       cssStyle
@@ -127,5 +131,21 @@ export default defineComponent({
   animation-name: powerupCooldown;
   animation-timing-function: ease-out;
   animation-direction: forwards;
+}
+
+.ui-powerup-bar {
+  @apply absolute flex items-center top-112 left-12;
+}
+
+.ui-powerup-bar__icon {
+  @apply z-10 border-quinary flex items-center justify-center rounded-full w-32 h-32;
+}
+
+.ui-powerup-bar__bar {
+  @apply -ml-2 relative rounded-tr-full rounded-br-full w-48 h-16;
+}
+
+.ui-powerup-bar__bar-timer {
+  @apply rounded-tr-full rounded-br-full w-full h-full;
 }
 </style>

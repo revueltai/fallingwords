@@ -1,31 +1,23 @@
 <template>
   <div class="ui-bg">
     <template v-if="isUIReady">
-      <dash :boardRef="board" />
-
-      <character :board-ref="board" />
-
-      <template v-for="tile in tiles">
-        <tile
-          v-if="tile"
-          :tile="tile"
-          :board-ref="board"
-        />
-      </template>
+      <dash />
+      <character />
+      <tiles />
     </template>
 
-    <div class="ui-fade-zone"/>
+    <div class="ui-fade-zone" />
 
-    <board ref="board" />
+    <board />
   </div>
 </template>
 
 <script lang="ts">
-import { ref, onMounted, defineComponent, computed, nextTick } from 'vue'
+import { ref, onMounted, defineComponent, nextTick } from 'vue'
 import { useStore } from 'vuex'
 import Character from '../partials/Character.vue'
 import Board from '../partials/Board.vue'
-import Tile from '../partials/Tile.vue'
+import Tiles from '../partials/Tiles.vue'
 import Dash from '../partials/Dash.vue'
 
 const dummyWords = [
@@ -49,7 +41,7 @@ export default defineComponent({
   components: {
     Board,
     Character,
-    Tile,
+    Tiles,
     Dash
   },
   setup () {
@@ -58,17 +50,15 @@ export default defineComponent({
 
     // Refs
     const isUIReady = ref(false)
-    const board = ref(null)
-    const character = ref(null)
-
-    // Computed
-    const tiles = computed(() => store.getters['game/roundBoardTiles'])
 
     // Methods
-    const initMatch = () => {
-      store.dispatch('game/initMatch', {
-        words: dummyWords,
-        locales: dummyLocales
+    const initialize = () => {
+      nextTick(() => {
+        isUIReady.value = true
+        store.dispatch('game/initMatch', {
+          words: dummyWords,
+          locales: dummyLocales
+        })
       })
     }
 
@@ -76,17 +66,11 @@ export default defineComponent({
 
     // Hooks
     onMounted (() => {
-      nextTick(() => {
-        isUIReady.value = true
-        initMatch()
-      })
+      initialize()
     })
 
     return {
-      isUIReady,
-      board,
-      character,
-      tiles
+      isUIReady
     }
   }
 })
@@ -94,12 +78,12 @@ export default defineComponent({
 
 <style scoped>
 .ui-bg {
-  @apply fixed top-0 bottom-0 w-full h-full bg-repeat;
+  @apply absolute left-0 top-0 bottom-0 w-full h-full bg-repeat;
   background-image: url('/images/ui/bg-game.svg');
   background-size: 100px;
 }
 
 .ui-fade-zone {
-  @apply fixed bottom-0 w-full h-104 bg-gradient-to-b from-transparent to-secondary via-secondary;
+  @apply absolute bottom-0 w-full h-104 bg-gradient-to-b from-transparent to-secondary via-secondary;
 }
 </style>

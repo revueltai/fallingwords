@@ -28,6 +28,7 @@
 </template>
 
 <script lang="ts">
+import { PowerupTypes } from '@project/interfaces'
 import { ref, computed, watch, defineComponent, onMounted, onBeforeUnmount, nextTick } from 'vue'
 import { useStore } from 'vuex'
 import { isLetterInWord } from '../../store/game.utils'
@@ -35,10 +36,6 @@ import { isLetterInWord } from '../../store/game.utils'
 export default defineComponent({
   name: 'Tile',
   props: {
-    boardRef: {
-      type: Object,
-      default: null
-    },
     tile: {
       type: Object,
       required: true
@@ -61,12 +58,15 @@ export default defineComponent({
     const fps = ref(null)
 
     // Computed
+    const characterEl = computed(() => store.getters['gameCharacter/characterEl'])
+    const boardEl = computed(() => store.getters['gameBoard/boardEl'])
+    const canvasEl = computed(() => store.getters['app/canvasEl'])
     const speed = computed(() => store.getters['game/speed'])
-    const characterEl = computed(() => store.getters['gameCharacter/collisionEl'])
+    const powerups = computed(() => store.getters['game/powerups'])
     const activePowerup = computed(() => store.getters['game/roundActivePowerupType'])
     const hasActivePowerup = computed(() => !!activePowerup.value)
     const isPowerupTile = computed(() => !!props.tile.powerup)
-
+  
     const cssClasses = computed(() => {
       return hasActivePowerup.value
         ? getClassnameForPowerupType()
@@ -78,8 +78,8 @@ export default defineComponent({
     })
 
     const displayPowerup = computed(() => {
-      if (isPowerupTile.value) {
-        return props.tile.powerup.name
+      if (isPowerupTile.value) {        
+        return props.tile.powerup.name.asset
       }
 
       return null
@@ -102,18 +102,19 @@ export default defineComponent({
     }
 
     const getClassnameForPowerupType = () => {
-      const ap = activePowerup.value
+      const { fire, ice, wind } = powerups.value
+      const activePowerupType: PowerupTypes = activePowerup.value
+      
+      switch (activePowerupType) {
+        case ice.id:
+          return `type__powerup-${activePowerupType}`
 
-      switch (ap) {
-        case 'ice':
-          return `type__powerup-${ap}`
-
-        case 'fire':
+        case fire.id:
           return letterInWord.value
-            ? `type__powerup-${ap}`
+            ? `type__powerup-${activePowerupType}`
             : getClassnameForTileType()
 
-        case 'wind':
+        case wind.id:
           return [
             getClassnameForTileType(),
             'type__powerup-wind'
@@ -122,19 +123,29 @@ export default defineComponent({
     }
 
     const setPosition = () => {
-      tile.value.style.transform = `translate(${posX}px, ${posY}px)`
+      if (tile.value) {
+        tile.value.style.transform = `translate(${posX}px, ${posY}px)`        
+      }
+    }
+
+    const setCoordinates = () => {
+      const boardRect: DOMRect = boardEl.value.getBoundingClientRect()
+      const tileRect: DOMRect = tile.value.getBoundingClientRect()
+      
+      posX = Math.round(Math.random() * (boardRect.width - tileRect.width))
+      posY = Math.round(Math.random() * boardRect.height * -1)
     }
 
     const isCollidingWithCharacter = () => {
-      const tileEl = tile.value
-      const tileWrapperEl = tileWrapper.value
-      const tileRect = tileEl.getBoundingClientRect()
-      const characterElRect = characterEl.value.getBoundingClientRect()
+      const tileEl: HTMLElement = tile.value
+      const tileWrapperEl: HTMLElement = tileWrapper.value
+      const tileRect: DOMRect = tileEl.getBoundingClientRect()
+      const characterElRect: DOMRect = characterEl.value.getBoundingClientRect()
 
-      const p1 = tileRect.left < characterElRect.left + characterElRect.width
-      const p2 = tileRect.left + tileRect.width > characterElRect.left
-      const p3 = tileRect.top < characterElRect.bottom + characterElRect.height
-      const p4 = tileRect.top + tileRect.height > characterElRect.bottom
+      const p1: boolean = tileRect.left < characterElRect.left + characterElRect.width
+      const p2: boolean = tileRect.left + tileRect.width > characterElRect.left
+      const p3: boolean = tileRect.top < characterElRect.bottom + characterElRect.height
+      const p4: boolean = tileRect.top + tileRect.height > characterElRect.bottom
 
       if (p1 && p2 && p3 && p4) {
         disableRAF.value = true
@@ -147,10 +158,10 @@ export default defineComponent({
     }
 
     const isOutOfBounds = () => {
-      const tileRect = tile.value.getBoundingClientRect()
-      const limitY = document.documentElement.getBoundingClientRect().height
+      const tileRect: DOMRect = tile.value.getBoundingClientRect()
+      const limit: number = canvasEl.value.getBoundingClientRect().height
 
-      if (tileRect.y > limitY) {
+      if (tileRect.y > limit) {
         disableRAF.value = true
       }
 
@@ -184,16 +195,6 @@ export default defineComponent({
       tile.value.addEventListener('transitionend', remove)
     }
 
-    const updatePosition = () => {
-      const boardRect = document.documentElement.getBoundingClientRect()
-      const tileRect = tile.value.getBoundingClientRect()
-
-      posY = Math.round(Math.random() * 1000 * -1)
-      posX = Math.round(Math.random() * (boardRect.width - tileRect.width))
-
-      setPosition()
-    }
-
     const animateNewFrame = () => {
       setTimeout(() => {
         raf = requestAnimationFrame(handleRAF)
@@ -202,13 +203,15 @@ export default defineComponent({
 
     // Watchers
     watch(activePowerup, (type) => {
-      switch (type) {
-        case 'wind':
-          const duration = store.getters['game/matchPowerupsDuration']
-          const tileWrapperRef = tileWrapper.value
+      const { wind } = powerups.value
 
-          tileWrapperRef.style.animationDuration = `${duration}ms`
-          tileWrapperRef.addEventListener('animationend', handleAnimationEnd)
+      switch (type) {
+        case wind.id:
+          const tileWrapperEl: HTMLElement = tileWrapper.value
+          const duration = store.getters['game/matchPowerupsDuration']
+
+          tileWrapperEl.style.animationDuration = `${duration}ms`
+          tileWrapperEl.addEventListener('animationend', handleAnimationEnd)
           break
       }
     })
@@ -239,14 +242,18 @@ export default defineComponent({
       removeTile()
     }
 
-    // Hooks
-    onMounted (() => {
+    const initialize = () => {
       nextTick(() => {
+        setCoordinates()
+        letterInWord.value = isWordLetter()      
         fps.value = Math.floor(Math.random() * (60 - 24) + 24)
-        letterInWord.value = isWordLetter()
-        updatePosition()
         raf = requestAnimationFrame(handleRAF)
       })
+    }
+
+    // Hooks
+    onMounted (() => {      
+      initialize()
     })
 
     onBeforeUnmount (() => {
@@ -285,14 +292,15 @@ export default defineComponent({
 }
 
 .tile {
-  @apply absolute top-24 left-80 w-48 ;
+  @apply absolute top-0 left-0 w-48 h-48 origin-center;
+  will-change: transform;
 }
 
 .tile__wrapper {
   @apply rounded-full w-48 h-48 border;
 }
 .tile__wrapper-item {
-  @apply relative w-full h-full;
+  @apply relative h-full flex items-center justify-center;
 }
 
 .tile__content {
