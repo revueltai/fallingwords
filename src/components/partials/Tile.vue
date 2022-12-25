@@ -79,7 +79,7 @@ export default defineComponent({
 
     const displayPowerup = computed(() => {
       if (isPowerupTile.value) {        
-        return props.tile.powerup.name.asset
+        return props.tile.powerup.asset
       }
 
       return null

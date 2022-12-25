@@ -1,21 +1,21 @@
 <template>
   <cbutton
-    v-for="powerup in powerups"
-    :key="powerup.id"
+    v-for="powerupButton in powerupButtons"
+    :key="powerupButton.id"
     :disabled="isActive"
     :has-background="false"
     icon-only
     class="block relative -mt-24 animate-fade-in"
-    @click="activatePowerup(powerup.id)"
+    @click="activatePowerup(powerupButton.id)"
   >
     <cicon
-      :name="powerup.name"
+      :name="powerupButton.asset"
       size="xxxLarge"
       type="fill"
     />
 
     <cbadge
-      :value="powerup.count"
+      :value="powerupButton.count"
       class="absolute z-2 bottom-8 right-8"
     />
 
@@ -23,7 +23,7 @@
       v-if="!isMobile()"
       class="ui-footer__powerup-key"
     >
-      {{ powerup.keyboardKey }}
+      {{ powerupButton.keyboardKey }}
     </div>
   </cbutton>
 </template>
@@ -35,7 +35,7 @@ import { useStore } from 'vuex'
 
 interface PowerupButton {
   id: string;
-  name: string;
+  asset: string;
   count: number;
   keyboardKey: string;
 }
@@ -50,7 +50,7 @@ export default defineComponent({
 
     // Computed
     const isActive = computed(() => !!store.getters['game/roundActivePowerupType'])
-    const powerups = computed(() => {
+    const powerupButtons = computed(() => {
       const output: PowerupButton[] = []
       const powerups = store.getters['game/powerups']
       const powerupsCounters = store.getters['game/matchPowerups']
@@ -60,7 +60,7 @@ export default defineComponent({
         if (key !== powerups.life.id) {
           output.push({
             id: key,
-            name: `powerup-${key}`,
+            asset: `powerup-${key}`,
             count: value as number,
             keyboardKey: keyboardKeys[count]
           })
@@ -81,7 +81,7 @@ export default defineComponent({
 
     // Event Handlers
     const handleKeydown = (event: KeyboardEvent) => {
-      for (const powerup of powerups.value) {
+      for (const powerup of powerupButtons.value) {
         if (event.key === powerup.keyboardKey) {
           activatePowerup(powerup.id)
         }
@@ -105,7 +105,7 @@ export default defineComponent({
       isActive,
       isMobile,
       activatePowerup,
-      powerups
+      powerupButtons
     }
   }
 })

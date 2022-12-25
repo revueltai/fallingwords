@@ -1,4 +1,5 @@
 import { findIndex, isEmpty } from 'lodash'
+import { ALPHABETS } from '../configs/constants'
 import type {
   Letter,
   Word,
@@ -7,7 +8,6 @@ import type {
   Powerup,
   BoardLetter
 } from '@project/interfaces'
-import alphabets from '../configs/alphabets.json'
 
 const spawnPowerup = (spawnChance: number): boolean => {
   return getSpawnChance(spawnChance)
@@ -34,28 +34,24 @@ const getPendingLettersInWord = (word: Word): string => {
 }
 
 const createPowerup = (powerups: Powerups): Powerup => {
-  const powerupKeys = Object.keys(powerups)
-  const powerupIndex = getRandomNum(powerupKeys.length)
-  const powerupName = powerupKeys[powerupIndex]
-
-  return {
-    name: powerups[powerupName],
-    type: powerupName
-  }
+  const types: string[] = Object.keys(powerups)
+  const index: number = getRandomNum(types.length)
+  return powerups[types[index]]
 }
 
-const createLetter = (locale: MatchLocale, roundWordGuess: Word, wordLetterSpawnChance: number): string => {
-  const a = alphabets[locale]
+const createLetter = (
+  locale: MatchLocale, 
+  roundWordGuess: Word, 
+  wordLetterSpawnChance: number
+): string => {
+  const a: string = ALPHABETS[locale]
   const pendingLetters = getPendingLettersInWord(roundWordGuess)
-  let letter = null
 
   if (spawnWordLetter(wordLetterSpawnChance) || !pendingLetters) {
-    letter = a.charAt(getRandomNum(a.length))
-  } else {
-    letter = pendingLetters.charAt(getRandomNum(pendingLetters.length))
-  }
+    return a.charAt(getRandomNum(a.length))
+  } 
 
-  return letter
+  return pendingLetters.charAt(getRandomNum(pendingLetters.length))
 }
 
 export const isLetterInWord = (letter: string, word: Word): boolean => {
@@ -106,7 +102,13 @@ export const createBoardLetters = (
 
   for (let i = 0; i < total; i++) {
     boardLetters.push(
-      getBoardLetter(powerups, locale, roundWordGuess, powerupSpawnChance, wordLetterSpawnChance)
+      getBoardLetter(
+        powerups, 
+        locale, 
+        roundWordGuess, 
+        powerupSpawnChance, 
+        wordLetterSpawnChance
+      )
     )
   }
 

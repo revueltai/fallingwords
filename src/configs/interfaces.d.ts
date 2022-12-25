@@ -6,6 +6,12 @@ declare module '@project/interfaces' {
   export type Word = Letter[]
 
   // Interfaces
+  export interface Alphabets {
+    en: string;
+    es: string;
+    de: string;
+  }
+
   export interface BoardUIElements {
     header: number;
     footer: number;
@@ -23,22 +29,27 @@ declare module '@project/interfaces' {
     guessed: boolean;
   }
 
+  export interface Expressions {
+    idle: string;
+    open: string;
+    chew: string;
+    like: string;
+    dislike: string;
+    love: string;
+  }
+
   export interface Powerups {
-    life: 'heart-full';
-    fire: 'powerup-fire';
-    ice: 'powerup-ice';
-    wind: 'powerup-wind';
+    life: Powerup;
+    fire: Powerup;
+    ice: Powerup;
+    wind: Powerup;
   }
 
   export interface Powerup {
-    name: string;
-    type: string;
-  }
-
-  export interface PowerupConf {
     id: string;
     asset: string;
     duration: number;
+    spawnChance: number;
   }
 
   export interface MatchLocales {

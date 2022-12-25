@@ -7,6 +7,7 @@ import {
   PowerupTypes 
 } from '@project/interfaces'
 import { findIndex } from 'lodash'
+import { POWERUPS } from '../configs/constants'
 import {
   createWord,
   createBoardLetters,
@@ -21,7 +22,8 @@ const defaults = {
   availableLetters: 8,
   powerupDuration: 1000,
   powerupSpawn: 20,
-  wordLetterSpawn: 2
+  wordLetterSpawn: 2,
+  powerups: POWERUPS
 }
 
 export default {
@@ -31,32 +33,7 @@ export default {
     return {
       speed: defaults.speed,
       offset: 0,
-      powerups: {
-        life: {
-          id:  'life',
-          asset: 'heart-full',
-          duration: 0,
-          spawnChance: 20
-        },
-        fire: {
-          id: 'fire',
-          asset: 'powerup-fire',
-          duration: 800,
-          spawnChance: 10
-        },
-        ice: {
-          id: 'ice',
-          asset: 'powerup-ice',
-          duration: 1000,
-          spawnChance: 5
-        },
-        wind: {
-          id: 'wind',
-          asset: 'powerup-wind',
-          duration: 400,
-          spawnChance: 2
-        }
-      },
+      powerups: defaults.powerups,
       matchLocales: {
         original: null,
         learn: null
@@ -268,13 +245,13 @@ export default {
       } else {
         // Check powerup
         newExpression = 'love'
-        const type: string = tile.powerup.type
+        const id: string = tile.powerup.id
         const powerups = getters.powerups
 
-        if (type === powerups.life.id) {
+        if (id === powerups.life.id) {
           dispatch('increaseLifes')
         } else {
-          dispatch('increasePowerups', type)
+          dispatch('increasePowerups', id)
         }
       }
 
