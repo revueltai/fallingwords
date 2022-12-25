@@ -18,7 +18,7 @@ export default defineComponent({
 
     // Refs
     const line = ref(null)
-    const offset = computed(() => store.getters['gameCharacter/offset'])
+    const offset = computed(() => store.getters['gameCharacter/offset'])    
     const boardEl = computed(() => store.getters['gameBoard/boardEl'])
 
     // Methods

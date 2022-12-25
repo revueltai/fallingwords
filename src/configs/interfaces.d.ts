@@ -35,6 +35,12 @@ declare module '@project/interfaces' {
     type: string;
   }
 
+  export interface PowerupConf {
+    id: string;
+    asset: string;
+    duration: number;
+  }
+
   export interface MatchLocales {
     original: MatchLocale;
     learn: MatchLocale;

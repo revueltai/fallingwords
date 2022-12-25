@@ -28,6 +28,7 @@
 </template>
 
 <script lang="ts">
+import { PowerupTypes } from '@project/interfaces'
 import { ref, computed, watch, defineComponent, onMounted, onBeforeUnmount, nextTick } from 'vue'
 import { useStore } from 'vuex'
 import { isLetterInWord } from '../../store/game.utils'
@@ -61,10 +62,11 @@ export default defineComponent({
     const boardEl = computed(() => store.getters['gameBoard/boardEl'])
     const canvasEl = computed(() => store.getters['app/canvasEl'])
     const speed = computed(() => store.getters['game/speed'])
+    const powerups = computed(() => store.getters['game/powerups'])
     const activePowerup = computed(() => store.getters['game/roundActivePowerupType'])
     const hasActivePowerup = computed(() => !!activePowerup.value)
     const isPowerupTile = computed(() => !!props.tile.powerup)
-
+  
     const cssClasses = computed(() => {
       return hasActivePowerup.value
         ? getClassnameForPowerupType()
@@ -76,8 +78,8 @@ export default defineComponent({
     })
 
     const displayPowerup = computed(() => {
-      if (isPowerupTile.value) {
-        return props.tile.powerup.name
+      if (isPowerupTile.value) {        
+        return props.tile.powerup.name.asset
       }
 
       return null
@@ -100,18 +102,19 @@ export default defineComponent({
     }
 
     const getClassnameForPowerupType = () => {
-      const ap = activePowerup.value
+      const { fire, ice, wind } = powerups.value
+      const activePowerupType: PowerupTypes = activePowerup.value
+      
+      switch (activePowerupType) {
+        case ice.id:
+          return `type__powerup-${activePowerupType}`
 
-      switch (ap) {
-        case 'ice':
-          return `type__powerup-${ap}`
-
-        case 'fire':
+        case fire.id:
           return letterInWord.value
-            ? `type__powerup-${ap}`
+            ? `type__powerup-${activePowerupType}`
             : getClassnameForTileType()
 
-        case 'wind':
+        case wind.id:
           return [
             getClassnameForTileType(),
             'type__powerup-wind'
@@ -200,8 +203,10 @@ export default defineComponent({
 
     // Watchers
     watch(activePowerup, (type) => {
+      const { wind } = powerups.value
+
       switch (type) {
-        case 'wind':
+        case wind.id:
           const tileWrapperEl: HTMLElement = tileWrapper.value
           const duration = store.getters['game/matchPowerupsDuration']
 

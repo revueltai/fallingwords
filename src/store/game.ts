@@ -15,9 +15,8 @@ import {
   getLetterIndexInWord
 } from './game.utils'
 
-
 const defaults = {
-  matchLives: 99,
+  matchLifes: 6,
   speed: 3,
   availableLetters: 8,
   powerupDuration: 1000,
@@ -31,17 +30,38 @@ export default {
   state: () => {
     return {
       speed: defaults.speed,
+      offset: 0,
       powerups: {
-        life: 'heart-full',
-        fire: 'powerup-fire',
-        ice: 'powerup-ice',
-        wind: 'powerup-wind'
+        life: {
+          id:  'life',
+          asset: 'heart-full',
+          duration: 0,
+          spawnChance: 20
+        },
+        fire: {
+          id: 'fire',
+          asset: 'powerup-fire',
+          duration: 800,
+          spawnChance: 10
+        },
+        ice: {
+          id: 'ice',
+          asset: 'powerup-ice',
+          duration: 1000,
+          spawnChance: 5
+        },
+        wind: {
+          id: 'wind',
+          asset: 'powerup-wind',
+          duration: 400,
+          spawnChance: 2
+        }
       },
       matchLocales: {
         original: null,
         learn: null
       },
-      matchLives: defaults.matchLives,
+      matchLifes: defaults.matchLifes,
       matchPowerups: {
         fire: 3,
         ice: 3,
@@ -74,14 +94,14 @@ export default {
   },
 
   getters: {
-    uiElementsHeight: state => state.uiElementsHeight,
-    offset: state => state.offset,
-    speed: state => state.speed,
+    uiElementsHeight: (state: { uiElementsHeight: BoardUIElements }) => state.uiElementsHeight,
+    offset: (state: { offset: number }) => state.offset,
+    speed: (state: { speed: number }) => state.speed,
     powerups: state => state.powerups,
     matchStates: state => state.matchStates,
     matchState: state => state.matchState,
     matchIsPlaying: state => state.matchState === state.matchStates.playing,
-    matchLives: state => state.matchLives,
+    matchLifes: state => state.matchLifes,
     matchPowerups: state => state.matchPowerups,
     matchPowerupsDuration: state => state.matchPowerupsDuration,
     matchLocales: state => state.matchLocales,
@@ -96,12 +116,12 @@ export default {
 
   mutations: {
     LIVES_INCREASE(state) {
-      state.matchLives++
+      state.matchLifes++
     },
 
     LIVES_DECREASE(state) {
-      const newLives = state.matchLives - 1
-      state.matchLives = (newLives > 0) 
+      const newLives = state.matchLifes - 1
+      state.matchLifes = (newLives > 0) 
         ? newLives 
         : 0
     },
@@ -120,18 +140,19 @@ export default {
     POWERUP_ACTIVATE(state, type: PowerupTypes) {
       state.roundActivePowerup.active = true
       state.roundActivePowerup.type = type
-
+      const powerups = state.powerups
+      
       switch (type) {
-        case 'fire':
+        case powerups.fire.id:
           break
 
-        case 'ice':
+        case powerups.ice.id:
           state.speed = 1
           break
 
-        case 'wind':
+        case powerups.wind.id:
           state.speed = 0
-          state.matchPowerupsDuration = 500
+          state.matchPowerupsDuration = state.powerups[type].duration
           break
       }
     },
@@ -161,7 +182,7 @@ export default {
     },
 
     SET_MATCH_LIVES(state) {
-      state.matchLives = defaults.matchLives
+      state.matchLifes = defaults.matchLifes
     },
 
     SET_ROUND(state) {
@@ -211,15 +232,15 @@ export default {
   },
 
   actions: {
-    increaseLives({ commit }) {
+    increaseLifes({ commit }) {
       commit('LIVES_INCREASE')
     },
 
-    decreaseLives({ commit }) {
+    decreaseLifes({ commit }) {
       commit('LIVES_DECREASE')
     },
 
-    increasePowerup({ commit }, powerupType: PowerupTypes) {
+    increasePowerups({ commit }, powerupType: PowerupTypes) {
       commit('POWERUP_AMOUNT_INCREASE', powerupType)
     },
 
@@ -241,18 +262,19 @@ export default {
           commit('SET_LETTER_AS_GUESSED', index)
         } else {
           newExpression = 'dislike'
-          dispatch('decreaseLives')
+          dispatch('decreaseLifes')
           dispatch('checkGameOver')
         }
       } else {
         // Check powerup
         newExpression = 'love'
         const type: string = tile.powerup.type
+        const powerups = getters.powerups
 
-        if (type === 'live') {
-          dispatch('increaseLives')
+        if (type === powerups.life.id) {
+          dispatch('increaseLifes')
         } else {
-          dispatch('increasePowerup', type)
+          dispatch('increasePowerups', type)
         }
       }
 
@@ -260,7 +282,7 @@ export default {
     },
 
     checkGameOver({ commit, getters }) {
-      if (getters.matchLives <= 0) {
+      if (getters.matchLifes <= 0) {
         commit('SET_MATCH_STATE', getters.matchStates.gameover)
       }
     },

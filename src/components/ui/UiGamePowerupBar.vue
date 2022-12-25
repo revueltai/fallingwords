@@ -5,21 +5,21 @@
   >
     <div
       :class="cssClass"
-      class="static z-10 border-quinary flex items-center justify-center rounded-full w-32 h-32"
+      class="ui-powerup-bar__icon"
     >
       <cicon
-        :name="name"
+        :name="powerupAsset"
         size="medium"
         type="fill"
       />
     </div>
 
-    <div class="-ml-2 relative rounded-tr-full rounded-br-full w-48 h-16">
+    <div class="ui-powerup-bar__bar">
       <div
         ref="bar"
         :class="cssClass"
         :style="cssStyle"
-        class="rounded-tr-full rounded-br-full w-full h-full"
+        class="ui-powerup-bar__bar-timer"
       />
     </div>
   </div>
@@ -32,6 +32,7 @@ import { useStore } from 'vuex'
 export default defineComponent({
   name: 'UiGamePowerupBar',
   setup () {
+    
     // Injects
     const store = useStore()
 
@@ -40,23 +41,25 @@ export default defineComponent({
     const bar = ref(null)
 
     // Computed
+    const powerups = computed(() => store.getters['game/powerups'])
     const isActive = computed(() => store.getters['game/roundHasActivePowerup'])
-    const type = computed(() => store.getters['game/roundActivePowerupType'])
+    const powerupType = computed(() => store.getters['game/roundActivePowerupType'])
     const duration = computed(() => store.getters['game/matchPowerupsDuration'])
-    const name = computed(() => store.getters['game/powerups'][type.value])
+    const powerupAsset = computed(() => powerups.value[powerupType.value].asset)
     const cssClass = computed(() => {
+      const { fire, ice, wind } = powerups.value
       let color = null
 
-      switch (type.value) {
-        case 'fire':
+      switch (powerupType.value) {
+        case fire.id:
           color = 'warning'
           break
 
-        case 'ice':
+        case ice.id:
           color = 'primary'
           break
 
-        case 'wind':
+        case wind.id:
           color = 'quinary'
           break
       }
@@ -104,7 +107,7 @@ export default defineComponent({
     return {
       bar,
       isActive,
-      name,
+      powerupAsset,
       duration,
       cssClass,
       cssStyle
@@ -132,5 +135,17 @@ export default defineComponent({
 
 .ui-powerup-bar {
   @apply absolute flex items-center top-112 left-12;
+}
+
+.ui-powerup-bar__icon {
+  @apply z-10 border-quinary flex items-center justify-center rounded-full w-32 h-32;
+}
+
+.ui-powerup-bar__bar {
+  @apply -ml-2 relative rounded-tr-full rounded-br-full w-48 h-16;
+}
+
+.ui-powerup-bar__bar-timer {
+  @apply rounded-tr-full rounded-br-full w-full h-full;
 }
 </style>

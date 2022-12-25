@@ -52,11 +52,12 @@ export default defineComponent({
     const isActive = computed(() => !!store.getters['game/roundActivePowerupType'])
     const powerups = computed(() => {
       const output: PowerupButton[] = []
+      const powerups = store.getters['game/powerups']
       const powerupsCounters = store.getters['game/matchPowerups']
 
       let count: number = 0
       for (const [key, value] of Object.entries(powerupsCounters)) {
-        if (key !== 'life') {
+        if (key !== powerups.life.id) {
           output.push({
             id: key,
             name: `powerup-${key}`,
@@ -70,6 +71,7 @@ export default defineComponent({
 
       return output
     })
+    
     // Methods     
     const activatePowerup = (id: string) => {
       if (!isActive.value) {

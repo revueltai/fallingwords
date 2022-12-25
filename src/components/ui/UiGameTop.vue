@@ -25,7 +25,7 @@
           />
 
           <cbadge
-            :value="lives"
+            :value="lifes"
             class="absolute z-2 bottom-2 right-2"
           />
         </div>
@@ -70,7 +70,7 @@ export default defineComponent({
     const header = ref(null)
 
     // Computed
-    const lives = computed(() => store.getters['game/matchLives'])
+    const lifes = computed(() => store.getters['game/matchLifes'])
     const totalRounds = computed(() => store.getters['game/matchRoundsTotal'])
     const currentRound = computed(() => store.getters['game/matchRoundsCurrent'])
     const originalWord = computed(() => store.getters['game/roundWordOriginal'])
@@ -98,7 +98,7 @@ export default defineComponent({
 
     return {
       header,
-      lives,
+      lifes,
       currentRound,
       totalRounds,
       originalWord,
