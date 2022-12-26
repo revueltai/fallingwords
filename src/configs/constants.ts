@@ -10,25 +10,25 @@ export const POWERUPS: Powerups = {
   life: {
     id:  'life',
     asset: 'heart-full',
-    duration: 0,
-    spawnChance: 2
+    speed: false,
+    duration: 0    
   },
   fire: {
     id: 'fire',
     asset: 'powerup-fire',
-    duration: 800,
-    spawnChance: 10
+    speed: false,
+    duration: 1000    
   },
   ice: {
     id: 'ice',
     asset: 'powerup-ice',
-    duration: 1000,
-    spawnChance: 5
+    duration: 2000,
+    speed: 1    
   },
   wind: {
     id: 'wind',
     asset: 'powerup-wind',
     duration: 400,
-    spawnChance: 2
+    speed: 0    
   }
 }

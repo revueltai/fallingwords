@@ -1,10 +1,8 @@
 <template>
   <div class="ui-bg">
-    <template v-if="isUIReady">
-      <dash />
-      <character />
-      <tiles />
-    </template>
+    <dash v-if="isUIReady" />
+    <character v-if="isUIReady" />
+    <tiles v-if="isUIReady" />
 
     <div class="ui-fade-zone" />
 
@@ -54,11 +52,12 @@ export default defineComponent({
     // Methods
     const initialize = () => {
       nextTick(() => {
-        isUIReady.value = true
         store.dispatch('game/initMatch', {
           words: dummyWords,
           locales: dummyLocales
         })
+
+        isUIReady.value = true
       })
     }
 

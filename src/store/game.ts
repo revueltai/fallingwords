@@ -21,7 +21,7 @@ const defaults = {
   speed: 3,
   availableLetters: 8,
   powerupDuration: 1000,
-  powerupSpawn: 20,
+  powerupSpawn: 2,
   wordLetterSpawn: 2,
   powerups: POWERUPS
 }
@@ -40,9 +40,9 @@ export default {
       },
       matchLifes: defaults.matchLifes,
       matchPowerups: {
-        fire: 3,
+        fire: 43,
         ice: 3,
-        wind: 3
+        wind: 33
       },
       uiElementsHeight: {},
       matchPowerupsDuration: defaults.powerupDuration,
@@ -117,20 +117,12 @@ export default {
     POWERUP_ACTIVATE(state, type: PowerupTypes) {
       state.roundActivePowerup.active = true
       state.roundActivePowerup.type = type
-      const powerups = state.powerups
+      const { duration, speed } = state.powerups[type]
+
+      state.matchPowerupsDuration = duration
       
-      switch (type) {
-        case powerups.fire.id:
-          break
-
-        case powerups.ice.id:
-          state.speed = 1
-          break
-
-        case powerups.wind.id:
-          state.speed = 0
-          state.matchPowerupsDuration = state.powerups[type].duration
-          break
+      if (speed) {
+        state.speed = speed
       }
     },
 

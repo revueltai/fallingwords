@@ -53,9 +53,8 @@ export default defineComponent({
     const tile = ref(null)
     const tileWrapper = ref(null)
     const visible = ref(true)
-    const letterInWord = ref(false)
-    let disableRAF = ref(false)
     const fps = ref(null)
+    let disableRAF = ref(false)
 
     // Computed
     const characterEl = computed(() => store.getters['gameCharacter/characterEl'])
@@ -64,6 +63,7 @@ export default defineComponent({
     const speed = computed(() => store.getters['game/speed'])
     const powerups = computed(() => store.getters['game/powerups'])
     const activePowerup = computed(() => store.getters['game/roundActivePowerupType'])
+    const roundWord = computed(() => store.getters['game/roundWordGuess'])
     const hasActivePowerup = computed(() => !!activePowerup.value)
     const isPowerupTile = computed(() => !!props.tile.powerup)
   
@@ -91,8 +91,7 @@ export default defineComponent({
         return false
       }
 
-      const word = store.getters['game/roundWordGuess']
-      return isLetterInWord(props.tile.letter, word)
+      return isLetterInWord(props.tile.letter, roundWord.value)
     }
 
     const getClassnameForTileType = () => {
@@ -110,7 +109,7 @@ export default defineComponent({
           return `type__powerup-${activePowerupType}`
 
         case fire.id:
-          return letterInWord.value
+          return isWordLetter()
             ? `type__powerup-${activePowerupType}`
             : getClassnameForTileType()
 
@@ -244,8 +243,7 @@ export default defineComponent({
 
     const initialize = () => {
       nextTick(() => {
-        setCoordinates()
-        letterInWord.value = isWordLetter()      
+        setCoordinates()  
         fps.value = Math.floor(Math.random() * (60 - 24) + 24)
         raf = requestAnimationFrame(handleRAF)
       })

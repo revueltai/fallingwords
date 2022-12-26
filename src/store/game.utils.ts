@@ -55,12 +55,18 @@ const createLetter = (
 }
 
 export const isLetterInWord = (letter: string, word: Word): boolean => {
-  const arr = word.filter((l: Letter) => !l.guessed && l.letter.toLowerCase() === letter.toLowerCase())
+  const arr = word.filter((l: Letter) => 
+    !l.guessed && 
+    l.letter.toLowerCase() === letter.toLowerCase()
+  )
   return !isEmpty(arr)
 }
 
-export const getLetterIndexInWord = (letter: string, word: Word): number => {
-  return findIndex(word, (l: Letter) => !l.guessed && l.letter.toLowerCase() === letter.toLowerCase())
+export const getLetterIndexInWord = (letter: string, word: Word): number => {  
+  return findIndex(word, (l: Letter) => 
+    !l.guessed && 
+    l.letter.toLowerCase() === letter.toLowerCase()
+  )
 }
 
 export const getBoardLetter = (

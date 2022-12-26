@@ -49,7 +49,7 @@ declare module '@project/interfaces' {
     id: string;
     asset: string;
     duration: number;
-    spawnChance: number;
+    speed: number | boolean;
   }
 
   export interface MatchLocales {
