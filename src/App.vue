@@ -31,14 +31,14 @@ export default defineComponent({
     const canvasMaxHeight = computed(() => store.getters['app/canvasMaxHeight'])
 
     const setCanvasSize = () => {
-      const canvas = appWrapper.value      
+      const canvas = appWrapper.value
       canvas.style.maxWidth = `${canvasMaxWidth.value}px`
-      canvas.style.maxHeight = `${canvasMaxHeight.value}px`            
+      canvas.style.maxHeight = `${canvasMaxHeight.value}px`
     }
 
     const initialize = () => {
       vAnimController()
-      setCanvasSize()      
+      setCanvasSize()
       store.dispatch('app/setElement', appWrapper.value)
       isLoaded.value = true
     }
@@ -57,6 +57,6 @@ export default defineComponent({
 
 <style>
 .app__wrapper {
-  @apply relative w-full h-full overflow-hidden bg-secondary border rounded-xl border-tertiary;
+  @apply relative w-full h-full overflow-visible bg-secondary border rounded-xl border-tertiary;
 }
 </style>

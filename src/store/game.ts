@@ -7,7 +7,7 @@ import {
   PowerupTypes 
 } from '@project/interfaces'
 import { findIndex } from 'lodash'
-import { POWERUPS } from '../configs/constants'
+import { GAME_DEFAULTS } from '../configs/constants'
 import {
   createWord,
   createBoardLetters,
@@ -16,36 +16,26 @@ import {
   getLetterIndexInWord
 } from './game.utils'
 
-const defaults = {
-  matchLifes: 6,
-  speed: 3,
-  availableLetters: 8,
-  powerupDuration: 1000,
-  powerupSpawn: 2,
-  wordLetterSpawn: 2,
-  powerups: POWERUPS
-}
-
 export default {
   namespaced: true,
 
   state: () => {
     return {
-      speed: defaults.speed,
+      speed: GAME_DEFAULTS.speed,
       offset: 0,
-      powerups: defaults.powerups,
+      powerups: GAME_DEFAULTS.powerups,
       matchLocales: {
         original: null,
         learn: null
       },
-      matchLifes: defaults.matchLifes,
+      matchLifes: GAME_DEFAULTS.matchLifes,
       matchPowerups: {
         fire: 43,
         ice: 3,
         wind: 33
       },
       uiElementsHeight: {},
-      matchPowerupsDuration: defaults.powerupDuration,
+      matchPowerupsDuration: GAME_DEFAULTS.powerupDuration,
       matchStates: {
         loading: 'loading',
         starting: 'starting',
@@ -57,12 +47,12 @@ export default {
       matchWordsList: [],
       matchRoundsTotal: 0,
       matchRoundsCurrent: 0,
-      roundTotalAvailableLetters: defaults.availableLetters,
+      roundTotalAvailableLetters: GAME_DEFAULTS.availableLetters,
       roundWordOriginal: null,
       roundWordGuess: [],
       roundBoardTiles: [],
-      roundPowerupSpawnChance: defaults.powerupSpawn,
-      roundWordLetterSpawnChance: defaults.wordLetterSpawn,
+      roundPowerupSpawnChance: GAME_DEFAULTS.powerupSpawn,
+      roundWordLetterSpawnChance: GAME_DEFAULTS.wordLetterSpawn,
       roundActivePowerup: {
         active: false,
         type: null
@@ -129,8 +119,8 @@ export default {
     POWERUP_DEACTIVATE(state) {
       state.roundActivePowerup.active = false
       state.roundActivePowerup.type = null
-      state.speed = defaults.speed
-      state.matchPowerupsDuration = defaults.powerupDuration
+      state.speed = GAME_DEFAULTS.speed
+      state.matchPowerupsDuration = GAME_DEFAULTS.powerupDuration
     },
 
     SET_SPEED(state, speed: number) {      
@@ -151,7 +141,7 @@ export default {
     },
 
     SET_MATCH_LIVES(state) {
-      state.matchLifes = defaults.matchLifes
+      state.matchLifes = GAME_DEFAULTS.matchLifes
     },
 
     SET_ROUND(state) {
@@ -217,8 +207,8 @@ export default {
       commit('POWERUP_AMOUNT_DECREASE', powerupType)
     },
 
-    checkTile({ commit, getters, dispatch }, tile: BoardLetter) {      
-      const word: Word = getters.roundWordGuess      
+    checkTile({ commit, getters, dispatch }, tile: BoardLetter) {
+      const word: Word = getters.roundWordGuess
       let newExpression: string
 
       if (tile.letter) {
@@ -264,7 +254,7 @@ export default {
       commit('DELETE_TILE', letter)
     },
 
-    activatePoweup({ commit, getters, dispatch }, type: PowerupTypes) {      
+    activatePoweup({ commit, getters, dispatch }, type: PowerupTypes) {
       const hasPowerupsOfType = getters.matchPowerups[type] > 0
 
       if (!getters.roundHasActivePowerup && hasPowerupsOfType) {
@@ -279,6 +269,14 @@ export default {
 
     setUIElementHeight({ commit }, uiElement: BoardUIElements) {
       commit('SET_UI_ELEMENT_HEIGHT', uiElement)
+    },
+
+    setGamePause({ commit, getters }) {
+      if (getters.matchState !== getters.matchStates.paused) {
+        commit('SET_MATCH_STATE', getters.matchStates.paused)
+      } else {
+        commit('SET_MATCH_STATE', getters.matchStates.playing)
+      }
     },
 
     initMatch({ commit, getters }, payload) {

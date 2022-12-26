@@ -49,6 +49,7 @@ export default defineComponent({
     const keyboardKeys = ['1', '2', '3']
 
     // Computed
+    const isPlaying = computed(() => store.getters['game/matchIsPlaying'])
     const isActive = computed(() => !!store.getters['game/roundActivePowerupType'])
     const powerupButtons = computed(() => {
       const output: PowerupButton[] = []
@@ -74,7 +75,7 @@ export default defineComponent({
     
     // Methods     
     const activatePowerup = (id: string) => {
-      if (!isActive.value) {
+      if (!isActive.value && isPlaying.value) {
         store.dispatch('game/activatePoweup', id)
       }
     } 

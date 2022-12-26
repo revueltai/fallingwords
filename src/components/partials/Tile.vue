@@ -64,9 +64,10 @@ export default defineComponent({
     const powerups = computed(() => store.getters['game/powerups'])
     const activePowerup = computed(() => store.getters['game/roundActivePowerupType'])
     const roundWord = computed(() => store.getters['game/roundWordGuess'])
+    const isPlaying = computed(() => store.getters['game/matchIsPlaying'])
     const hasActivePowerup = computed(() => !!activePowerup.value)
     const isPowerupTile = computed(() => !!props.tile.powerup)
-  
+
     const cssClasses = computed(() => {
       return hasActivePowerup.value
         ? getClassnameForPowerupType()
@@ -78,7 +79,7 @@ export default defineComponent({
     })
 
     const displayPowerup = computed(() => {
-      if (isPowerupTile.value) {        
+      if (isPowerupTile.value) {
         return props.tile.powerup.asset
       }
 
@@ -135,7 +136,11 @@ export default defineComponent({
       posY = Math.round(Math.random() * boardRect.height * -1)
     }
 
-    const isCollidingWithCharacter = () => {
+    const setFPS = () => {
+      fps.value = Math.floor(Math.random() * (60 - 24) + 24)
+    }
+
+    const isTileCollidingWithCharacter = () => {
       const tileEl: HTMLElement = tile.value
       const tileWrapperEl: HTMLElement = tileWrapper.value
       const tileRect: DOMRect = tileEl.getBoundingClientRect()
@@ -156,22 +161,14 @@ export default defineComponent({
       return disableRAF.value
     }
 
-    const isOutOfBounds = () => {
+    const isTileOutOfBounds = () => {
       const tileRect: DOMRect = tile.value.getBoundingClientRect()
       const limit: number = canvasEl.value.getBoundingClientRect().height
-
-      if (tileRect.y > limit) {
-        disableRAF.value = true
-      }
-
-      return disableRAF.value
+      return tileRect.y > limit
     }
 
-    const doAnimation = () => {
-      const isPlaying = store.getters['game/matchIsPlaying']
-      const isVisible = visible.value
-
-      return isVisible && isPlaying
+    const isMoveableTile = () => {
+      return visible.value && isPlaying.value
     }
 
     const move = () => {
@@ -217,24 +214,24 @@ export default defineComponent({
 
     // Event Handlers
     const handleRAF = () => {
-      if (doAnimation()) {
-        let tileOutOfBounds = null
+      let tileOutOfBounds: boolean = null
+      const tileCollidesWithCharacter = isTileCollidingWithCharacter()
 
-        move()
-
-        const tileCollidesWithCharacter = isCollidingWithCharacter()
-
-        if (!tileCollidesWithCharacter) {
-          tileOutOfBounds = isOutOfBounds()
-        }
-
-        if (tileCollidesWithCharacter || tileOutOfBounds) {
-          removeTile(tileOutOfBounds)
-          cancelAnimationFrame(raf)
-        } else {
-          animateNewFrame()
-        }
+      if (!tileCollidesWithCharacter) {
+        tileOutOfBounds = isTileOutOfBounds()
       }
+
+      if (tileCollidesWithCharacter || tileOutOfBounds) {
+        removeTile(tileOutOfBounds)
+        cancelAnimationFrame(raf)
+        return
+      }
+      
+      if (isMoveableTile()) {
+        move()
+      }
+      
+      animateNewFrame()
     }
 
     const handleAnimationEnd = () => {
@@ -244,13 +241,13 @@ export default defineComponent({
     const initialize = () => {
       nextTick(() => {
         setCoordinates()  
-        fps.value = Math.floor(Math.random() * (60 - 24) + 24)
-        raf = requestAnimationFrame(handleRAF)
+        setFPS()
+        animateNewFrame()
       })
     }
 
     // Hooks
-    onMounted (() => {      
+    onMounted (() => {
       initialize()
     })
 
@@ -261,15 +258,12 @@ export default defineComponent({
     })
 
     return {
-      fps,
       visible,
       tile,
       tileWrapper,
       cssClasses,
       displayLetter,
-      displayPowerup,
-      disableRAF,
-      handleRAF
+      displayPowerup
     }
   }
 })

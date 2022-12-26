@@ -7,6 +7,7 @@
       :has-background="false"
       icon-only
       class="absolute right-4 top-8"
+      @click="handlePause"
     >
       <cicon
         name="pause"
@@ -89,6 +90,11 @@ export default defineComponent({
         : '?'
     }
 
+    // Events
+    const handlePause = () => {
+      store.dispatch('game/setGamePause')
+    }
+
     // Hooks
     onMounted (() => {
       store.dispatch('game/setUIElementHeight', {
@@ -104,7 +110,8 @@ export default defineComponent({
       originalWord,
       guessWord,
       setLetterClass,
-      setLetterCharacter
+      setLetterCharacter,
+      handlePause
     }
   }
 })

@@ -32,3 +32,31 @@ export const POWERUPS: Powerups = {
     speed: 0    
   }
 }
+
+// TODO PROVIDE FROM API
+export const GAME_DEFAULTS = {
+  matchLifes: 6,
+  speed: 3,
+  availableLetters: 8,
+  powerupDuration: 1000,
+  powerupSpawn: 2,
+  wordLetterSpawn: 2,
+  powerups: POWERUPS
+}
+
+export const DUMMIE_DATA = {
+  words: [
+    {
+      original: 'Speed',
+      learn: 'Geschwindigkeit'
+    },
+    {
+      original: 'Hello',
+      learn: 'Hallo'
+    }
+  ],
+  locales: {
+    original: 'en',
+    learn: 'de'
+  }
+}

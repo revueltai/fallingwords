@@ -17,22 +17,7 @@ import Character from '../partials/Character.vue'
 import Board from '../partials/Board.vue'
 import Tiles from '../partials/Tiles.vue'
 import Dash from '../partials/Dash.vue'
-
-const dummyWords = [
-  {
-    original: 'Speed',
-    learn: 'Geschwindigkeit'
-  },
-  {
-    original: 'Hello',
-    learn: 'Hallo'
-  }
-]
-
-const dummyLocales = {
-  original: 'en',
-  learn: 'de'
-}
+import { DUMMIE_DATA } from '../../configs/constants'
 
 export default defineComponent({
   name: 'UiGameBoard',
@@ -53,8 +38,8 @@ export default defineComponent({
     const initialize = () => {
       nextTick(() => {
         store.dispatch('game/initMatch', {
-          words: dummyWords,
-          locales: dummyLocales
+          words: DUMMIE_DATA.words,
+          locales: DUMMIE_DATA.locales
         })
 
         isUIReady.value = true
