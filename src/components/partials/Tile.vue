@@ -104,22 +104,30 @@ export default defineComponent({
     const getClassnameForPowerupType = () => {
       const { fire, ice, wind } = powerups.value
       const activePowerupType: PowerupTypes = activePowerup.value
-      
+      let css: string[] = [
+        'anim-beat'
+      ]
+
       switch (activePowerupType) {
         case ice.id:
-          return `type__powerup-${activePowerupType}`
+          css = `type__powerup-${activePowerupType}`
+          break
 
         case fire.id:
-          return isWordLetter()
+          css = isWordLetter()
             ? `type__powerup-${activePowerupType}`
             : getClassnameForTileType()
+          break
 
         case wind.id:
-          return [
+          css = [
             getClassnameForTileType(),
             'type__powerup-wind'
           ]
+          break
       }
+
+      return css
     }
 
     const setPosition = () => {
@@ -214,13 +222,9 @@ export default defineComponent({
 
     // Event Handlers
     const handleRAF = () => {
-      let tileOutOfBounds: boolean = null
       const tileCollidesWithCharacter = isTileCollidingWithCharacter()
-
-      if (!tileCollidesWithCharacter) {
-        tileOutOfBounds = isTileOutOfBounds()
-      }
-
+      const tileOutOfBounds: boolean = isTileOutOfBounds()
+      
       if (tileCollidesWithCharacter || tileOutOfBounds) {
         removeTile(tileOutOfBounds)
         cancelAnimationFrame(raf)
@@ -310,7 +314,7 @@ export default defineComponent({
 }
 
 .type__powerup .tile__wrapper {
-  @apply border-primary animate-pulse;
+  @apply border-primary;
 }
 
 /* Powerups Shared */

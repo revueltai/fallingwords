@@ -16,7 +16,7 @@ import { useStore } from 'vuex'
 import Tile from './Tile.vue'
 
 export default defineComponent({
-  name: 'Tiles',  
+  name: 'Tiles',
   components: {
     Tile
   },

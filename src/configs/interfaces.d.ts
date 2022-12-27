@@ -47,6 +47,7 @@ declare module '@project/interfaces' {
 
   export interface Powerup {
     id: string;
+    text: string;
     asset: string;
     duration: number;
     speed: number | boolean;

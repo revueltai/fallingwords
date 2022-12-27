@@ -67,17 +67,6 @@ const variants = {
   }
 }
 
-const keyframes = {
-  fadeIn: {
-    '0%': { opacity: 0 },
-    '100%': { opacity: 1 }
-  }
-}
-
-const animation = {
-  'fade-in': 'fadeIn 0.5s ease-in-out',
-}
-
 module.exports = {
   purge: ['./index.html', './src/**/*.{vue,js,ts,jsx,tsx}'],
   darkMode: false, // or 'media' or 'class'
@@ -88,9 +77,7 @@ module.exports = {
       colors,
       spacing,
       borderRadius: spacing,
-      transitionProperty,
-      keyframes,
-      animation
+      transitionProperty
     },
   },
   variants,

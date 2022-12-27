@@ -7,10 +7,11 @@ import {
   PowerupTypes 
 } from '@project/interfaces'
 import { findIndex } from 'lodash'
-import { GAME_DEFAULTS } from '../configs/constants'
+import { GAME_DEFAULTS, MESSAGES } from '../configs/constants'
 import {
   createWord,
   createBoardLetters,
+  getRandomNum,
   getBoardLetter,
   isLetterInWord,
   getLetterIndexInWord
@@ -21,6 +22,7 @@ export default {
 
   state: () => {
     return {
+      uiElementsHeight: {},
       speed: GAME_DEFAULTS.speed,
       offset: 0,
       powerups: GAME_DEFAULTS.powerups,
@@ -34,7 +36,6 @@ export default {
         ice: 3,
         wind: 33
       },
-      uiElementsHeight: {},
       matchPowerupsDuration: GAME_DEFAULTS.powerupDuration,
       matchStates: {
         loading: 'loading',
@@ -162,7 +163,7 @@ export default {
       )
     },
 
-    SET_LETTER_AS_GUESSED(state, wordIndex: number) {      
+    SET_LETTER_AS_GUESSED(state, wordIndex: number) {
       state.roundWordGuess[wordIndex].guessed = true
     },
 
@@ -210,6 +211,7 @@ export default {
     checkTile({ commit, getters, dispatch }, tile: BoardLetter) {
       const word: Word = getters.roundWordGuess
       let newExpression: string
+      let message: string = ''
 
       if (tile.letter) {
         // Check letter
@@ -217,10 +219,12 @@ export default {
 
         if (letterInWord) {
           newExpression = 'like'
+          message = MESSAGES.like[getRandomNum(MESSAGES.like.length)]
           const index = getLetterIndexInWord(tile.letter, word)
           commit('SET_LETTER_AS_GUESSED', index)
         } else {
           newExpression = 'dislike'
+          message = MESSAGES.dislike[getRandomNum(MESSAGES.dislike.length)]
           dispatch('decreaseLifes')
           dispatch('checkGameOver')
         }
@@ -229,6 +233,7 @@ export default {
         newExpression = 'love'
         const id: string = tile.powerup.id
         const powerups = getters.powerups
+        message = `+1 ${tile.powerup.text}`
 
         if (id === powerups.life.id) {
           dispatch('increaseLifes')
@@ -236,7 +241,8 @@ export default {
           dispatch('increasePowerups', id)
         }
       }
-
+      
+      dispatch('gameCharacter/setMessage', message, { root: true })
       dispatch('gameCharacter/setChewExpressions', newExpression, { root: true })
     },
 

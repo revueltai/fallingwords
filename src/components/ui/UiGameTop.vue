@@ -19,10 +19,10 @@
       <div class="w-56 h-56 absolute z-2 -top-4 -left-4 rounded-full border-quinary border bg-secondary">
         <div class="relative w-full h-full flex items-center justify-center">
           <cicon
+            :class="lifes < 2 ? 'anim-beat' : ''"
             name="heart-full"
             type="fill"
             size="xxLarge"
-            class="animate-pulse"
           />
 
           <cbadge

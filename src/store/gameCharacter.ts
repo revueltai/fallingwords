@@ -5,6 +5,7 @@ export default {
     return {
       offset: 90,
       characterEl: null,
+      message: '',
       expression: 'idle',
       expressions: {
         idle: 'MouthIdle.svg',
@@ -18,7 +19,7 @@ export default {
   },
 
   getters: {
-    uiElementsHeight: (state: { uiElementsHeight: number }) => state.uiElementsHeight,
+    message: (state: { message: string }) => state.message,
     offset: (state: { offset: number }) => state.offset,
     speed: (state: { speed: number }) => state.speed,
     characterEl: (state: { characterEl: HTMLElement }) => state.characterEl,
@@ -30,6 +31,10 @@ export default {
       state.expression = expression
     },
 
+    SET_CHARACTER_MESSAGE(state, message: string) {
+      state.message = message
+    },
+
     SET_ELEMENT(state: { characterEl: HTMLElement }, characterElement: HTMLElement) {
       state.characterEl = characterElement
     }
@@ -38,6 +43,10 @@ export default {
   actions: {
     setElement({ commit }, characterElement: HTMLElement) {
       commit('SET_ELEMENT', characterElement)
+    },
+
+    setMessage({ commit }, message: string) {
+      commit('SET_CHARACTER_MESSAGE', message)
     },
 
     setExpression({ commit }, expression: string) {

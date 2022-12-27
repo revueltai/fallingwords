@@ -75,7 +75,7 @@ export default defineComponent({
       nextTick(() => {
         const barRef: HTMLElement = bar.value
         barRef.classList.add(barAnimation)
-        barRef.addEventListener('animationend', handleAnimationEnd)      
+        barRef.addEventListener('animationend', handleAnimationEnd)
       })
     }
 

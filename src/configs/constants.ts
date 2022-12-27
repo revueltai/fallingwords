@@ -9,24 +9,28 @@ export const ALPHABETS: Alphabets = {
 export const POWERUPS: Powerups = {
   life: {
     id:  'life',
+    text: 'life',
     asset: 'heart-full',
     speed: false,
     duration: 0    
   },
   fire: {
     id: 'fire',
+    text: 'fire',
     asset: 'powerup-fire',
     speed: false,
     duration: 1000    
   },
   ice: {
     id: 'ice',
+    text: 'ice',
     asset: 'powerup-ice',
     duration: 2000,
     speed: 1    
   },
   wind: {
     id: 'wind',
+    text: 'wind',
     asset: 'powerup-wind',
     duration: 400,
     speed: 0    
@@ -34,12 +38,39 @@ export const POWERUPS: Powerups = {
 }
 
 // TODO PROVIDE FROM API
+export const MESSAGES = {
+  like: [
+    'Yey',
+    'Yeah',
+    'Awesome',
+    'Great',
+    'Yummi',
+    'Tasty',
+    'Yum',
+    'Nice',
+    'Ahhh',
+    'Mmm'
+  ],
+  dislike: [
+    'Ugh',
+    'Yuck',
+    'Ew',
+    'Gross',
+    'Blech',
+    'Ick',
+    'Yech',
+    'Pfui',
+    'Bah',
+    'Hmph'
+  ]
+}
+
 export const GAME_DEFAULTS = {
-  matchLifes: 6,
+  matchLifes: 8,
   speed: 3,
-  availableLetters: 8,
+  availableLetters: 10,
   powerupDuration: 1000,
-  powerupSpawn: 2,
+  powerupSpawn: 10,
   wordLetterSpawn: 2,
   powerups: POWERUPS
 }

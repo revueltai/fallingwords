@@ -20,7 +20,7 @@ export default defineComponent({
 
 <style scoped>
 .splash {
-  @apply absolute flex items-center justify-center bg-primary w-full h-full text-center;
+  @apply absolute flex items-center justify-center bg-tertiary w-full h-full text-center;
 }
 
 .splash h1 {

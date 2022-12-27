@@ -15,6 +15,8 @@
       :class="isLoaded ? 'opacity-100' : ''"
       class="transform transition-all opacity-0 duration-200 ease-in-out"
     >
+
+    <character-message />
   </div>
 </template>
 
@@ -22,6 +24,7 @@
 import { ref, computed, nextTick, onMounted, onBeforeUnmount, defineComponent } from 'vue'
 import { useStore } from 'vuex'
 import { isMobile } from '../../utils/game.utils'
+import characterMessage from './CharacterMessage.vue'
 
 interface Character {
   el: HTMLElement;
@@ -32,6 +35,9 @@ type CharacterEvent = TouchEvent | KeyboardEvent
 
 export default defineComponent({
   name: 'Character',
+  components: {
+    characterMessage
+  },
   setup () {
     let previousX: number = 0
     let posX: number = 0
@@ -107,12 +113,12 @@ export default defineComponent({
       switch (event.key) {
         case 'ArrowLeft':
         case 'a':
-        case 'A':                    
+        case 'A':
           return character.rect.left - distance
 
         case 'ArrowRight':
           case 'D':
-          case 'd':          
+          case 'd':
           return character.rect.right + distance
       }
     }
@@ -167,12 +173,12 @@ export default defineComponent({
         updateCharacterPosition(event) 
         
         if (event instanceof TouchEvent) {
-          addTilt(event)                 
+          addTilt(event)
           return
         }
         
         if (event instanceof KeyboardEvent && isValidKeyboardKey(event.key)) {
-          addTilt(event)                 
+          addTilt(event)
           return
         }
       }

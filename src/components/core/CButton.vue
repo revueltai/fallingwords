@@ -1,8 +1,9 @@
 <template>
   <router-link
-    :class="cssClasses"
-    :to="to"
     v-if="isRouterLink"
+    :to="to"
+    :class="cssClasses"
+    class="cbutton"
   >
     <slot />
   </router-link>
@@ -69,11 +70,11 @@ export default defineComponent({
 
     const cssClasses = computed(() => {
       const payload = [
-        `disabled:opacity-50 focus:outline-none inline-flex items-center text-${props.textAlignment}`
+        `inline-flex items-center text-${props.textAlignment}`
       ]
 
       if (props.hasBackground) {
-        payload.push(`bg-primary border border-${props.color}-lighter bg-${props.color}`)
+        payload.push(`border-${props.color}-lighter bg-${props.color}`)
       }
 
       payload.push(
@@ -86,8 +87,8 @@ export default defineComponent({
         props.isRounded
           ? 'rounded-8'
           : props.isSquared
-          ? 'rounded-none'
-          : 'rounded-full'
+            ? 'rounded-none'
+            : 'rounded-full'
       )
 
       switch (props.size) {
@@ -119,3 +120,13 @@ export default defineComponent({
   }
 })
 </script>
+
+<style scoped>
+.cbutton {
+  @apply disabled:opacity-50 focus:outline-none bg-primary;
+  /* background-color: var(--); */
+  border: 1px solid #4BAFFF;
+  box-shadow: 0px 2px 0px #4BAFFF, 
+              0px 2px 4px #038DFB;
+}
+</style>

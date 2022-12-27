@@ -22,10 +22,6 @@ const getSpawnChance = (range: number): boolean => {
   return spawnChance === 1
 }
 
-const getRandomNum = (range: number): number => {
-  return Math.floor(Math.random() * range)
-}
-
 const getPendingLettersInWord = (word: Word): string => {
   const pendingLetters = word.filter((l: Letter) => !l.guessed)
     .map(l => l.letter)
@@ -52,6 +48,10 @@ const createLetter = (
   } 
 
   return pendingLetters.charAt(getRandomNum(pendingLetters.length))
+}
+
+export const getRandomNum = (range: number): number => {
+  return Math.floor(Math.random() * range)
 }
 
 export const isLetterInWord = (letter: string, word: Word): boolean => {
