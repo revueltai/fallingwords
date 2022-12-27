@@ -66,13 +66,18 @@ export const MESSAGES = {
 }
 
 export const GAME_DEFAULTS = {
-  matchLifes: 8,
-  speed: 3,
+  speed: 2,
   availableLetters: 10,
-  powerupDuration: 1000,
-  powerupSpawn: 10,
   wordLetterSpawn: 2,
-  powerups: POWERUPS
+  powerupDuration: 1000,
+  powerupSpawn: 15,
+  powerups: POWERUPS,
+  matchLifes: 4,
+  matchPowerups: {
+    fire: 3,
+    ice: 3,
+    wind: 3
+  },
 }
 
 export const DUMMIE_DATA = {

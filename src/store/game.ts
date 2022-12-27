@@ -31,11 +31,7 @@ export default {
         learn: null
       },
       matchLifes: GAME_DEFAULTS.matchLifes,
-      matchPowerups: {
-        fire: 43,
-        ice: 3,
-        wind: 33
-      },
+      matchPowerups: GAME_DEFAULTS.matchPowerups,
       matchPowerupsDuration: GAME_DEFAULTS.powerupDuration,
       matchStates: {
         loading: 'loading',

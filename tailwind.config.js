@@ -71,7 +71,9 @@ const safelist = [
   'stroke-2',
   'stroke-current',
   'fill-current',
-  'h-32'
+  'h-32',
+  'bg-warning',
+  'bg-quinary',
 ]
 
 module.exports = {
@@ -85,8 +87,7 @@ module.exports = {
       safelist
     }
   },
-  // purge: ['./index.html', './src/**/*.{vue,js,ts,jsx,tsx}'],
-  darkMode: false, // or 'media' or 'class'
+  darkMode: false,
   theme: {
     extend: {
       fontFamily,
