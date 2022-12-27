@@ -67,8 +67,25 @@ const variants = {
   }
 }
 
+const safelist = [
+  'stroke-2',
+  'stroke-current',
+  'fill-current',
+  'h-32'
+]
+
 module.exports = {
-  purge: ['./index.html', './src/**/*.{vue,js,ts,jsx,tsx}'],
+  purge: {
+    enabled: process.env.NODE_ENV === 'production',
+    content: [
+      './index.html', 
+      './src/**/*.{vue,js,ts,jsx,tsx}'
+    ],    
+    options: {
+      safelist
+    }
+  },
+  // purge: ['./index.html', './src/**/*.{vue,js,ts,jsx,tsx}'],
   darkMode: false, // or 'media' or 'class'
   theme: {
     extend: {

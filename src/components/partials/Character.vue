@@ -147,7 +147,7 @@ export default defineComponent({
       const character: Character = getCharacterData()
       let cX: number
 
-      if (event instanceof TouchEvent) {
+      if (window.TouchEvent && event instanceof TouchEvent) {
         cX = getPositionXFromTouch(event)
       }
 
@@ -172,7 +172,7 @@ export default defineComponent({
       if (isPlaying.value) {
         updateCharacterPosition(event) 
         
-        if (event instanceof TouchEvent) {
+        if (window.TouchEvent && event instanceof TouchEvent) {
           addTilt(event)
           return
         }
@@ -192,7 +192,7 @@ export default defineComponent({
       if (isPlaying.value) {
         previousX = getPositionXFromTouch(event)
 
-        if (event instanceof TouchEvent) {
+        if (window.TouchEvent && event instanceof TouchEvent) {
           setExpression('open')
         }
       }

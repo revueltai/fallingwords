@@ -1,12 +1,12 @@
 <template>
   <div
     ref="header"
-    class="relative pt-12 bg-secondary"
+    class="ui-game-top"
   >
     <cbutton
       :has-background="false"
       icon-only
-      class="absolute right-4 top-8"
+      class="ui-game-top__pause"
       @click="handlePause"
     >
       <cicon
@@ -15,8 +15,8 @@
       />
     </cbutton>
 
-    <div class="relative ml-32 mr-48">
-      <div class="w-56 h-56 absolute z-2 -top-4 -left-4 rounded-full border-quinary border bg-secondary">
+    <div class="ui-game-top__lives">
+      <div class="ui-game-top__lives-wrapper">
         <div class="relative w-full h-full flex items-center justify-center">
           <cicon
             :class="lifes < 2 ? 'anim-beat' : ''"
@@ -42,7 +42,7 @@
       </div>
     </div>
 
-    <div class="border-quinary border-t border-b py-8 text-center uppercase">
+    <div class="ui-game-top__guess-word">
       <span
         v-for="letter in guessWord"
         :class="setLetterClass(letter)"
@@ -115,3 +115,24 @@ export default defineComponent({
   }
 })
 </script>
+
+<style scoped>
+.ui-game-top {
+  @apply relative pt-12 bg-secondary
+}
+
+.ui-game-top__lives {
+  @apply relative ml-32 mr-48;
+}
+
+.ui-game-top__lives-wrapper {
+  @apply w-56 h-56 absolute -top-4 -left-4 rounded-full border-quinary border bg-secondary;
+}
+
+.ui-game-top__pause {
+  @apply absolute right-4 top-8;
+}
+.ui-game-top__guess-word {
+  @apply border-quinary border-t border-b py-8 text-center uppercase;
+}
+</style>
