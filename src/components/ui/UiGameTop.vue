@@ -44,8 +44,7 @@
 
     <div class="border-quinary border-t border-b py-8 text-center uppercase">
       <span
-        v-for="(letter, index) in guessWord"
-        :key="index"
+        v-for="letter in guessWord"
         :class="setLetterClass(letter)"
         class="px-4"
       >

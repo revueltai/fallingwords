@@ -104,30 +104,31 @@ export default defineComponent({
     const getClassnameForPowerupType = () => {
       const { fire, ice, wind } = powerups.value
       const activePowerupType: PowerupTypes = activePowerup.value
-      let css: string[] = [
+      let cssClass: string
+      let cssClasses: string[] = [
         'anim-beat'
       ]
 
       switch (activePowerupType) {
         case ice.id:
-          css = `type__powerup-${activePowerupType}`
+          cssClasses.push(`type__powerup-${activePowerupType}`)
           break
 
         case fire.id:
-          css = isWordLetter()
+          cssClass = isWordLetter()
             ? `type__powerup-${activePowerupType}`
             : getClassnameForTileType()
+
+          cssClasses.push(cssClass)
           break
 
         case wind.id:
-          css = [
-            getClassnameForTileType(),
-            'type__powerup-wind'
-          ]
+          cssClasses.push(getClassnameForTileType())
+          cssClasses.push('type__powerup-wind')
           break
       }
 
-      return css
+      return cssClasses
     }
 
     const setPosition = () => {

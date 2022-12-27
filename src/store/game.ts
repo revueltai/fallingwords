@@ -124,7 +124,7 @@ export default {
       state.matchPowerupsDuration = GAME_DEFAULTS.powerupDuration
     },
 
-    SET_SPEED(state, speed: number) {      
+    SET_SPEED(state, speed: number) {
       state.speed = speed
     },
 
