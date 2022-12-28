@@ -71,9 +71,17 @@ const safelist = [
   'stroke-2',
   'stroke-current',
   'fill-current',
-  'h-32',
   'bg-warning',
   'bg-quinary',
+  'w-8',
+  'w-16',
+  'w-24',
+  'w-32',
+  'w-40',
+  'w-48',
+  'w-56',
+  'w-64',
+  'h-32',
 ]
 
 module.exports = {

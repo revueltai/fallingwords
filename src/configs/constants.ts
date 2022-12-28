@@ -69,6 +69,7 @@ export const UI = {
   overlayStates: {
     fadeIn: 'fadeIn',
     fadeOut: 'fadeOut',
+    hidden: 'hidden'
   }
 }
 
