@@ -8,7 +8,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent } from 'vue'
+import { computed, defineComponent } from 'vue'
 
 const sizes = {
   xs: 8,
@@ -34,10 +34,12 @@ export default defineComponent({
     }
   },
   setup(props) {
-    const cssClasses = () => {
+
+    // Computed
+    const cssClasses = computed(() => {
       const size = sizes[props.size]
       return `w-${size} h-${size}`
-    }
+    })
     
     return {
       cssClasses

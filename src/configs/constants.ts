@@ -68,9 +68,7 @@ export const MESSAGES = {
 export const UI = {
   overlayStates: {
     fadeIn: 'fadeIn',
-    visible: 'visible',
     fadeOut: 'fadeOut',
-    hidden: 'hidden'
   }
 }
 

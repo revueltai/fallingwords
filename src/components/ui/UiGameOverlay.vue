@@ -1,39 +1,83 @@
 <template>
-  <section class="ui-game-overlay">
+  <section 
+    v-show="visible"
+    ref="gameOverlayRef"
+    class="ui-game-overlay"
+  >
     <div class="ui-game-overlay__wrapper">
       <div class="ui-game-overlay__bg" />
       <div class="ui-game-overlay__content">
         <component :is="component" />
       </div>
     </div>
-    adsa
   </section>
 </template>
 
 <script lang="ts">
-import { onBeforeMount, defineComponent } from 'vue'
+import { ref, computed, watch, onMounted, onBeforeUnmount, defineComponent } from 'vue'
+import { useStore } from 'vuex'
+import { UI } from '@/configs/constants'
 import UiGameOverlayInitCount from './UiGameOverlayInitCount.vue'
+// import UiGameOverlayPause from './UiGameOverlayPause.vue'
+// import UiGameOverlayPowerupTriggered from './UiGameOverlayPowerupTriggered.vue'
 
 export default defineComponent({
   name: 'UiGameOverlay',
   components: {
-    UiGameOverlayInitCount
+    UiGameOverlayInitCount,
+    // UiGameOverlayPause
+    // UiGameOverlayPowerupTriggered
   },
   setup() {
-    // const states = {
-    //   fadeIn,
-    //   visible,
-    //   fadeOut,
-    //   hidden
-    // }
 
+    // Injects
+    const store = useStore()
+
+    // Refs
     const component = 'UiGameOverlayInitCount'
+    const gameOverlayRef = ref(null)
+    const visible = ref(false)
 
-    onBeforeMount(() => {
+    // Computed
+    const overlayState = computed(() => store.getters['gameUI/overlayState'])
+    
+    // Watchers
+    watch(overlayState, (newState) => {
+      const el = gameOverlayRef.value
+      
+      switch (newState) {
+        case UI.overlayStates.fadeIn:
+          el.classList.add('anim-fade-in')
+          break
+        
+          case UI.overlayStates.fadeOut:
+          el.classList.add('anim-fade-out')
+          break
+      }
+    })
 
+    const handleAnimationEnd = (event: AnimationEvent) => {
+      event.stopPropagation()
+      gameOverlayRef.value.classList.remove('anim-fade-in', 'anim-fade-out')
+
+      if (event.animationName === 'fade-out') {
+        visible.value = false
+      }
+    }
+
+    onMounted(() => {
+      visible.value = true
+      gameOverlayRef.value.addEventListener('animationend', handleAnimationEnd)
+    })
+    
+    onBeforeUnmount(() => {
+      gameOverlayRef.value.removeEventListener('animationend', handleAnimationEnd)
     })
 
     return {
+      gameOverlayRef,
+      overlayState,
+      visible,
       component
     }
   }

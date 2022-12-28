@@ -35,7 +35,8 @@ export default defineComponent({
     })
 
     // Event Handlers
-    const handleAnimationEnd = () => {
+    const handleAnimationEnd = (event: AnimationEvent) => {
+      event.stopPropagation()
       store.dispatch('gameCharacter/setMessage', '')
       characterMessageEl.value.classList.remove(showClass)
     }

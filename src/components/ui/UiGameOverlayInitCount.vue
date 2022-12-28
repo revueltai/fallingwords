@@ -57,6 +57,8 @@ export default defineComponent({
     
     // Events
     const handleAnimationEnd = (event: AnimationEvent) => {
+      event.stopPropagation()
+      
       if (event.animationName === 'scale-in') {
         (<HTMLElement>event.target).classList.remove('anim-scale-in')
       }
