@@ -19,7 +19,7 @@
             v-else
             :name="displayPowerup"
             type="fill"
-            size="large"
+            size="lg"
           />
         </div>
       </div>

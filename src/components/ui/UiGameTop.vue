@@ -11,7 +11,7 @@
     >
       <cicon
         name="pause"
-        size="medium"
+        size="md"
       />
     </cbutton>
 
@@ -22,7 +22,7 @@
             :class="lifes < 2 ? 'anim-beat' : ''"
             name="heart-full"
             type="fill"
-            size="xxLarge"
+            size="2xl"
           />
 
           <cbadge
@@ -96,7 +96,7 @@ export default defineComponent({
 
     // Hooks
     onMounted (() => {
-      store.dispatch('game/setUIElementHeight', {
+      store.dispatch('gameUI/setElementHeight', {
         header: header.value.getBoundingClientRect().height
       })
     })

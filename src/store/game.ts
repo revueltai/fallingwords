@@ -1,5 +1,4 @@
 import {
-  BoardUIElements, 
   MatchStates, 
   MatchLocales, 
   BoardLetter, 
@@ -22,7 +21,6 @@ export default {
 
   state: () => {
     return {
-      uiElementsHeight: {},
       speed: GAME_DEFAULTS.speed,
       offset: 0,
       powerups: GAME_DEFAULTS.powerups,
@@ -57,8 +55,7 @@ export default {
     }
   },
 
-  getters: {
-    uiElementsHeight: (state: { uiElementsHeight: BoardUIElements }) => state.uiElementsHeight,
+  getters: {    
     offset: (state: { offset: number }) => state.offset,
     speed: (state: { speed: number }) => state.speed,
     powerups: state => state.powerups,
@@ -90,7 +87,7 @@ export default {
         : 0
     },
 
-    POWERUP_AMOUNT_INCREASE(state, type: PowerupTypes) {      
+    POWERUP_AMOUNT_INCREASE(state, type: PowerupTypes) {
       state.matchPowerups[type]++
     },
 
@@ -161,13 +158,6 @@ export default {
 
     SET_LETTER_AS_GUESSED(state, wordIndex: number) {
       state.roundWordGuess[wordIndex].guessed = true
-    },
-
-    SET_UI_ELEMENT_HEIGHT(state, payload) {
-      state.uiElementsHeight = {
-        ...state.uiElementsHeight,
-        ...payload
-      }
     },
 
     DELETE_TILE(state: { roundBoardTiles: BoardLetter[] }, payload: BoardLetter) {
@@ -269,23 +259,26 @@ export default {
       commit('POWERUP_DEACTIVATE')
     },
 
-    setUIElementHeight({ commit }, uiElement: BoardUIElements) {
-      commit('SET_UI_ELEMENT_HEIGHT', uiElement)
-    },
-
     setGamePause({ commit, getters }) {
-      if (getters.matchState !== getters.matchStates.paused) {
-        commit('SET_MATCH_STATE', getters.matchStates.paused)
-      } else {
-        commit('SET_MATCH_STATE', getters.matchStates.playing)
+      const { gameover, playing, paused } = getters.matchStates
+      
+      if (getters.matchState !== gameover) {
+        if (getters.matchState !== paused) {
+          commit('SET_MATCH_STATE', paused)
+        } else {
+          commit('SET_MATCH_STATE', playing)
+        }
       }
     },
 
-    initMatch({ commit, getters }, payload) {
+    preparemMatch({ commit }, payload) {
       commit('SET_MATCH_WORDS', payload.words)
       commit('SET_MATCH_LOCALES', payload.locales)
       commit('SET_MATCH_LIVES')
       commit('SET_ROUND')
+    },
+    
+    initMatch({ commit, getters }, payload) {
       commit('SET_MATCH_STATE', getters.matchStates.playing)
     }
   }

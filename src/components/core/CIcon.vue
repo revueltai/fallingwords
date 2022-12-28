@@ -13,17 +13,18 @@
 </template>
 
 <script lang="ts">
-import { defineComponent } from 'vue'
-import { computed } from 'vue'
+import { computed, defineComponent } from 'vue'
+import { isString } from '../../utils/game.utils'
 
 const sizes = {
-  xSmall: 8,
-  small: 16,
-  medium: 24,
-  large: 32,
-  xLarge: 40,
-  xxLarge: 48,
-  xxxLarge: 56
+  xs: 8,
+  sm: 16,
+  md: 24,
+  lg: 32,
+  xl: 40,
+  '2xl': 48,
+  '3xl': 56,
+  '4xl': 64
 }
 
 const types = {
@@ -46,7 +47,7 @@ export default defineComponent({
       default: 'stroke'
     },
     size: {
-      type: String,
+      type: [String, Number],
       default: 'small'
     },
     color: {
@@ -60,8 +61,7 @@ export default defineComponent({
       const type = types[props.type]
 
       const payload = [
-        `inline-flex ${type}-current text-${props.color}`,
-        `w-${size} h-${size}`
+        `inline-flex ${type}-current text-${props.color} w-${size} h-${size}`
       ]
 
       if (props.type === 'stroke') {

@@ -12,12 +12,10 @@
 
 <script lang="ts">
 import { ref, onMounted, defineComponent, nextTick } from 'vue'
-import { useStore } from 'vuex'
 import Character from '../partials/Character.vue'
 import Board from '../partials/Board.vue'
 import Tiles from '../partials/Tiles.vue'
 import Dash from '../partials/Dash.vue'
-import { DUMMIE_DATA } from '../../configs/constants'
 
 export default defineComponent({
   name: 'UiGameBoard',
@@ -28,29 +26,14 @@ export default defineComponent({
     Dash
   },
   setup () {
-    // Injects
-    const store = useStore()
-
     // Refs
     const isUIReady = ref(false)
 
-    // Methods
-    const initialize = () => {
-      nextTick(() => {
-        store.dispatch('game/initMatch', {
-          words: DUMMIE_DATA.words,
-          locales: DUMMIE_DATA.locales
-        })
-
-        isUIReady.value = true
-      })
-    }
-
-    // Event Handlers
-
     // Hooks
     onMounted (() => {
-      initialize()
+      nextTick(() => {
+        isUIReady.value = true
+      })
     })
 
     return {

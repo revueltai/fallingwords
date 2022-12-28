@@ -4,6 +4,7 @@
     <ui-game-top />
     <ui-game-bottom />
     <ui-game-powerup-bar />
+    <ui-game-overlay />
   </section>
 </template>
 
@@ -13,6 +14,7 @@ import UiGameTop from '../components/ui/UiGameTop.vue'
 import UiGameBottom from '../components/ui/UiGameBottom.vue'
 import UiGameBoard from '../components/ui/UiGameBoard.vue'
 import UiGamePowerupBar from '../components/ui/UiGamePowerupBar.vue'
+import UiGameOverlay from '../components/ui/UiGameOverlay.vue'
 
 export default defineComponent({
   name: 'Game',
@@ -20,7 +22,8 @@ export default defineComponent({
     UiGameTop,
     UiGameBottom,
     UiGameBoard,
-    UiGamePowerupBar
+    UiGamePowerupBar,
+    UiGameOverlay
   }
 })
 </script>

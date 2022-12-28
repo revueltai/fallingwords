@@ -9,7 +9,7 @@
     >
       <cicon
         :name="powerupAsset"
-        size="medium"
+        size="md"
         type="fill"
       />
     </div>

@@ -3,17 +3,18 @@
     v-if="isRouterLink"
     :to="to"
     :class="cssClasses"
-    class="cbutton"
+    class="clink"
   >
     <slot />
   </router-link>
 
   <button
+    v-else
     role="button"
     :disabled="disabled"
     :class="cssClasses"
+    class="cbutton"
     @click="onClick"
-    v-else
   >
     <slot />
   </button>
@@ -122,7 +123,12 @@ export default defineComponent({
 </script>
 
 <style scoped>
+.clink,
 .cbutton {
+ @apply focus:outline-none;
+}
+
+.clink {
   @apply disabled:opacity-50 focus:outline-none bg-primary;
   /* background-color: var(--); */
   border: 1px solid #4BAFFF;

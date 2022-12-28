@@ -12,28 +12,28 @@ export const POWERUPS: Powerups = {
     text: 'life',
     asset: 'heart-full',
     speed: false,
-    duration: 0    
+    duration: 0
   },
   fire: {
     id: 'fire',
     text: 'fire',
     asset: 'powerup-fire',
     speed: false,
-    duration: 1000    
+    duration: 2000
   },
   ice: {
     id: 'ice',
     text: 'ice',
     asset: 'powerup-ice',
-    duration: 2000,
-    speed: 1    
+    duration: 3000,
+    speed: 1
   },
   wind: {
     id: 'wind',
     text: 'wind',
     asset: 'powerup-wind',
     duration: 400,
-    speed: 0    
+    speed: 0
   }
 }
 
@@ -65,10 +65,19 @@ export const MESSAGES = {
   ]
 }
 
+export const UI = {
+  overlayStates: {
+    fadeIn: 'fadeIn',
+    visible: 'visible',
+    fadeOut: 'fadeOut',
+    hidden: 'hidden'
+  }
+}
+
 export const GAME_DEFAULTS = {
   speed: 2,
-  availableLetters: 10,
-  wordLetterSpawn: 2,
+  availableLetters: 8,
+  wordLetterSpawn: 3,
   powerupDuration: 1000,
   powerupSpawn: 15,
   powerups: POWERUPS,

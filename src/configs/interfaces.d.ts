@@ -1,20 +1,28 @@
 declare module '@project/interfaces' {  
-  // Types
+  ////// Types
+
+  // UI
+  export type UIOverlayStates = 'fadeIn' | 'visible' | 'fadeOut' | 'hidden'
+  
+  // Game
   export type MatchLocale = null | string
   export type MatchStates = 'loading' | 'starting' | 'paused' | 'playing' | 'gameover'
   export type PowerupTypes = 'fire' | 'life' | 'ice' | 'wind'
   export type Word = Letter[]
 
-  // Interfaces
+  //// Interfaces
+
+  // UI
+  export interface UIBoardElements {
+    header: number;
+    footer: number;
+  }
+
+  // Game
   export interface Alphabets {
     en: string;
     es: string;
     de: string;
-  }
-
-  export interface BoardUIElements {
-    header: number;
-    footer: number;
   }
 
   export interface BoardLetter {

@@ -14,7 +14,7 @@
         icon-only
       >
         <cicon
-          size="large"
+          size="lg"
           type="fill"
           name="info"
         />
@@ -31,7 +31,7 @@
         icon-only
       >
         <cicon
-          size="large"
+          size="lg"
           name="skip"
         />
       </cbutton>
@@ -58,7 +58,7 @@ export default defineComponent({
 
     // Hooks
     onMounted(() => {
-      store.dispatch('game/setUIElementHeight', {
+      store.dispatch('gameUI/setElementHeight', {
         footer: footer.value.getBoundingClientRect().height
       })
     })

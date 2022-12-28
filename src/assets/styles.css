@@ -2,19 +2,19 @@
 
 :root {
   --c-black: #000;
-  --c-white: #fff;
+  --c-white: #FFF;
   --c-grey: #787878;
-  --c-primary: #038dfb;
-  --c-primary-lighter: #4bafff;
-  --c-secondary: #05050f;
+  --c-primary: #038DFB;
+  --c-primary-lighter: #4BAFFF;
+  --c-secondary: #05050F;
   --c-tertiary: #13132b;
-  --c-quaternary: #ebeffa;
+  --c-quaternary: #EBEFFA;
   --c-quinary: #242468;
-  --c-warning: #ffad41;
-  --c-success: #5efa59;
-  --c-danger: #ff4241;
-  --c-info: #5a09d9;
-  --c-info-alternative: #ca29f0;
+  --c-warning: #FFAD41;
+  --c-success: #5EFA59;
+  --c-danger: #FF4241;
+  --c-info: #5A09D9;
+  --c-info-alternative: #CA29F0;
 }
 
 @tailwind base;
@@ -58,6 +58,21 @@ body {
   100% { opacity: 1 }
 }
 
+@keyframes fade-out {
+  0% { opacity: 1 }
+  100% { opacity: 0 }
+}
+
+@keyframes scale-in {
+  0% { transform: scale(0); }
+  100% { transform: scale(1); }
+}
+
+@keyframes scale-out {
+  0% { transform: scale(1); }
+  100% { transform: scale(0); }
+}
+
 @keyframes beat {
   0% { transform: scale(1) }
   100% { transform: scale(1.1) }
@@ -65,6 +80,18 @@ body {
 
 .anim-fade-in {
   animation: fade-in .5s ease-in-out;
+}
+
+.anim-fade-out {
+  animation: fade-out .5s ease-in-out;
+}
+
+.anim-scale-in {
+  animation: scale-in .5s ease-in-out;
+}
+
+.anim-scale-out {
+  animation: scale-out .5s ease-in-out;
 }
 
 .anim-beat {

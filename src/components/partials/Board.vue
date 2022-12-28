@@ -18,7 +18,7 @@ export default defineComponent({
 
     // Refs
     const board = ref(null)
-    const UIElementsHeight = computed(() => store.getters['game/uiElementsHeight'])
+    const UIElementsHeight = computed(() => store.getters['gameUI/uiElementsHeight'])
     const canvasEl = computed(() => store.getters['app/canvasEl'])
 
     // Methods

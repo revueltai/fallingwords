@@ -10,7 +10,7 @@
   >
     <cicon
       :name="powerupButton.asset"
-      size="xxxLarge"
+      size="3xl"
       type="fill"
     />
 
@@ -73,7 +73,7 @@ export default defineComponent({
       return output
     })
     
-    // Methods     
+    // Methods
     const activatePowerup = (id: string) => {
       if (!isActive.value && isPlaying.value) {
         store.dispatch('game/activatePoweup', id)
