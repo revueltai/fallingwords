@@ -259,8 +259,12 @@ export default {
       commit('POWERUP_DEACTIVATE')
     },
 
+    setGamePlaying({ commit, getters }) {
+      commit('SET_MATCH_STATE', getters.matchStates.playing)
+    },
+
     setGamePause({ commit, getters, dispatch }) {
-      const { gameover, playing, paused } = getters.matchStates
+      const { gameover, paused } = getters.matchStates
       
       if (getters.matchState !== gameover) {
         if (getters.matchState !== paused) {

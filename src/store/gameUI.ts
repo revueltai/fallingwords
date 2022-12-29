@@ -10,7 +10,7 @@ export default {
 
   state: () => {
     return {
-      uiElementsHeight: {},
+      elementsHeight: {},
       overlayComponent: '',
       overlayStates: UI.overlayStates,
       overlayState: UI.overlayStates.hidden
@@ -18,15 +18,15 @@ export default {
   },
 
   getters: {
-    uiElementsHeight: (state: { uiElementsHeight: UIBoardElements }) => state.uiElementsHeight,
+    elementsHeight: (state: { elementsHeight: UIBoardElements }) => state.elementsHeight,
     overlayState: (state: { overlayState: UIOverlayStates }) => state.overlayState,
     overlayComponent: (state: { overlayComponent: UIOverlayComponents }) => state.overlayComponent
   },
 
   mutations: {
-    SET_ELEMENT_HEIGHT(state: { uiElementsHeight: UIBoardElements }, payload: UIBoardElements) {
-      state.uiElementsHeight = {
-        ...state.uiElementsHeight,
+    SET_ELEMENT_HEIGHT(state: { elementsHeight: UIBoardElements }, payload: UIBoardElements) {
+      state.elementsHeight = {
+        ...state.elementsHeight,
         ...payload
       }
     },
@@ -45,8 +45,12 @@ export default {
       commit('SET_ELEMENT_HEIGHT', uiElement)
     },
     
-    setOverlayState({ commit }, state: UIOverlayStates) {
-      commit('SET_OVERLAY_STATE', state)
+    setOverlayFadeIn({ commit }, state: UIOverlayStates) {
+      commit('SET_OVERLAY_STATE', UI.overlayStates.fadeIn)
+    },
+    
+    setOverlayFadeOut({ commit }, state: UIOverlayStates) {
+      commit('SET_OVERLAY_STATE', UI.overlayStates.fadeOut)
     },
     
     setOverlayComponent({ commit }, state: UIOverlayComponents) {

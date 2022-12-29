@@ -50,8 +50,8 @@ export default defineComponent({
           visible.value = true
           el.classList.add('anim-fade-in')
           break
-        
-          case UI.overlayStates.fadeOut:
+      
+        case UI.overlayStates.fadeOut:
           el.classList.add('anim-fade-out')
           break
       }
@@ -60,7 +60,7 @@ export default defineComponent({
     const handleAnimationEnd = (event: AnimationEvent) => {
       event.stopPropagation()
       gameOverlayRef.value.classList.remove('anim-fade-in', 'anim-fade-out')
-
+      
       if (event.animationName === 'fade-out') {
         visible.value = false
       }

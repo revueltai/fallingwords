@@ -91,6 +91,7 @@ export default defineComponent({
 
     // Events
     const handlePause = () => {
+      store.dispatch('gameUI/setOverlayFadeIn')
       store.dispatch('game/setGamePause')
     }
 

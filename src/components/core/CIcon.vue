@@ -14,7 +14,6 @@
 
 <script lang="ts">
 import { computed, defineComponent } from 'vue'
-import { isString } from '../../utils/game.utils'
 
 const sizes = {
   xs: 8,

@@ -1,27 +1,84 @@
 <template>
-  <div
+  <ui-game-overlay-content 
     ref="pauseRef"
-  >
-    <div>
-      paused
-    </div>
-  </div>
+    heading="Game Paused"
+  >    
+    <template #footerLeft>
+      <cbutton
+        icon-only
+        @click="handleGameCancelation"
+      >
+        <cicon
+          name="home"
+          size="lg"
+        />
+      </cbutton>
+    </template>
+    
+    <template #footerCenter>
+      <cbutton
+        @click="handleGameResume"
+      >
+        Resume
+      </cbutton>
+    </template>
+    
+    <!-- <cbutton
+      slot="footerRight"
+      icon-only
+      @click="hideOverlay"
+    >
+      <cicon
+        name="cross"
+        size="lg"
+      />
+    </cbutton> -->
+  </ui-game-overlay-content>
 </template>
 
 <script lang="ts">
-import { ref, onMounted, onBeforeUnmount, defineComponent } from 'vue'
+import { onMounted, defineComponent } from 'vue'
 import { useStore } from 'vuex'
-import { UI } from '../../configs/constants'
+import UiGameOverlayContent from './UiGameOverlayContent.vue'
 
 export default defineComponent({
   name: 'UiGameOverlayPause',
+  components: {
+    UiGameOverlayContent
+  },
   setup() {
     // Injects
     const store = useStore()
 
+    // Methods
+    const hideOverlay = () => {
+      store.dispatch('gameUI/setOverlayFadeOut')
+    }
+    
+    const showOverlay = () => {
+      store.dispatch('gameUI/setOverlayFadeIn')
+    }
+
+    // Events
+    const handleGameCancelation = () => {
+      store.dispatch('game/setGameReset')
+      hideOverlay()
+    }
+    
+    const handleGameResume = () => {
+      store.dispatch('game/setGamePlaying')
+      hideOverlay()
+    }
+
+    // Hooks
     onMounted(() => {
-      store.dispatch('gameUI/setOverlayState', UI.overlayStates.fadeIn)
+      showOverlay()
     })
+
+    return {
+      handleGameCancelation,
+      handleGameResume
+    }
   }
 })
 </script>

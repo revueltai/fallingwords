@@ -7,7 +7,7 @@
   --c-primary: #038DFB;
   --c-primary-lighter: #4BAFFF;
   --c-secondary: #05050F;
-  --c-tertiary: #13132b;
+  --c-tertiary: #13132B;
   --c-quaternary: #EBEFFA;
   --c-quinary: #242468;
   --c-warning: #FFAD41;
@@ -63,6 +63,16 @@ body {
   100% { opacity: 0 }
 }
 
+@keyframes slide-in-top {
+  0% { transform: translateY(-24px); }
+  100% { transform: translateY(0); }
+}
+
+@keyframes slide-in-bottom {
+  0% { transform: translateY(24px); }
+  100% { transform: translateY(0); }
+}
+
 @keyframes scale-in {
   0% { transform: scale(0); }
   100% { transform: scale(1); }
@@ -86,12 +96,20 @@ body {
   animation: fade-out .5s ease-in-out;
 }
 
+.anim-slide-in-top {
+  animation: slide-in-top .5s ease-in-out;
+}
+
+.anim-slide-in-bottom {
+  animation: slide-in-bottom .5s ease-in-out;
+}
+
 .anim-scale-in {
-  animation: scale-in .5s ease-in-out;
+  animation: scale-in .2s ease-in-out;
 }
 
 .anim-scale-out {
-  animation: scale-out .5s ease-in-out;
+  animation: scale-out .2s ease-in-out;
 }
 
 .anim-beat {

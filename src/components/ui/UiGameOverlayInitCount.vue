@@ -13,7 +13,6 @@
 <script lang="ts">
 import { ref, onMounted, onBeforeUnmount, defineComponent } from 'vue'
 import { useStore } from 'vuex'
-import { UI } from '../../configs/constants'
 
 export default defineComponent({
   name: 'UiGameOverlayInitCount',
@@ -27,18 +26,18 @@ export default defineComponent({
     const counterRef = ref(null)
 
     // Methods
-    const triggerMatchInit = () => {
-      store.dispatch('gameUI/setOverlayState', UI.overlayStates.fadeOut)
+    const hideOverlay = () => {
+      store.dispatch('gameUI/setOverlayFadeOut')
       store.dispatch('game/initMatch')
     }
 
-    const startCountdown = () => {
-      store.dispatch('gameUI/setOverlayState', UI.overlayStates.fadeIn)
+    const showOverlay = () => {
+      store.dispatch('gameUI/setOverlayFadeIn')
       let intervalId: number = setInterval(() => {
         if (countdown.value <= 1) {
           countdown.value = null
           clearInterval(intervalId)
-          triggerMatchInit()
+          hideOverlay()
           return
         } 
 
@@ -58,7 +57,7 @@ export default defineComponent({
     }
 
     onMounted(() => {
-      startCountdown()
+      showOverlay()
     })
 
     onBeforeUnmount(() => {
