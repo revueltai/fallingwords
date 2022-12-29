@@ -6,7 +6,7 @@ import {
   PowerupTypes 
 } from '@project/interfaces'
 import { findIndex } from 'lodash'
-import { GAME_DEFAULTS, MESSAGES } from '../configs/constants'
+import { GAME_DEFAULTS, MESSAGES, UI } from '../configs/constants'
 import {
   createWord,
   createBoardLetters,
@@ -259,23 +259,23 @@ export default {
       commit('POWERUP_DEACTIVATE')
     },
 
-    setGamePause({ commit, getters }) {
+    setGamePause({ commit, getters, dispatch }) {
       const { gameover, playing, paused } = getters.matchStates
       
       if (getters.matchState !== gameover) {
         if (getters.matchState !== paused) {
           commit('SET_MATCH_STATE', paused)
-        } else {
-          commit('SET_MATCH_STATE', playing)
+          dispatch('gameUI/setOverlayComponent', UI.overlayComponents.pause, { root: true })
         }
       }
     },
 
-    preparemMatch({ commit }, payload) {
+    preparemMatch({ commit, dispatch }, payload) {
       commit('SET_MATCH_WORDS', payload.words)
       commit('SET_MATCH_LOCALES', payload.locales)
       commit('SET_MATCH_LIVES')
       commit('SET_ROUND')
+      dispatch('gameUI/setOverlayComponent', UI.overlayComponents.countdown, { root: true })
     },
     
     initMatch({ commit, getters }, payload) {

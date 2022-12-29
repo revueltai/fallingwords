@@ -1,6 +1,7 @@
 import {
   UIBoardElements, 
-  UIOverlayStates
+  UIOverlayStates,
+  UIOverlayComponents
 } from '@project/interfaces'
 import { UI } from '../configs/constants'
 
@@ -10,6 +11,7 @@ export default {
   state: () => {
     return {
       uiElementsHeight: {},
+      overlayComponent: '',
       overlayStates: UI.overlayStates,
       overlayState: UI.overlayStates.hidden
     }
@@ -18,28 +20,37 @@ export default {
   getters: {
     uiElementsHeight: (state: { uiElementsHeight: UIBoardElements }) => state.uiElementsHeight,
     overlayState: (state: { overlayState: UIOverlayStates }) => state.overlayState,
+    overlayComponent: (state: { overlayComponent: UIOverlayComponents }) => state.overlayComponent
   },
 
   mutations: {
-    SET_UI_ELEMENT_HEIGHT(state: { uiElementsHeight: UIBoardElements }, payload: UIBoardElements) {
+    SET_ELEMENT_HEIGHT(state: { uiElementsHeight: UIBoardElements }, payload: UIBoardElements) {
       state.uiElementsHeight = {
         ...state.uiElementsHeight,
         ...payload
       }
     },
     
-    SET_UI_OVERLAY_STATE(state: { overlayState: UIOverlayStates }, newState: UIOverlayStates) {
+    SET_OVERLAY_STATE(state: { overlayState: UIOverlayStates }, newState: UIOverlayStates) {
       state.overlayState = newState
+    },
+
+    SET_OVERLAY_COMPONENT(state: { overlayComponent: UIOverlayComponents }, componentName: UIOverlayComponents) {
+      state.overlayComponent = componentName
     }
   },
 
   actions: {
     setElementHeight({ commit }, uiElement: UIBoardElements) {
-      commit('SET_UI_ELEMENT_HEIGHT', uiElement)
+      commit('SET_ELEMENT_HEIGHT', uiElement)
     },
     
     setOverlayState({ commit }, state: UIOverlayStates) {
-      commit('SET_UI_OVERLAY_STATE', state)
+      commit('SET_OVERLAY_STATE', state)
+    },
+    
+    setOverlayComponent({ commit }, state: UIOverlayComponents) {
+      commit('SET_OVERLAY_COMPONENT', state)
     },
   }
 }

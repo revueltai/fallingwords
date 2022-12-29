@@ -7,7 +7,7 @@
     <div class="ui-game-overlay__wrapper">
       <div class="ui-game-overlay__bg" />
       <div class="ui-game-overlay__content">
-        <component :is="component" />
+        <component :is="overlayComponent" />
       </div>
     </div>
   </section>
@@ -18,14 +18,14 @@ import { ref, computed, watch, onMounted, onBeforeUnmount, defineComponent } fro
 import { useStore } from 'vuex'
 import { UI } from '@/configs/constants'
 import UiGameOverlayInitCount from './UiGameOverlayInitCount.vue'
-// import UiGameOverlayPause from './UiGameOverlayPause.vue'
+import UiGameOverlayPause from './UiGameOverlayPause.vue'
 // import UiGameOverlayPowerupTriggered from './UiGameOverlayPowerupTriggered.vue'
 
 export default defineComponent({
   name: 'UiGameOverlay',
   components: {
     UiGameOverlayInitCount,
-    // UiGameOverlayPause
+    UiGameOverlayPause
     // UiGameOverlayPowerupTriggered
   },
   setup() {
@@ -34,12 +34,12 @@ export default defineComponent({
     const store = useStore()
 
     // Refs
-    const component = 'UiGameOverlayInitCount'
     const gameOverlayRef = ref(null)
     const visible = ref(false)
 
     // Computed
     const overlayState = computed(() => store.getters['gameUI/overlayState'])
+    const overlayComponent = computed(() => store.getters['gameUI/overlayComponent'])
     
     // Watchers
     watch(overlayState, (newState) => {
@@ -47,6 +47,7 @@ export default defineComponent({
       
       switch (newState) {
         case UI.overlayStates.fadeIn:
+          visible.value = true
           el.classList.add('anim-fade-in')
           break
         
@@ -66,19 +67,20 @@ export default defineComponent({
     }
 
     onMounted(() => {
-      visible.value = true
       gameOverlayRef.value.addEventListener('animationend', handleAnimationEnd)
     })
     
     onBeforeUnmount(() => {
-      gameOverlayRef.value.removeEventListener('animationend', handleAnimationEnd)
+      if (gameOverlayRef.value) {
+        gameOverlayRef.value.removeEventListener('animationend', handleAnimationEnd)
+      }
     })
 
     return {
       gameOverlayRef,
       overlayState,
       visible,
-      component
+      overlayComponent
     }
   }
 })

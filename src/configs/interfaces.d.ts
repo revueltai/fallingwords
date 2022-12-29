@@ -3,6 +3,7 @@ declare module '@project/interfaces' {
 
   // UI
   export type UIOverlayStates = 'fadeIn' | 'visible' | 'fadeOut' | 'hidden'
+  export type UIOverlayComponents = 'UiGameOverlayInitCount' | 'UiGameOverlayPause' | 'UiGameOverlayPowerupTriggered'
   
   // Game
   export type MatchLocale = null | string
@@ -16,6 +17,18 @@ declare module '@project/interfaces' {
   export interface UIBoardElements {
     header: number;
     footer: number;
+  }
+  
+  export interface UI {
+    overlayStates: {
+      fadeIn: UIOverlayStates;
+      fadeOut: UIOverlayStates;
+      hidden: UIOverlayStates
+    },
+    overlayComponents: {
+      countdown: UIOverlayComponents;
+      pause: UIOverlayComponents;
+    }
   }
 
   // Game

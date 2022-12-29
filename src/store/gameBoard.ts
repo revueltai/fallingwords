@@ -2,12 +2,12 @@ export default {
   namespaced: true,
 
   state: () => {
-    return {      
+    return {
       boardEl: null
     }
   },
 
-  getters: {    
+  getters: {
     boardEl: (state: { boardEl: HTMLElement }) => state.boardEl,
   },
 

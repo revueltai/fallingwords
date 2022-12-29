@@ -81,7 +81,7 @@ const safelist = [
   'w-48',
   'w-56',
   'w-64',
-  'h-32',
+  'h-32'
 ]
 
 module.exports = {

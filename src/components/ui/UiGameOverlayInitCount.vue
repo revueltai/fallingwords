@@ -13,7 +13,7 @@
 <script lang="ts">
 import { ref, onMounted, onBeforeUnmount, defineComponent } from 'vue'
 import { useStore } from 'vuex'
-import { DUMMIE_DATA, UI } from '../../configs/constants'
+import { UI } from '../../configs/constants'
 
 export default defineComponent({
   name: 'UiGameOverlayInitCount',
@@ -30,13 +30,6 @@ export default defineComponent({
     const triggerMatchInit = () => {
       store.dispatch('gameUI/setOverlayState', UI.overlayStates.fadeOut)
       store.dispatch('game/initMatch')
-    }
-
-    const prepareMatch = () => {
-      store.dispatch('game/preparemMatch', {
-        words: DUMMIE_DATA.words,
-        locales: DUMMIE_DATA.locales
-      })
     }
 
     const startCountdown = () => {
@@ -65,12 +58,13 @@ export default defineComponent({
     }
 
     onMounted(() => {
-      prepareMatch()
       startCountdown()
     })
 
     onBeforeUnmount(() => {
-      counterRef.value.removeEventListener('animationend', handleAnimationEnd)
+      if (counterRef.value) {
+        counterRef.value.removeEventListener('animationend', handleAnimationEnd)
+      }
     })
 
     return {

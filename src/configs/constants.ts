@@ -70,6 +70,10 @@ export const UI = {
     fadeIn: 'fadeIn',
     fadeOut: 'fadeOut',
     hidden: 'hidden'
+  },
+  overlayComponents: {
+    countdown: 'UiGameOverlayInitCount',
+    pause: 'UiGameOverlayPause'
   }
 }
 
