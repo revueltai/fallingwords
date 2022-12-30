@@ -9,29 +9,32 @@
       class="character__collision-area"
     />
 
-    <img
-      ref="characterImage"
-      :src="characterExpression"
-      :class="isLoaded ? 'opacity-100' : ''"
-      class="transform transition-all opacity-0 duration-200 ease-in-out"
+    <div 
+      ref="characterAsset"
+      :class="isLoaded ? 'visible' : ''"
+      class="character__asset"
     >
+      <img 
+        :src="characterExpressionAsset"
+        class="block anim-like"
+      >
+
+    </div>
 
     <character-message />
   </div>
 </template>
 
 <script lang="ts">
-import { ref, computed, nextTick, onMounted, onBeforeUnmount, defineComponent } from 'vue'
+import { ref, computed, nextTick, watch, onMounted, onBeforeUnmount, defineComponent } from 'vue'
 import { useStore } from 'vuex'
 import { isMobile } from '../../utils/game.utils'
 import characterMessage from './CharacterMessage.vue'
-
-interface Character {
-  el: HTMLElement;
-  rect: DOMRect;
-}
-
-type CharacterEvent = TouchEvent | KeyboardEvent
+import {
+  UICharacter,
+  CharacterEvent,
+  CharacterExpressions
+} from '@project/interfaces'
 
 export default defineComponent({
   name: 'Character',
@@ -46,7 +49,7 @@ export default defineComponent({
     // Refs
     const store = useStore()
     const character = ref(null)
-    const characterImage = ref(null)
+    const characterAsset = ref(null)
     const characterCollisionEl = ref(null)
     const isLoaded = ref(false)
 
@@ -54,7 +57,13 @@ export default defineComponent({
     const isPlaying = computed(() => store.getters['game/matchIsPlaying'])
     const offset = computed(() => store.getters['gameCharacter/offset'])
     const characterExpression = computed(() => store.getters['gameCharacter/expression'])
+    const characterExpressionAsset = computed(() => store.getters['gameCharacter/expressionAsset'])
     const boardEl = computed(() => store.getters['gameBoard/boardEl'])
+
+    // Watchers
+    watch(characterExpression, (newExpression: CharacterExpressions) => {
+      setExpressionClasses(newExpression)
+    })
 
     // Methods
     const isValidKeyboardKey = (key: string): boolean => {
@@ -72,7 +81,7 @@ export default defineComponent({
     }
 
     const removeTilt = () => {
-      characterImage.value.classList.remove('tilt__left', 'tilt__right')
+      characterAsset.value.classList.remove('tilt__left', 'tilt__right')
     }
 
     const addTilt = (event: CharacterEvent) => {
@@ -85,14 +94,14 @@ export default defineComponent({
         ? 'right'
         : 'left'
 
-      characterImage.value.classList.add(`tilt__${direction}`)
+      characterAsset.value.classList.add(`tilt__${direction}`)
     }
 
     const getBoardRect = (): DOMRect => {
       return boardEl.value.getBoundingClientRect()
     }
 
-    const getCharacterData = (): Character => {
+    const getCharacterData = (): UICharacter => {
       return {
         el: character.value,
         rect: character.value.getBoundingClientRect()
@@ -103,7 +112,7 @@ export default defineComponent({
       return event.touches[0].clientX
     }
 
-    const getPositionXFromArrowKeys = (event: KeyboardEvent, character: Character): number => {
+    const getPositionXFromArrowKeys = (event: KeyboardEvent, character: UICharacter): number => {
       const distance: number = 1
 
       if (isValidKeyboardKey(event.key)) {
@@ -128,8 +137,19 @@ export default defineComponent({
       el.style.transform = `translate(${posX}px, ${posY}px)`
     }
 
-    const setExpression = (newState: string) => {
-      store.dispatch('gameCharacter/setExpression', newState)
+    const setExpressionClasses = (expression: CharacterExpressions) => {
+      const el: HTMLElement = characterAsset.value
+      const className: string = `anim-${expression}`
+      el.classList.add(className)
+      
+      setTimeout(() => {
+        el.classList.remove(className)
+      }, 800)
+    }
+    
+    const setExpression = (expression: CharacterExpressions) => {
+      setExpressionClasses(expression)
+      store.dispatch('gameCharacter/setExpression', expression)
     }
 
     const repositionCharacter = () => {
@@ -144,7 +164,7 @@ export default defineComponent({
 
     const updateCharacterPosition = (event: CharacterEvent) => {
       const boardRect: DOMRect = getBoardRect()
-      const character: Character = getCharacterData()
+      const character: UICharacter = getCharacterData()
       let cX: number
 
       if (window.TouchEvent && event instanceof TouchEvent) {
@@ -208,6 +228,7 @@ export default defineComponent({
     const initCharacter = () => {
       repositionCharacter()
       store.dispatch('gameCharacter/setElement', characterCollisionEl.value)
+
       setTimeout(() => {
         isLoaded.value = true
       }, 500)
@@ -248,9 +269,9 @@ export default defineComponent({
 
     return {
       character,
-      characterImage,
+      characterAsset,
       characterCollisionEl,
-      characterExpression,
+      characterExpressionAsset,
       isLoaded,
       isMobile,
       handleResize,
@@ -263,13 +284,76 @@ export default defineComponent({
 </script>
 
 <style scoped>
+@keyframes like {
+  from,
+  to {
+    transform: translate3d(0, 0, 0);
+  }
+
+  10%,
+  30%,
+  50%,
+  70%,
+  90% {
+    transform: translate3d(0, -4px, 0);
+  }
+
+  20%,
+  40%,
+  60%,
+  80% {
+    transform: translate3d(0, 4px, 0);
+  }
+}
+
+@keyframes dislike {
+  0%,
+  50% {
+    transform: translateX(0);
+  }
+
+  6.5% {
+    transform: translateX(-6px) rotateY(-9deg);
+  }
+
+  18.5% {
+    transform: translateX(5px) rotateY(7deg);
+  }
+
+  31.5% {
+    transform: translateX(-3px) rotateY(-5deg);
+  }
+
+  43.5% {
+    transform: translateX(2px) rotateY(3deg);
+  }
+}
+
+.anim-like,
+.anim-love {
+  animation: like .5s ease-in-out;
+}
+
+.anim-dislike {
+  animation: dislike .5s ease-in-out;
+}
+
 .character {
   @apply absolute border-primary w-64 h-64;
 }
 
-.character__collision-area {
-  @apply absolute w-32 h-24 left-1/4 bottom-2 opacity-50;
+.character__asset {
+  @apply transform transition-all opacity-0 duration-200 ease-in-out;
 }
+
+.visible {
+  @apply opacity-100;
+}
+
+.character__collision-area {
+  @apply absolute z-30 w-24 h-8 -ml-12 left-2/4 bottom-3 opacity-0;
+}
+
 .tilt__left {
   @apply rotate-12;
 }

@@ -1,4 +1,5 @@
 import {
+  CharacterExpressions,
   CharacterMessage
 } from '@project/interfaces'
 export default {
@@ -29,7 +30,8 @@ export default {
     offset: (state: { offset: number }) => state.offset,
     speed: (state: { speed: number }) => state.speed,
     characterEl: (state: { characterEl: HTMLElement }) => state.characterEl,
-    expression: (state: { expression: string, expressions: { [key: string]: string } }) => `/images/character/${state.expressions[state.expression]}`
+    expression: (state: { expression: CharacterExpressions }) => state.expression,
+    expressionAsset: (state: { expression: string, expressions: { [key: string]: string } }) => `/images/character/${state.expressions[state.expression]}`
   },
 
   mutations: {

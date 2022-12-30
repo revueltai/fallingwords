@@ -4,12 +4,14 @@ declare module '@project/interfaces' {
   // UI
   export type UIOverlayStates = 'fadeIn' | 'visible' | 'fadeOut' | 'hidden'
   export type UIOverlayComponents = 'UiGameOverlayInitCount' | 'UiGameOverlayPause' | 'UiGameOverlayPowerupTriggered'
-  
+
   // Game
   export type MatchLocale = null | string
   export type MatchStates = 'loading' | 'starting' | 'paused' | 'playing' | 'gameover'
   export type PowerupTypes = 'fire' | 'life' | 'ice' | 'wind'
   export type Word = Letter[]
+  export type CharacterEvent = TouchEvent | KeyboardEvent
+  export type CharacterExpressions = 'like' | 'dislike' | 'idle' | 'open' | 'love'
 
   //// Interfaces
 
@@ -17,6 +19,11 @@ declare module '@project/interfaces' {
   export interface UIBoardElements {
     header: number;
     footer: number;
+  }
+
+  export interface UICharacter {
+    el: HTMLElement;
+    rect: DOMRect;
   }
   
   export interface UI {
