@@ -73,6 +73,8 @@ const safelist = [
   'fill-current',
   'bg-warning',
   'bg-quinary',
+  'opacity-100',
+  'opacity-50',
   'w-8',
   'w-16',
   'w-24',

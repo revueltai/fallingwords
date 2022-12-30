@@ -81,8 +81,8 @@ export const GAME_DEFAULTS = {
   speed: 2,
   availableLetters: 8,
   wordLetterSpawn: 3,
+  powerupSpawn: 2,
   powerupDuration: 1000,
-  powerupSpawn: 15,
   powerups: POWERUPS,
   matchLifes: 4,
   matchPowerups: {

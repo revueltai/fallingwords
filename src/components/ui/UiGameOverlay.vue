@@ -100,6 +100,6 @@ export default defineComponent({
 }
 
 .ui-game-overlay__content {
-  @apply z-10 flex items-center justify-center relative w-full h-full;
+  @apply z-30 flex items-center justify-center relative w-full h-full;
 }
 </style>
