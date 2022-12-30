@@ -50,23 +50,6 @@ export default defineComponent({
 
 .ui-game-overlay-content__footer {
   @apply flex items-center justify-center gap-16; 
-}
-
-.slot__left,
-.slot__center,
-.slot__right {
-  animation: slide-fade-in-top .2s ease-in both;
-}
-
-.slot__left {
-  animation-delay: .1s;
-}
-
-.slot__center {
-  animation-delay: .2s;
-}
-
-.slot__right {
-  animation-delay: .3s;
+  animation: slide-fade-in-top .4s ease-in both;
 }
 </style>

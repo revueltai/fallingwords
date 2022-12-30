@@ -54,7 +54,7 @@ export default defineComponent({
     const isLoaded = ref(false)
 
     // Computed
-    const isPlaying = computed(() => store.getters['game/matchIsPlaying'])
+    const isPlaying = computed(() => store.getters['game/roundIsPlaying'])
     const offset = computed(() => store.getters['gameCharacter/offset'])
     const characterExpression = computed(() => store.getters['gameCharacter/expression'])
     const characterExpressionAsset = computed(() => store.getters['gameCharacter/expressionAsset'])

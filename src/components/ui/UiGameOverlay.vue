@@ -19,14 +19,14 @@ import { useStore } from 'vuex'
 import { UI } from '@/configs/constants'
 import UiGameOverlayInitCount from './UiGameOverlayInitCount.vue'
 import UiGameOverlayPause from './UiGameOverlayPause.vue'
-// import UiGameOverlayPowerupTriggered from './UiGameOverlayPowerupTriggered.vue'
+import UiGameOverlayGameOver from './UiGameOverlayGameOver.vue'
 
 export default defineComponent({
   name: 'UiGameOverlay',
   components: {
     UiGameOverlayInitCount,
-    UiGameOverlayPause
-    // UiGameOverlayPowerupTriggered
+    UiGameOverlayPause,
+    UiGameOverlayGameOver
   },
   setup() {
 

@@ -55,6 +55,6 @@ export default {
     
     setOverlayComponent({ commit }, state: UIOverlayComponents) {
       commit('SET_OVERLAY_COMPONENT', state)
-    },
+    }
   }
 }

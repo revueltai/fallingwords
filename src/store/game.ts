@@ -1,5 +1,5 @@
 import {
-  MatchStates, 
+  RoundStates, 
   MatchLocales, 
   BoardLetter, 
   Word, 
@@ -32,17 +32,17 @@ export default {
       matchLifes: GAME_DEFAULTS.matchLifes,
       matchPowerups: GAME_DEFAULTS.matchPowerups,
       matchPowerupsDuration: GAME_DEFAULTS.powerupDuration,
-      matchStates: {
+      matchWordsList: [],
+      matchRoundsTotal: 0,
+      matchRoundsCurrent: 0,
+      roundStates: {
         loading: 'loading',
         starting: 'starting',
         paused: 'paused',
         playing: 'playing',
         gameover: 'gameover'
       },
-      matchState: 'loading',
-      matchWordsList: [],
-      matchRoundsTotal: 0,
-      matchRoundsCurrent: 0,
+      roundState: 'loading',
       roundTotalAvailableLetters: GAME_DEFAULTS.availableLetters,
       roundWordOriginal: null,
       roundWordGuess: [],
@@ -60,15 +60,16 @@ export default {
     offset: (state: { offset: number }) => state.offset,
     speed: (state: { speed: number }) => state.speed,
     powerups: state => state.powerups,
-    matchStates: state => state.matchStates,
-    matchState: state => state.matchState,
-    matchIsPlaying: state => state.matchState === state.matchStates.playing,
     matchLifes: state => state.matchLifes,
     matchPowerups: state => state.matchPowerups,
     matchPowerupsDuration: state => state.matchPowerupsDuration,
     matchLocales: state => state.matchLocales,
     matchRoundsCurrent: state => state.matchRoundsCurrent + 1,
     matchRoundsTotal: state => state.matchRoundsTotal,
+    roundIsPlaying: state => state.roundState === state.roundStates.playing,
+    roundIsOver: state => state.roundState === state.roundStates.gameover,
+    roundStates: state => state.roundStates,
+    roundState: state => state.roundState,
     roundWordOriginal: state => state.roundWordOriginal,
     roundWordGuess: state => state.roundWordGuess,
     roundBoardTiles: state => state.roundBoardTiles,
@@ -122,10 +123,6 @@ export default {
       state.speed = speed
     },
 
-    SET_MATCH_STATE(state, matchState: MatchStates) {
-      state.matchState = matchState
-    },
-
     SET_MATCH_WORDS(state, wordsList: MatchLocales[]) {
       state.matchWordsList = wordsList
       state.matchRoundsTotal = wordsList.length
@@ -155,6 +152,10 @@ export default {
         state.roundPowerupSpawnChance,
         state.roundWordLetterSpawnChance
       )
+    },
+
+    SET_ROUND_STATE(state, roundState: RoundStates) {
+      state.roundState = roundState
     },
 
     SET_LETTER_AS_GUESSED(state, wordIndex: number) {
@@ -244,9 +245,9 @@ export default {
       dispatch('gameCharacter/setChewExpressions', newExpression, { root: true })
     },
 
-    checkGameOver({ commit, getters }) {
+    checkGameOver({ commit, getters, dispatch }) {
       if (getters.matchLifes <= 0) {
-        commit('SET_MATCH_STATE', getters.matchStates.gameover)
+        dispatch('setGameOver')
       }
     },
 
@@ -259,7 +260,7 @@ export default {
     },
 
     activatePoweup({ commit, getters, dispatch }, type: PowerupTypes) {
-      const hasPowerupsOfType = getters.matchPowerups[type] > 0
+      const hasPowerupsOfType: boolean = getters.matchPowerups[type] > 0
 
       if (!getters.roundHasActivePowerup && hasPowerupsOfType) {
         dispatch('decreasePowerup', type)
@@ -272,18 +273,23 @@ export default {
     },
 
     setGamePlaying({ commit, getters }) {
-      commit('SET_MATCH_STATE', getters.matchStates.playing)
+      commit('SET_ROUND_STATE', getters.roundStates.playing)
     },
 
     setGamePause({ commit, getters, dispatch }) {
-      const { gameover, paused } = getters.matchStates
+      const { gameover, paused } = getters.roundStates
       
-      if (getters.matchState !== gameover) {
-        if (getters.matchState !== paused) {
-          commit('SET_MATCH_STATE', paused)
+      if (getters.roundState !== gameover) {
+        if (getters.roundState !== paused) {
+          commit('SET_ROUND_STATE', paused)
           dispatch('gameUI/setOverlayComponent', UI.overlayComponents.pause, { root: true })
         }
       }
+    },
+
+    setGameOver({ commit, getters, dispatch }) {
+      commit('SET_ROUND_STATE', getters.roundStates.gameover)
+      dispatch('gameUI/setOverlayComponent', UI.overlayComponents.gameover, { root: true })
     },
 
     preparemMatch({ commit, dispatch }, payload) {
@@ -294,8 +300,8 @@ export default {
       dispatch('gameUI/setOverlayComponent', UI.overlayComponents.countdown, { root: true })
     },
     
-    initMatch({ commit, getters }, payload) {
-      commit('SET_MATCH_STATE', getters.matchStates.playing)
+    initMatch({ commit, getters }) {
+      commit('SET_ROUND_STATE', getters.roundStates.playing)
     }
   }
 }

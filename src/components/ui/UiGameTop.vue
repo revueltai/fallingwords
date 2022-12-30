@@ -7,6 +7,7 @@
       :has-background="false"
       icon-only
       class="ui-game-top__pause"
+      :disabled="isGameOver"
       @click="handlePause"
     >
       <cicon
@@ -69,7 +70,8 @@ export default defineComponent({
     // Refs
     const header = ref(null)
 
-    // Computed
+        // Computed
+    const isGameOver = computed(() => store.getters['game/roundIsOver'])
     const lifes = computed(() => store.getters['game/matchLifes'])
     const totalRounds = computed(() => store.getters['game/matchRoundsTotal'])
     const currentRound = computed(() => store.getters['game/matchRoundsCurrent'])
@@ -91,8 +93,10 @@ export default defineComponent({
 
     // Events
     const handlePause = () => {
-      store.dispatch('gameUI/setOverlayFadeIn')
-      store.dispatch('game/setGamePause')
+      if (!isGameOver.value) {
+        store.dispatch('gameUI/setOverlayFadeIn')
+        store.dispatch('game/setGamePause')
+      }
     }
 
     // Hooks
@@ -105,6 +109,7 @@ export default defineComponent({
     return {
       header,
       lifes,
+      isGameOver,
       currentRound,
       totalRounds,
       originalWord,

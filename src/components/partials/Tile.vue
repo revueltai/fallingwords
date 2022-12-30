@@ -65,7 +65,7 @@ export default defineComponent({
     const powerups = computed(() => store.getters['game/powerups'])
     const activePowerup = computed(() => store.getters['game/roundActivePowerupType'])
     const roundWord = computed(() => store.getters['game/roundWordGuess'])
-    const isPlaying = computed(() => store.getters['game/matchIsPlaying'])
+    const isPlaying = computed(() => store.getters['game/roundIsPlaying'])
     const hasActivePowerup = computed(() => !!activePowerup.value)
     const isPowerupTile = computed(() => !!props.tile.powerup)
 

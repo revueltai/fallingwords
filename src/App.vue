@@ -16,7 +16,6 @@
 
 <script lang="ts">
 import { ref, computed, onMounted, defineComponent } from 'vue'
-import { vAnimController } from 'vue-simple-transitions'
 import { useStore } from 'vuex'
 
 export default defineComponent({
@@ -37,7 +36,6 @@ export default defineComponent({
     }
 
     const initialize = () => {
-      vAnimController()
       setCanvasSize()
       store.dispatch('app/setElement', appWrapper.value)
       isLoaded.value = true

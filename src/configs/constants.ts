@@ -73,18 +73,19 @@ export const UI = {
   },
   overlayComponents: {
     countdown: 'UiGameOverlayInitCount',
-    pause: 'UiGameOverlayPause'
+    pause: 'UiGameOverlayPause',
+    gameover: 'UiGameOverlayGameOver'
   }
 }
 
 export const GAME_DEFAULTS = {
-  speed: 2,
+  speed: 4,
   availableLetters: 8,
   wordLetterSpawn: 3,
   powerupSpawn: 8,
   powerupDuration: 1000,
   powerups: POWERUPS,
-  matchLifes: 4,
+  matchLifes: 1,
   matchPowerups: {
     fire: 3,
     ice: 3,

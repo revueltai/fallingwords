@@ -1,8 +1,8 @@
 <template>
   <ui-game-overlay-content 
     ref="pauseRef"
-    heading="Game Paused"
-  >    
+    heading="Out of Lifes!"
+  > 
     <template #footerLeft>
       <cbutton
         icon-only
@@ -17,9 +17,9 @@
     
     <template #footerCenter>
       <cbutton
-        @click="handleGameResume"
+        @click="handleGameRetry"
       >
-        Resume
+        Retry
       </cbutton>
     </template>
   </ui-game-overlay-content>
@@ -31,7 +31,7 @@ import { useStore } from 'vuex'
 import UiGameOverlayContent from './UiGameOverlayContent.vue'
 
 export default defineComponent({
-  name: 'UiGameOverlayPause',
+  name: 'UiGameOverlayGameOver',
   components: {
     UiGameOverlayContent
   },
@@ -54,9 +54,8 @@ export default defineComponent({
       hideOverlay()
     }
     
-    const handleGameResume = () => {
-      store.dispatch('game/setGamePlaying')
-      hideOverlay()
+    const handleGameRetry = () => {
+      alert('not coded yet')
     }
 
     // Hooks
@@ -66,7 +65,7 @@ export default defineComponent({
 
     return {
       handleGameCancelation,
-      handleGameResume
+      handleGameRetry
     }
   }
 })

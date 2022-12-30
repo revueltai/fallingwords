@@ -1,13 +1,13 @@
-declare module '@project/interfaces' {  
+declare module '@project/interfaces' {
   ////// Types
 
   // UI
   export type UIOverlayStates = 'fadeIn' | 'visible' | 'fadeOut' | 'hidden'
-  export type UIOverlayComponents = 'UiGameOverlayInitCount' | 'UiGameOverlayPause' | 'UiGameOverlayPowerupTriggered'
+  export type UIOverlayComponents = 'UiGameOverlayInitCount' | 'UiGameOverlayPause' | 'UiGameOverlayGameOver'
 
   // Game
   export type MatchLocale = null | string
-  export type MatchStates = 'loading' | 'starting' | 'paused' | 'playing' | 'gameover'
+  export type RoundStates = 'loading' | 'starting' | 'paused' | 'playing' | 'gameover'
   export type PowerupTypes = 'fire' | 'life' | 'ice' | 'wind'
   export type Word = Letter[]
   export type CharacterEvent = TouchEvent | KeyboardEvent

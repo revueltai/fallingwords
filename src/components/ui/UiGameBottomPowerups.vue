@@ -14,7 +14,7 @@
     >
       <cicon
         :name="powerupButton.asset"
-        :class="isActivePowerup(powerupButton.id) ? 'anim-highligh' : ''"
+        :class="getPowerupClasses(powerupButton.id)"
         size="3xl"
         type="fill"
       />
@@ -36,7 +36,7 @@
 
 <script lang="ts">
 import { computed, onMounted, onBeforeUnmount, defineComponent } from 'vue'
-import type { PowerupTypes } from '@project/interfaces'
+import { PowerupTypes } from '@project/interfaces'
 import { isMobile } from '../../utils/game.utils'
 import { useStore } from 'vuex'
 
@@ -56,7 +56,7 @@ export default defineComponent({
     const keyboardKeys = ['1', '2', '3']
 
     // Computed
-    const isPlaying = computed(() => store.getters['game/matchIsPlaying'])
+    const isPlaying = computed(() => store.getters['game/roundIsPlaying'])
     const activePowerupType = computed(() => store.getters['game/roundActivePowerupType'])
     const isActive = computed(() => !!activePowerupType.value)
     const powerupButtons = computed(() => {
@@ -82,11 +82,17 @@ export default defineComponent({
     })
     
     // Methods
-    const isActivePowerup = (id: PowerupTypes) => {
+    const getPowerupClasses = (id: string) => {
+      return isActivePowerup(id as PowerupTypes) 
+        ? 'anim-highlight' 
+        : ''
+    }
+
+    const isActivePowerup = (id: PowerupTypes): boolean => {
       return isActive.value && id === activePowerupType.value
     }
 
-    const hasPowerups = (count: number) => {
+    const hasPowerups = (count: number): string => {
       return count > 0 
         ? 'opacity-100'
         : 'opacity-50'
@@ -124,6 +130,7 @@ export default defineComponent({
       isActive,
       isMobile,
       isActivePowerup,
+      getPowerupClasses,
       activatePowerup,
       hasPowerups,
       powerupButtons
@@ -164,7 +171,7 @@ export default defineComponent({
   line-height: normal;
 }
 
-.anim-highligh {
+.anim-highlight {
   animation: highlight .5s ease-in-out both;
 }
 </style>
