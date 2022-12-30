@@ -131,7 +131,7 @@ export default defineComponent({
 
     const setPosition = () => {
       if (tile.value) {
-        tile.value.style.transform = `translate(${posX}px, ${posY}px)`        
+        tile.value.style.transform = `translate(${posX}px, ${posY}px)`
       }
     }
 
@@ -221,20 +221,22 @@ export default defineComponent({
 
     // Event Handlers
     const handleRAF = () => {
-      const tileCollidesWithCharacter = isTileCollidingWithCharacter()
-      const tileOutOfBounds: boolean = isTileOutOfBounds()
-      
-      if (tileCollidesWithCharacter || tileOutOfBounds) {
-        removeTile(tileOutOfBounds)
-        cancelAnimationFrame(raf)
-        return
+      if (tile.value) {
+        const tileCollidesWithCharacter = isTileCollidingWithCharacter()
+        const tileOutOfBounds: boolean = isTileOutOfBounds()
+        
+        if (tileCollidesWithCharacter || tileOutOfBounds) {
+          removeTile(tileOutOfBounds)
+          cancelAnimationFrame(raf)
+          return
+        }
+        
+        if (isMoveableTile()) {
+          move()
+        }
+        
+        animateNewFrame()
       }
-      
-      if (isMoveableTile()) {
-        move()
-      }
-      
-      animateNewFrame()
     }
 
     const handleAnimationEnd = () => {
@@ -243,7 +245,7 @@ export default defineComponent({
 
     const initialize = () => {
       nextTick(() => {
-        setCoordinates()  
+        setCoordinates()
         setFPS()
         animateNewFrame()
       })
