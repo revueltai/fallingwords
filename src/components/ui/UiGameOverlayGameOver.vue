@@ -1,6 +1,5 @@
 <template>
   <ui-game-overlay-content 
-    ref="pauseRef"
     heading="Out of Lifes!"
   > 
     <template #footerLeft>

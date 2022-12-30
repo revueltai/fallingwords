@@ -23,7 +23,7 @@ export default defineComponent({
 
     // Methods
     const setPosition = () => {
-      const boardEl = board.value      
+      const boardEl = board.value
       const canvasRect: DOMRect = canvasEl.value.getBoundingClientRect()
       const boardHeight: number = canvasRect.height - UIElementsHeight.value.header - UIElementsHeight.value.footer
       const boardWidth: number = canvasRect.width
@@ -38,17 +38,17 @@ export default defineComponent({
       setPosition()
     })
 
-    const initialize = () => {    
-      nextTick(() => {        
+    const initialize = () => {
+      nextTick(() => {
         handleResize()
         window.addEventListener('resize', handleResize, false)
-        store.dispatch('gameBoard/setElement', board.value)      
+        store.dispatch('gameBoard/setElement', board.value)
       })
     }
 
     // Hooks
     onMounted (() => {
-      initialize()      
+      initialize()
     })
 
     onBeforeUnmount (() => {

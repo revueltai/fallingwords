@@ -17,8 +17,8 @@ declare module '@project/interfaces' {
 
   // UI
   export interface UIBoardElements {
-    header: number;
-    footer: number;
+    header: HTMLElement;
+    footer: HTMLElement;
   }
 
   export interface UICharacter {

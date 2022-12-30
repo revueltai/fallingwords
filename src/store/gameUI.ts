@@ -10,7 +10,7 @@ export default {
 
   state: () => {
     return {
-      elementsHeight: {},
+      elements: {},
       overlayComponent: '',
       overlayStates: UI.overlayStates,
       overlayState: UI.overlayStates.hidden
@@ -18,15 +18,21 @@ export default {
   },
 
   getters: {
-    elementsHeight: (state: { elementsHeight: UIBoardElements }) => state.elementsHeight,
     overlayState: (state: { overlayState: UIOverlayStates }) => state.overlayState,
-    overlayComponent: (state: { overlayComponent: UIOverlayComponents }) => state.overlayComponent
+    overlayComponent: (state: { overlayComponent: UIOverlayComponents }) => state.overlayComponent,
+    elementsHeight: (state: { elements: UIBoardElements }) => {
+      const rs = {}
+      for (const [key, el] of Object.entries(state.elements)) {
+        rs[key] = el.getBoundingClientRect().height
+      }
+      return rs
+    },
   },
 
   mutations: {
-    SET_ELEMENT_HEIGHT(state: { elementsHeight: UIBoardElements }, payload: UIBoardElements) {
-      state.elementsHeight = {
-        ...state.elementsHeight,
+    SET_ELEMENT(state: { elements: UIBoardElements }, payload: UIBoardElements) {
+      state.elements = {
+        ...state.elements,
         ...payload
       }
     },
@@ -41,8 +47,8 @@ export default {
   },
 
   actions: {
-    setElementHeight({ commit }, uiElement: UIBoardElements) {
-      commit('SET_ELEMENT_HEIGHT', uiElement)
+    setElement({ commit }, uiElement: UIBoardElements) {
+      commit('SET_ELEMENT', uiElement)
     },
     
     setOverlayFadeIn({ commit }, state: UIOverlayStates) {

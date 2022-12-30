@@ -28,8 +28,8 @@ export default defineComponent({
 
     // Hooks
     onMounted(() => {
-      store.dispatch('gameUI/setElementHeight', {
-        footer: footer.value.getBoundingClientRect().height
+      store.dispatch('gameUI/setElement', {
+        footer: footer.value
       })
     })
 

@@ -57,7 +57,7 @@
 
 <script lang="ts">
 import { Letter } from '@project/interfaces'
-import { ref, computed, onMounted, defineComponent } from 'vue'
+import { ref, computed, nextTick, onMounted, defineComponent } from 'vue'
 import { useStore } from 'vuex'
 
 export default defineComponent({
@@ -101,8 +101,8 @@ export default defineComponent({
 
     // Hooks
     onMounted (() => {
-      store.dispatch('gameUI/setElementHeight', {
-        header: header.value.getBoundingClientRect().height
+      store.dispatch('gameUI/setElement', {
+        header: header.value
       })
     })
 
