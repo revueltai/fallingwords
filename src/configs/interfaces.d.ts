@@ -23,7 +23,7 @@ declare module '@project/interfaces' {
     overlayStates: {
       fadeIn: UIOverlayStates;
       fadeOut: UIOverlayStates;
-      hidden: UIOverlayStates
+      hidden: UIOverlayStates;
     },
     overlayComponents: {
       countdown: UIOverlayComponents;
@@ -36,6 +36,11 @@ declare module '@project/interfaces' {
     en: string;
     es: string;
     de: string;
+  }
+
+  export interface CharacterMessage {
+    type: 'powerup' | 'like' | 'dislike';
+    message: string;
   }
 
   export interface BoardLetter {

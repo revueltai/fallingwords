@@ -3,7 +3,13 @@
     ref="characterMessageEl"
     class="character-message"
   >
-    {{ message }}
+    <span 
+      v-for="index in 3"
+      :key="index"
+      :class="`message t${index} ${helperClass}`"
+    >
+      {{ message.message }}
+    </span>
   </div>
 </template>
 
@@ -19,7 +25,8 @@ export default defineComponent({
     const store = useStore()
 
     // Refs
-    const showClass = 'show'
+    const showClass: string = 'show'
+    const helperClass = ref('')
     const characterMessageEl = ref(null)
 
     // Computed
@@ -27,8 +34,9 @@ export default defineComponent({
     
     // Watchers
     watch(message, (newMessage) => {
-      if (newMessage) {
+      if (newMessage.message) {
         const el = characterMessageEl.value
+        helperClass.value = newMessage.type
         el.classList.add(showClass)
         el.addEventListener('animationend', handleAnimationEnd)
       }
@@ -37,12 +45,14 @@ export default defineComponent({
     // Event Handlers
     const handleAnimationEnd = (event: AnimationEvent) => {
       event.stopPropagation()
-      store.dispatch('gameCharacter/setMessage', '')
+      helperClass.value = ''
+      store.dispatch('gameCharacter/resetMessage')
       characterMessageEl.value.classList.remove(showClass)
     }
 
     return {
       characterMessageEl,
+      helperClass,
       message
     }
   }
@@ -51,7 +61,8 @@ export default defineComponent({
 
 <style scoped>
 @keyframes slideInMessage {
-  0% { opacity: 0;
+  0% { 
+    opacity: 0;
   }
 
   70% { 
@@ -59,17 +70,37 @@ export default defineComponent({
   }
   
   100% { 
-    transform: translateY(-32px);
+    transform: translateY(-48px);
     opacity: 0;
   }
 }
 
-.character-message {
-  @apply absolute font-bold text-center right-0 top-0 w-full;
+.character-message .t1,
+.character-message .t2,
+.character-message .t3 {
+  @apply absolute font-bold text-center right-0 -top-24 w-full;
   text-shadow: 0 2px 8px var(--c-primary);
 }
 
-.character-message.show {
-  animation: slideInMessage .7s ease-in-out forwards;
+.character-message.show .t1,
+.character-message.show .t2,
+.character-message.show .t3 {
+  animation: slideInMessage .8s ease-in-out both;
+}
+
+.character-message.show .t2 {
+  animation-delay: .1s;
+}
+
+.character-message.show .t3 {
+  animation-delay: .2s;
+}
+
+.message.powerup {
+  @apply text-success;
+}
+
+.message.dislike {
+  @apply text-danger;
 }
 </style>

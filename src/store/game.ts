@@ -3,7 +3,8 @@ import {
   MatchLocales, 
   BoardLetter, 
   Word, 
-  PowerupTypes 
+  PowerupTypes, 
+  CharacterMessage
 } from '@project/interfaces'
 import { findIndex } from 'lodash'
 import { GAME_DEFAULTS, MESSAGES, UI } from '../configs/constants'
@@ -197,7 +198,7 @@ export default {
     checkTile({ commit, getters, dispatch }, tile: BoardLetter) {
       const word: Word = getters.roundWordGuess
       let newExpression: string
-      let message: string = ''
+      let message: CharacterMessage
 
       if (tile.letter) {
         // Check letter
@@ -205,12 +206,19 @@ export default {
 
         if (letterInWord) {
           newExpression = 'like'
-          message = MESSAGES.like[getRandomNum(MESSAGES.like.length)]
-          const index = getLetterIndexInWord(tile.letter, word)
-          commit('SET_LETTER_AS_GUESSED', index)
+          message = {
+            type: 'like',
+            message: MESSAGES.like[getRandomNum(MESSAGES.like.length)]
+          }
+          
+          commit('SET_LETTER_AS_GUESSED', getLetterIndexInWord(tile.letter, word))
         } else {
           newExpression = 'dislike'
-          message = MESSAGES.dislike[getRandomNum(MESSAGES.dislike.length)]
+          message = {
+            type: 'dislike',
+            message: MESSAGES.dislike[getRandomNum(MESSAGES.dislike.length)]
+          }
+          
           dispatch('decreaseLifes')
           dispatch('checkGameOver')
         }
@@ -219,7 +227,11 @@ export default {
         newExpression = 'love'
         const id: string = tile.powerup.id
         const powerups = getters.powerups
-        message = `+1 ${tile.powerup.text}`
+
+        message = {
+          type: 'powerup',
+          message: `+1 ${tile.powerup.text}`
+        }
 
         if (id === powerups.life.id) {
           dispatch('increaseLifes')

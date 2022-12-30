@@ -1,3 +1,6 @@
+import {
+  CharacterMessage
+} from '@project/interfaces'
 export default {
   namespaced: true,
 
@@ -5,7 +8,10 @@ export default {
     return {
       offset: 90,
       characterEl: null,
-      message: '',
+      message: {
+        message: '',
+        type: ''
+      },
       expression: 'idle',
       expressions: {
         idle: 'MouthIdle.svg',
@@ -19,7 +25,7 @@ export default {
   },
 
   getters: {
-    message: (state: { message: string }) => state.message,
+    message: (state: { message: CharacterMessage }) => state.message,
     offset: (state: { offset: number }) => state.offset,
     speed: (state: { speed: number }) => state.speed,
     characterEl: (state: { characterEl: HTMLElement }) => state.characterEl,
@@ -31,8 +37,11 @@ export default {
       state.expression = expression
     },
 
-    SET_CHARACTER_MESSAGE(state, message: string) {
-      state.message = message
+    SET_CHARACTER_MESSAGE(state: { message: CharacterMessage }, message: CharacterMessage) {
+      state.message = { 
+        type: message.type, 
+        message: message.message 
+      }
     },
 
     SET_ELEMENT(state: { characterEl: HTMLElement }, characterElement: HTMLElement) {
@@ -48,7 +57,7 @@ export default {
     setMessage({ commit }, message: string) {
       commit('SET_CHARACTER_MESSAGE', message)
     },
-
+    
     setExpression({ commit }, expression: string) {
       commit('SET_CHARACTER_EXPRESSION', expression)
     },
@@ -83,6 +92,13 @@ export default {
       setTimeout(() => {
         commit('SET_CHARACTER_EXPRESSION', 'open')
       }, 500)
-    }
+    },
+
+    resetMessage({ commit }) {
+      commit('SET_CHARACTER_MESSAGE', {
+        type: '',
+        message: ''
+      })
+    },
   }
 }
