@@ -30,7 +30,7 @@ import { useStore } from 'vuex'
 import UiGameOverlayContent from './UiGameOverlayContent.vue'
 
 export default defineComponent({
-  name: 'UiGameOverlayGameOver',
+  name: 'UiGameOverlayRoundLost',
   components: {
     UiGameOverlayContent
   },

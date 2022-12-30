@@ -19,14 +19,16 @@ import { useStore } from 'vuex'
 import { UI } from '@/configs/constants'
 import UiGameOverlayInitCount from './UiGameOverlayInitCount.vue'
 import UiGameOverlayPause from './UiGameOverlayPause.vue'
-import UiGameOverlayGameOver from './UiGameOverlayGameOver.vue'
+import UiGameOverlayRoundWon from './UiGameOverlayRoundWon.vue'
+import UiGameOverlayRoundLost from './UiGameOverlayRoundLost.vue'
 
 export default defineComponent({
   name: 'UiGameOverlay',
   components: {
     UiGameOverlayInitCount,
     UiGameOverlayPause,
-    UiGameOverlayGameOver
+    UiGameOverlayRoundWon,
+    UiGameOverlayRoundLost
   },
   setup() {
 

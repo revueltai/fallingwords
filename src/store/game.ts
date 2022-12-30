@@ -40,7 +40,8 @@ export default {
         starting: 'starting',
         paused: 'paused',
         playing: 'playing',
-        gameover: 'gameover'
+        roundwon: 'roundwon',
+        roundlost: 'roundlost'
       },
       roundState: 'loading',
       roundTotalAvailableLetters: GAME_DEFAULTS.availableLetters,
@@ -56,7 +57,7 @@ export default {
     }
   },
 
-  getters: {    
+  getters: {
     offset: (state: { offset: number }) => state.offset,
     speed: (state: { speed: number }) => state.speed,
     powerups: state => state.powerups,
@@ -66,10 +67,11 @@ export default {
     matchLocales: state => state.matchLocales,
     matchRoundsCurrent: state => state.matchRoundsCurrent + 1,
     matchRoundsTotal: state => state.matchRoundsTotal,
-    roundIsPlaying: state => state.roundState === state.roundStates.playing,
-    roundIsOver: state => state.roundState === state.roundStates.gameover,
     roundStates: state => state.roundStates,
     roundState: state => state.roundState,
+    roundIsPlaying: state => state.roundState === state.roundStates.playing,
+    roundIsWon: state => state.roundState === state.roundStates.roundwon,
+    roundIsLost: state => state.roundState === state.roundStates.roundlost,
     roundWordOriginal: state => state.roundWordOriginal,
     roundWordGuess: state => state.roundWordGuess,
     roundBoardTiles: state => state.roundBoardTiles,
@@ -213,6 +215,7 @@ export default {
           }
           
           commit('SET_LETTER_AS_GUESSED', getLetterIndexInWord(tile.letter, word))
+          dispatch('checkRoundWon')
         } else {
           newExpression = 'dislike'
           message = {
@@ -221,7 +224,7 @@ export default {
           }
           
           dispatch('decreaseLifes')
-          dispatch('checkGameOver')
+          dispatch('checkRoundOver')
         }
       } else {
         // Check powerup
@@ -245,9 +248,22 @@ export default {
       dispatch('gameCharacter/setChewExpressions', newExpression, { root: true })
     },
 
-    checkGameOver({ commit, getters, dispatch }) {
+    checkRoundWon({ getters, dispatch }) {
+      let isWordFullyGuessed: boolean = true
+      for (const letter of getters.roundWordGuess) {
+        if (!letter.guessed) {
+          isWordFullyGuessed = false
+        }
+      }
+
+      if (isWordFullyGuessed) {
+        dispatch('setRoundWon')
+      }
+    },
+
+    checkRoundOver({ getters, dispatch }) {
       if (getters.matchLifes <= 0) {
-        dispatch('setGameOver')
+        dispatch('setRoundLost')
       }
     },
 
@@ -277,9 +293,9 @@ export default {
     },
 
     setGamePause({ commit, getters, dispatch }) {
-      const { gameover, paused } = getters.roundStates
+      const { roundlost, paused } = getters.roundStates
       
-      if (getters.roundState !== gameover) {
+      if (getters.roundState !== roundlost) {
         if (getters.roundState !== paused) {
           commit('SET_ROUND_STATE', paused)
           dispatch('gameUI/setOverlayComponent', UI.overlayComponents.pause, { root: true })
@@ -287,9 +303,14 @@ export default {
       }
     },
 
-    setGameOver({ commit, getters, dispatch }) {
-      commit('SET_ROUND_STATE', getters.roundStates.gameover)
-      dispatch('gameUI/setOverlayComponent', UI.overlayComponents.gameover, { root: true })
+    setRoundWon({ commit, getters, dispatch }) {
+      commit('SET_ROUND_STATE', getters.roundStates.roundwon)
+      dispatch('gameUI/setOverlayComponent', UI.overlayComponents.roundowon, { root: true })
+    },
+
+    setRoundLost({ commit, getters, dispatch }) {
+      commit('SET_ROUND_STATE', getters.roundStates.roundlost)
+      dispatch('gameUI/setOverlayComponent', UI.overlayComponents.roundlost, { root: true })
     },
 
     preparemMatch({ commit, dispatch }, payload) {

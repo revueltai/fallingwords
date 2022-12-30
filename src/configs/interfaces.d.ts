@@ -2,18 +2,18 @@ declare module '@project/interfaces' {
   ////// Types
 
   // UI
-  export type UIOverlayStates = 'fadeIn' | 'visible' | 'fadeOut' | 'hidden'
-  export type UIOverlayComponents = 'UiGameOverlayInitCount' | 'UiGameOverlayPause' | 'UiGameOverlayGameOver'
+  export type UIOverlayStates = 'fadeIn' | 'visible' | 'fadeOut' | 'hidden';
+  export type UIOverlayComponents = 'UiGameOverlayInitCount' | 'UiGameOverlayPause' | 'UiGameOverlayRoundWon' | 'UiGameOverlayRoundLost';
 
   // Game
-  export type MatchLocale = null | string
-  export type RoundStates = 'loading' | 'starting' | 'paused' | 'playing' | 'gameover'
-  export type PowerupTypes = 'fire' | 'life' | 'ice' | 'wind'
-  export type Word = Letter[]
-  export type CharacterEvent = TouchEvent | KeyboardEvent
-  export type CharacterExpressions = 'like' | 'dislike' | 'idle' | 'open' | 'love'
+  export type MatchLocale = null | string;
+  export type RoundStates = 'loading' | 'starting' | 'paused' | 'playing' | 'roundwon' | 'roundlost';
+  export type PowerupTypes = 'fire' | 'life' | 'ice' | 'wind';
+  export type Word = Letter[];
+  export type CharacterEvent = TouchEvent | KeyboardEvent;
+  export type CharacterExpressions = 'like' | 'dislike' | 'idle' | 'open' | 'love';
 
-  //// Interfaces
+  ////// Interfaces
 
   // UI
   export interface UIBoardElements {

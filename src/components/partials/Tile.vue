@@ -65,8 +65,8 @@ export default defineComponent({
     const powerups = computed(() => store.getters['game/powerups'])
     const activePowerup = computed(() => store.getters['game/roundActivePowerupType'])
     const roundWord = computed(() => store.getters['game/roundWordGuess'])
-    const isPlaying = computed(() => store.getters['game/roundIsPlaying'])
     const hasActivePowerup = computed(() => !!activePowerup.value)
+    const isPlaying = computed(() => store.getters['game/roundIsPlaying'])
     const isPowerupTile = computed(() => !!props.tile.powerup)
 
     const cssClasses = computed(() => {
@@ -149,20 +149,19 @@ export default defineComponent({
 
     const isTileCollidingWithCharacter = () => {
       const tileEl: HTMLElement = tile.value
-      const tileWrapperEl: HTMLElement = tileWrapper.value
       const tileRect: DOMRect = tileEl.getBoundingClientRect()
       const characterElRect: DOMRect = characterEl.value.getBoundingClientRect()
-
+      
       const p1: boolean = tileRect.left < characterElRect.left + characterElRect.width
       const p2: boolean = tileRect.left + tileRect.width > characterElRect.left
       const p3: boolean = tileRect.top < characterElRect.bottom + characterElRect.height
       const p4: boolean = tileRect.top + tileRect.height > characterElRect.bottom
-
+      
       if (p1 && p2 && p3 && p4) {
         disableRAF.value = true
-        store.dispatch('game/checkTile', props.tile)
-
+        const tileWrapperEl: HTMLElement = tileWrapper.value
         tileWrapperEl.classList.add('scale-0')
+        tileWrapperEl.addEventListener('transitionend', handleAnimationEnd)
       }
 
       return disableRAF.value
@@ -211,7 +210,7 @@ export default defineComponent({
       switch (type) {
         case wind.id:
           const tileWrapperEl: HTMLElement = tileWrapper.value
-          const duration = store.getters['game/matchPowerupsDuration']
+          const duration: number = store.getters['game/matchPowerupsDuration']
 
           tileWrapperEl.style.animationDuration = `${duration}ms`
           tileWrapperEl.addEventListener('animationend', handleAnimationEnd)
@@ -240,6 +239,7 @@ export default defineComponent({
     }
 
     const handleAnimationEnd = () => {
+      store.dispatch('game/checkTile', props.tile)
       removeTile()
     }
 

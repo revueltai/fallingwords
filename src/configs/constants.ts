@@ -74,12 +74,13 @@ export const UI = {
   overlayComponents: {
     countdown: 'UiGameOverlayInitCount',
     pause: 'UiGameOverlayPause',
-    gameover: 'UiGameOverlayGameOver'
+    roundowon: 'UiGameOverlayRoundWon',
+    roundlost: 'UiGameOverlayRoundLost'
   }
 }
 
 export const GAME_DEFAULTS = {
-  speed: 3,
+  speed: 4,
   availableLetters: 8,
   wordLetterSpawn: 3,
   powerupSpawn: 8,
@@ -96,13 +97,13 @@ export const GAME_DEFAULTS = {
 export const DUMMIE_DATA = {
   words: [
     {
+      original: 'hello',
+      learn: 'hallo'
+    },
+    {
       original: 'Speed',
       learn: 'Geschwindigkeit'
     },
-    {
-      original: 'Hello',
-      learn: 'Hallo'
-    }
   ],
   locales: {
     original: 'en',
