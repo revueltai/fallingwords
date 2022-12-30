@@ -34,7 +34,7 @@ export default defineComponent({
     })
 
     return {
-      footer      
+      footer
     }
   }
 })
@@ -47,5 +47,6 @@ export default defineComponent({
 
 .ui-footer__content {
   @apply bg-tertiary border-t border-quinary border-l border-r rounded-tl-24 rounded-tr-24 px-16;
+  animation: slide-fade-in-bottom .5s ease-in-out;
 }
 </style>

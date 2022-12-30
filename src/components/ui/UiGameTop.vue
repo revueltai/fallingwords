@@ -119,7 +119,8 @@ export default defineComponent({
 
 <style scoped>
 .ui-game-top {
-  @apply relative pt-12 bg-secondary
+  @apply relative pt-12 bg-secondary;
+  animation: slide-fade-in-top .5s ease-in-out;
 }
 
 .ui-game-top__lives {

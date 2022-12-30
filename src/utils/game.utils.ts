@@ -9,3 +9,7 @@ export const isNumber = (input: any): boolean => {
 export const isString = (input: any): boolean => {
   return Object.prototype.toString.call(input) === '[object String]'
 }
+
+export const makeNegative = (num: number): number => {
+  return -Math.abs(num)
+}

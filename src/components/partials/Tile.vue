@@ -32,6 +32,7 @@ import { PowerupTypes } from '@project/interfaces'
 import { ref, computed, watch, defineComponent, onMounted, onBeforeUnmount, nextTick } from 'vue'
 import { useStore } from 'vuex'
 import { isLetterInWord } from '../../store/game.utils'
+import { makeNegative } from '../../utils/game.utils'
 
 export default defineComponent({
   name: 'Tile',
@@ -104,7 +105,6 @@ export default defineComponent({
     const getClassnameForPowerupType = () => {
       const { fire, ice, wind } = powerups.value
       const activePowerupType: PowerupTypes = activePowerup.value
-      let cssClass: string
       let cssClasses: string | string[] = ''
 
       switch (activePowerupType) {
@@ -140,7 +140,7 @@ export default defineComponent({
       const tileRect: DOMRect = tile.value.getBoundingClientRect()
       
       posX = Math.round(Math.random() * (boardRect.width - tileRect.width))
-      posY = Math.round(Math.random() * boardRect.height * -1)
+      posY = Math.round(makeNegative(Math.random() * boardRect.height))
     }
 
     const setFPS = () => {
@@ -289,7 +289,7 @@ export default defineComponent({
 }
 
 .tile {
-  @apply absolute top-0 left-0 w-48 h-48 origin-center;
+  @apply absolute -top-48 left-0 w-48 h-48 origin-center;
   will-change: transform;
 }
 

@@ -55,7 +55,7 @@ export default defineComponent({
 .slot__left,
 .slot__center,
 .slot__right {
-  animation: slide-fade-in-top .2s ease-in-out both;
+  animation: slide-fade-in-top .2s ease-in both;
 }
 
 .slot__left {

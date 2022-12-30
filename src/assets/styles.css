@@ -15,6 +15,9 @@
   --c-danger: #FF4241;
   --c-info: #5A09D9;
   --c-info-alternative: #CA29F0;
+
+  --anim-offset: 24px;
+  --anim-offset-negative: calc(-1 * var(--anim-offset));
 }
 
 @tailwind base;
@@ -64,19 +67,19 @@ body {
 }
 
 @keyframes slide-in-top {
-  0% { transform: translateY(-24px); }
+  0% { transform: translateY(var(--anim-offset-negative)); }
   100% { transform: translateY(0); }
 }
 
 @keyframes slide-in-bottom {
-  0% { transform: translateY(24px); }
+  0% { transform: translateY(var(--anim-offset)); }
   100% { transform: translateY(0); }
 }
 
 @keyframes slide-fade-in-top {
   0% { 
     opacity: 0;
-    transform: translateY(-24px); 
+    transform: translateY(var(--anim-offset-negative)); 
   }
   100% { 
     opacity: 1;
@@ -87,7 +90,7 @@ body {
 @keyframes slide-fade-in-bottom {
   0% { 
     opacity: 0;
-    transform: translateY(24px); 
+    transform: translateY(var(--anim-offset)); 
   }
   100% { 
     opacity: 1;

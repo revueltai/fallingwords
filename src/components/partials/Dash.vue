@@ -2,7 +2,9 @@
   <div
     ref="line"
     class="dash-line"
-  />
+  >
+    <div class="dash-line__line" />
+  </div>
 </template>
 
 <script lang="ts">
@@ -22,7 +24,7 @@ export default defineComponent({
     const boardEl = computed(() => store.getters['gameBoard/boardEl'])
 
     // Methods
-    const setPosition = () => {      
+    const setPosition = () => {
       const boardRect: DOMRect = boardEl.value.getBoundingClientRect()
       const posY: number = (boardRect.height * offset.value / 100)
       const lineEl = line.value
@@ -56,6 +58,12 @@ export default defineComponent({
 
 <style scoped>
 .dash-line {
-  @apply absolute w-full border border-info border-dashed opacity-30;
+  @apply absolute w-full;
+  --anim-offset: 8px;
+  animation: slide-fade-in-bottom .5s ease-in-out backwards;
+}
+
+.dash-line__line {
+  @apply border border-info border-dashed opacity-30;
 }
 </style>
