@@ -92,9 +92,21 @@ export const GAME_DEFAULTS = {
     ice: 3,
     wind: 3
   },
+  roundStates: {
+    loading: 'loading',
+    starting: 'starting',
+    paused: 'paused',
+    playing: 'playing',
+    roundwon: 'roundwon',
+    roundlost: 'roundlost'
+  },
 }
 
 export const DUMMIE_DATA = {
+  locales: {
+    original: 'en',
+    learn: 'de'
+  },
   words: [
     {
       original: 'hello',
@@ -104,9 +116,5 @@ export const DUMMIE_DATA = {
       original: 'Speed',
       learn: 'Geschwindigkeit'
     },
-  ],
-  locales: {
-    original: 'en',
-    learn: 'de'
-  }
+  ]
 }

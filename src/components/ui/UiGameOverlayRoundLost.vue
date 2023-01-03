@@ -2,6 +2,10 @@
   <ui-game-overlay-content 
     heading="Out of Lifes!"
   > 
+    <div class="deco">
+      <img src="/images/character/MouthDislike.svg">
+    </div>
+
     <template #footerLeft>
       <cbutton
         icon-only
@@ -69,3 +73,9 @@ export default defineComponent({
   }
 })
 </script>
+
+<style scoped>
+.deco {
+  @apply flex items-center justify-center bg-center bg-no-repeat mb-8;
+}
+</style>

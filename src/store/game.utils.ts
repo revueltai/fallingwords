@@ -131,3 +131,17 @@ export const createWord = (word: string): Word => {
     }
   })
 }
+
+export const getTimestamp = () => {
+  return new Date().getTime()
+}
+
+export const logTimeDifference = (timestamp1: number, timestamp2: number): { minutes: string | number, seconds: string | number } => {
+  const timeDifference = timestamp2 - timestamp1
+  const minutes = Math.floor(timeDifference / (1000 * 60))
+  const seconds = Math.floor((timeDifference % (1000 * 60)) / 1000)
+  return {
+    minutes,
+    seconds
+  }
+}

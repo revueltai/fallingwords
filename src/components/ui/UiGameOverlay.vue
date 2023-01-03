@@ -38,6 +38,14 @@ export default defineComponent({
     // Refs
     const gameOverlayRef = ref(null)
     const visible = ref(false)
+    const animationName = {
+      start: 'fade-in',
+      end: 'fade-out'
+    }
+    const animationClasses = {
+      in: 'anim-fade-in',
+      out: 'anim-fade-out'
+    }
 
     // Computed
     const overlayState = computed(() => store.getters['gameUI/overlayState'])
@@ -50,20 +58,20 @@ export default defineComponent({
       switch (newState) {
         case UI.overlayStates.fadeIn:
           visible.value = true
-          el.classList.add('anim-fade-in')
+          el.classList.add(animationClasses.in)
           break
       
         case UI.overlayStates.fadeOut:
-          el.classList.add('anim-fade-out')
+          el.classList.add(animationClasses.out)
           break
       }
     })
 
     const handleAnimationEnd = (event: AnimationEvent) => {
       event.stopPropagation()
-      gameOverlayRef.value.classList.remove('anim-fade-in', 'anim-fade-out')
+      gameOverlayRef.value.classList.remove(animationClasses.in, animationClasses.out)
       
-      if (event.animationName === 'fade-out') {
+      if (event.animationName === animationName.end) {
         visible.value = false
       }
     }

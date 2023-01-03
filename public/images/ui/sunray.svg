@@ -1,0 +1,12 @@
+<svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+<g id="Iconset/sunray">
+<path id="Fill 1" fill-rule="evenodd" clip-rule="evenodd" d="M13.6936 0L12 11.9984L12.0003 12L17 1.15362L13.6936 0ZM6 1.18314L11.9993 12L12 11.9994L9.89776 0L6 1.18314ZM12 11.9996L12.0001 12L23 6.18922L20.7126 3L12 11.9996ZM1 6.24926L11.9986 12L12 11.9984L3.254 3L1 6.24926ZM12 12.0638L12.0001 12.0641L24 14L23.9868 10L12 12.0638ZM0.0129798 14L11.9977 11.9371L12 11.9346L0 10L0.0129798 14ZM11.9967 12.0008L11.9981 12.0006L11.9964 12.0016L7 22.8491L10.3067 24L12 12.0005L11.9971 12L11.9967 12.0008ZM11.9998 11.9978L11.9944 12.0031L12.0051 11.9977L12.0055 11.9969L11.9998 11.9978ZM12.0001 12.0007L20.7459 21L23 17.7504L12 12L12.0001 12.0007ZM14.0983 24L18 22.8176L12 12L14.0983 24ZM1 17.8073L3.28976 21L12 12L1 17.8073Z" fill="url(#paint0_radial_0_997)"/>
+</g>
+<defs>
+<radialGradient id="paint0_radial_0_997" cx="0" cy="0" r="1" gradientUnits="userSpaceOnUse" gradientTransform="translate(11.8595 12) rotate(90) scale(12)">
+<stop stop-color="white"/>
+<stop offset="0.262047" stop-color="white" stop-opacity="0.6"/>
+<stop offset="1" stop-color="white" stop-opacity="0.01"/>
+</radialGradient>
+</defs>
+</svg>

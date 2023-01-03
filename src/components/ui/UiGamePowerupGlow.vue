@@ -23,7 +23,6 @@ export default defineComponent({
 
     // Computed
     const UIElementsHeight = computed(() => store.getters['gameUI/elementsHeight'])
-    const isActive = computed(() => store.getters['game/roundHasActivePowerup'])
     const powerupType = computed(() => store.getters['game/roundActivePowerupType'])
     const cssStyle = computed(() => {
       return `--offset: ${UIElementsHeight.value.header}px`

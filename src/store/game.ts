@@ -11,10 +11,12 @@ import { GAME_DEFAULTS, MESSAGES, UI } from '../configs/constants'
 import {
   createWord,
   createBoardLetters,
+  getTimestamp,
   getRandomNum,
+  getLetterIndexInWord,
   getBoardLetter,
   isLetterInWord,
-  getLetterIndexInWord
+  logTimeDifference  
 } from './game.utils'
 
 export default {
@@ -35,19 +37,16 @@ export default {
       matchWordsList: [],
       matchRoundsTotal: 0,
       matchRoundsCurrent: 0,
-      roundStates: {
-        loading: 'loading',
-        starting: 'starting',
-        paused: 'paused',
-        playing: 'playing',
-        roundwon: 'roundwon',
-        roundlost: 'roundlost'
-      },
-      roundState: 'loading',
+      roundStates: GAME_DEFAULTS.roundStates,
+      roundState: GAME_DEFAULTS.roundStates.loading,
       roundTotalAvailableLetters: GAME_DEFAULTS.availableLetters,
       roundWordOriginal: null,
       roundWordGuess: [],
       roundBoardTiles: [],
+      roundTime: {
+        start: null,
+        end: null
+      },
       roundPowerupSpawnChance: GAME_DEFAULTS.powerupSpawn,
       roundWordLetterSpawnChance: GAME_DEFAULTS.wordLetterSpawn,
       roundActivePowerup: {
@@ -69,6 +68,7 @@ export default {
     matchRoundsTotal: state => state.matchRoundsTotal,
     roundStates: state => state.roundStates,
     roundState: state => state.roundState,
+    roundTotalTime: state => logTimeDifference(state.roundTime.start, state.roundTime.end),
     roundIsPlaying: state => state.roundState === state.roundStates.playing,
     roundIsWon: state => state.roundState === state.roundStates.roundwon,
     roundIsLost: state => state.roundState === state.roundStates.roundlost,
@@ -156,7 +156,11 @@ export default {
       )
     },
 
-    SET_ROUND_STATE(state, roundState: RoundStates) {
+    SET_ROUND_TIME(state, timePoint: string) {
+      state.roundTime[timePoint] = getTimestamp()
+    },
+    
+    SET_ROUND_STATE(state: { roundState: RoundStates }, roundState: RoundStates) {
       state.roundState = roundState
     },
 
@@ -288,12 +292,12 @@ export default {
       commit('POWERUP_DEACTIVATE')
     },
 
-    setGamePlaying({ commit, getters }) {
-      commit('SET_ROUND_STATE', getters.roundStates.playing)
+    setGamePlaying({ commit }) {
+      commit('SET_ROUND_STATE', GAME_DEFAULTS.roundStates.playing)
     },
 
     setGamePause({ commit, getters, dispatch }) {
-      const { roundlost, paused } = getters.roundStates
+      const { roundlost, paused } = GAME_DEFAULTS.roundStates
       
       if (getters.roundState !== roundlost) {
         if (getters.roundState !== paused) {
@@ -303,13 +307,14 @@ export default {
       }
     },
 
-    setRoundWon({ commit, getters, dispatch }) {
-      commit('SET_ROUND_STATE', getters.roundStates.roundwon)
+    setRoundWon({ commit, dispatch }) {
+      commit('SET_ROUND_TIME', 'end')
+      commit('SET_ROUND_STATE', GAME_DEFAULTS.roundStates.roundwon)
       dispatch('gameUI/setOverlayComponent', UI.overlayComponents.roundowon, { root: true })
     },
 
-    setRoundLost({ commit, getters, dispatch }) {
-      commit('SET_ROUND_STATE', getters.roundStates.roundlost)
+    setRoundLost({ commit, dispatch }) {
+      commit('SET_ROUND_STATE', GAME_DEFAULTS.roundStates.roundlost)
       dispatch('gameUI/setOverlayComponent', UI.overlayComponents.roundlost, { root: true })
     },
 
@@ -321,8 +326,9 @@ export default {
       dispatch('gameUI/setOverlayComponent', UI.overlayComponents.countdown, { root: true })
     },
     
-    initMatch({ commit, getters }) {
-      commit('SET_ROUND_STATE', getters.roundStates.playing)
+    initMatch({ commit, dispatch }) {
+      commit('SET_ROUND_TIME', 'start')
+      dispatch('setGamePlaying')
     }
   }
 }

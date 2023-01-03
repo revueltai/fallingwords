@@ -10,9 +10,11 @@
       <div class="slot__left">
         <slot name="footerLeft" />
       </div>
+
       <div class="slot__center">
         <slot name="footerCenter" />
       </div>
+      
       <div class="slot__right">
         <slot name="footerRight" />
       </div>
@@ -36,20 +38,20 @@ export default defineComponent({
 
 <style scoped>
 .ui-game-overlay-content {
- @apply z-10 rounded-2xl border border-quinary bg-tertiary p-40 text-center; 
+ @apply relative z-10 rounded-2xl border border-quinary bg-tertiary p-40 text-center; 
  width: 340px;
- max-height: 400px;
- animation: slide-in-top .2s ease-in-out;
+ max-height: 440px;
+ animation: scale-in .4s ease-in-out;
 }
 
 .ui-game-overlay-content__heading {
-  @apply text-2xl mb-48; 
+  @apply text-3xl mb-24; 
   animation: slide-fade-in-bottom .4s ease-in-out both;
   animation-delay: .2s;
 }
 
 .ui-game-overlay-content__footer {
-  @apply flex items-center justify-center gap-16; 
+  @apply flex items-center justify-center gap-16 mt-32; 
   animation: slide-fade-in-top .4s ease-in both;
 }
 </style>

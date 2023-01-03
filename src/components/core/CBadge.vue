@@ -50,6 +50,6 @@ export default defineComponent({
 
 <style scoped>
 .cbadge {
-  @apply rounded-full bg-primary flex items-center justify-center text-s font-semibold border-secondary border-2
+  @apply rounded-full bg-primary flex items-center justify-center text-xs font-semibold border-secondary border-2;
 }
 </style>

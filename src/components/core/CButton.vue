@@ -94,15 +94,15 @@ export default defineComponent({
 
       switch (props.size) {
         case 'small':
-          payload.push('text-s')
+          payload.push('text-sm')
           break
 
         case 'medium':
-          payload.push('text-p')
+          payload.push('text-md')
           break
 
         case 'large':
-          payload.push('text-h5')
+          payload.push('text-xl')
           break
       }
 
