@@ -28,7 +28,7 @@ export default defineComponent({
     // Methods
     const hideOverlay = () => {
       store.dispatch('gameUI/setOverlayFadeOut')
-      store.dispatch('game/initMatch')
+      store.dispatch('game/initRound')
     }
 
     const showOverlay = () => {

@@ -37,7 +37,7 @@
     
     <template #footerCenter>
       <cbutton
-        @click="handleGameRetry"
+        @click="handleGameIncreaseRound"
       >
         {{ ctaButton }}
       </cbutton>
@@ -46,8 +46,9 @@
 </template>
 
 <script lang="ts">
-import { ref, computed, onMounted, defineComponent } from 'vue'
+import { ref, computed, watch, onMounted, defineComponent } from 'vue'
 import { useStore } from 'vuex'
+import { UI } from '@/configs/constants'
 import UiGameOverlayContent from './UiGameOverlayContent.vue'
 
 export default defineComponent({
@@ -63,6 +64,7 @@ export default defineComponent({
     const ctaButton = ref('Continue')
 
     // Computed
+    const overlayState = computed(() => store.getters['gameUI/overlayState'])
     const roundTime = computed(() => store.getters['game/roundTotalTime'])
     const roundTimeLabel = computed(() => {
       const time = roundTime.value
@@ -116,6 +118,14 @@ export default defineComponent({
       return baseUrl + 'MouthIdle.svg'
     })
 
+    // Watch
+    watch(overlayState, (newState) => {
+      if (newState === UI.overlayStates.hidden) {
+        store.dispatch('game/increaseRound')
+        store.dispatch('game/prepareRound')
+      }
+    })
+
     // Methods
     const getRoundTimeInSeconds = () => {
       const { seconds, minutes } = roundTime.value
@@ -136,8 +146,8 @@ export default defineComponent({
       hideOverlay()
     }
     
-    const handleGameRetry = () => {
-      alert('not coded yet')
+    const handleGameIncreaseRound = () => {
+      hideOverlay()
     }
 
     // Hooks
@@ -151,7 +161,7 @@ export default defineComponent({
       roundTimeLabel,
       roundStars,
       handleGameCancelation,
-      handleGameRetry
+      handleGameIncreaseRound
     }
   }
 })

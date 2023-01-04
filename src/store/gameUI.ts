@@ -51,12 +51,16 @@ export default {
       commit('SET_ELEMENT', uiElement)
     },
     
-    setOverlayFadeIn({ commit }, state: UIOverlayStates) {
+    setOverlayFadeIn({ commit }) {
       commit('SET_OVERLAY_STATE', UI.overlayStates.fadeIn)
     },
     
-    setOverlayFadeOut({ commit }, state: UIOverlayStates) {
+    setOverlayFadeOut({ commit }) {
       commit('SET_OVERLAY_STATE', UI.overlayStates.fadeOut)
+    },
+    
+    setOverlayHidden({ commit }) {
+      commit('SET_OVERLAY_STATE', UI.overlayStates.hidden)
     },
     
     setOverlayComponent({ commit }, state: UIOverlayComponents) {

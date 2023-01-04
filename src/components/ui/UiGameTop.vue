@@ -57,7 +57,7 @@
 
 <script lang="ts">
 import { Letter } from '@project/interfaces'
-import { ref, computed, nextTick, onMounted, defineComponent } from 'vue'
+import { ref, computed, onMounted, defineComponent } from 'vue'
 import { useStore } from 'vuex'
 
 export default defineComponent({
@@ -74,7 +74,7 @@ export default defineComponent({
     const isRoundOver = computed(() => store.getters['game/roundIsOver'])
     const lifes = computed(() => store.getters['game/matchLifes'])
     const totalRounds = computed(() => store.getters['game/matchRoundsTotal'])
-    const currentRound = computed(() => store.getters['game/matchRoundsCurrent'])
+    const currentRound = computed(() => store.getters['game/matchRoundsCurrent'] + 1)
     const originalWord = computed(() => store.getters['game/roundWordOriginal'])
     const guessWord = computed(() => store.getters['game/roundWordGuess'])
 

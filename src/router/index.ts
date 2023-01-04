@@ -7,6 +7,11 @@ const routes = [
     component: () => import('@/views/Splash.vue')
   },
   {
+    path: '/tutorial',
+    name: 'Tutorial',
+    component: () => import('@/views/Tutorial.vue')
+  },
+  {
     path: '/game',
     name: 'Game',
     component: () => import('@/views/Game.vue')

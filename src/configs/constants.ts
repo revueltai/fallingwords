@@ -109,12 +109,20 @@ export const DUMMIE_DATA = {
   },
   words: [
     {
-      original: 'hello',
-      learn: 'hallo'
+      original: 'a',
+      learn: 'a'
     },
     {
-      original: 'Speed',
-      learn: 'Geschwindigkeit'
+      original: 'b',
+      learn: 'b'
     },
+    {
+      original: 'c',
+      learn: 'c'
+    },
+    // {
+    //   original: 'Speed',
+    //   learn: 'Geschwindigkeit'
+    // },
   ]
 }

@@ -1,14 +1,10 @@
 <template>
-  <section class="splash">
+  <section class="tutorial">
     <div>
-      <h1>Fallingwords</h1>
+      <h1>tutorial</h1>
 
       <cbutton to="game">
         Start
-      </cbutton>
-      
-      <cbutton to="tutorial">
-        Tutorial
       </cbutton>
     </div>
   </section>
@@ -18,7 +14,7 @@
 import { defineComponent } from 'vue'
 
 export default defineComponent({
-  name: 'Splash'
+  name: 'Tutorial'
 })
 </script>
 

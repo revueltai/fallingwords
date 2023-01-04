@@ -64,7 +64,7 @@ export default {
     matchPowerups: state => state.matchPowerups,
     matchPowerupsDuration: state => state.matchPowerupsDuration,
     matchLocales: state => state.matchLocales,
-    matchRoundsCurrent: state => state.matchRoundsCurrent + 1,
+    matchRoundsCurrent: state => state.matchRoundsCurrent,
     matchRoundsTotal: state => state.matchRoundsTotal,
     roundStates: state => state.roundStates,
     roundState: state => state.roundState,
@@ -80,6 +80,12 @@ export default {
   },
 
   mutations: {
+    ROUND_INCREASE(state) {
+      if (state.matchRoundsCurrent <= state.matchRoundsTotal - 1) {
+        state.matchRoundsCurrent++
+      }
+    },
+
     LIVES_INCREASE(state) {
       state.matchLifes++
     },
@@ -186,6 +192,10 @@ export default {
   },
 
   actions: {
+    increaseRound({ commit }) {
+      commit('ROUND_INCREASE')
+    },
+
     increaseLifes({ commit }) {
       commit('LIVES_INCREASE')
     },
@@ -318,15 +328,19 @@ export default {
       dispatch('gameUI/setOverlayComponent', UI.overlayComponents.roundlost, { root: true })
     },
 
-    preparemMatch({ commit, dispatch }, payload) {
+    prepareMatch({ commit, dispatch }, payload) {
       commit('SET_MATCH_WORDS', payload.words)
       commit('SET_MATCH_LOCALES', payload.locales)
       commit('SET_MATCH_LIVES')
+      dispatch('prepareRound')
+    },
+
+    prepareRound({ commit, dispatch }) {
       commit('SET_ROUND')
       dispatch('gameUI/setOverlayComponent', UI.overlayComponents.countdown, { root: true })
     },
     
-    initMatch({ commit, dispatch }) {
+    initRound({ commit, dispatch }) {
       commit('SET_ROUND_TIME', 'start')
       dispatch('setGamePlaying')
     }

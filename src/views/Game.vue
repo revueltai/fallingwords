@@ -12,7 +12,7 @@
 <script lang="ts">
 import { onMounted, defineComponent } from 'vue'
 import { useStore } from 'vuex'
-import { DUMMIE_DATA, UI } from '../configs/constants'
+import { DUMMIE_DATA } from '../configs/constants'
 
 import UiGameTop from '../components/ui/UiGameTop.vue'
 import UiGameBottom from '../components/ui/UiGameBottom.vue'
@@ -38,8 +38,7 @@ export default defineComponent({
 
     // Hooks
     onMounted(() => {
-      store.dispatch('gameUI/setOverlayComponent', UI.overlayComponents.countdown)
-      store.dispatch('game/preparemMatch', {
+      store.dispatch('game/prepareMatch', {
         words: DUMMIE_DATA.words,
         locales: DUMMIE_DATA.locales
       })

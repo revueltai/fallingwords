@@ -73,6 +73,7 @@ export default defineComponent({
       
       if (event.animationName === animationName.end) {
         visible.value = false
+        store.dispatch('gameUI/setOverlayHidden')
       }
     }
 
