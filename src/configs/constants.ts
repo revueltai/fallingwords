@@ -80,13 +80,13 @@ export const UI = {
 }
 
 export const GAME_DEFAULTS = {
-  speed: 4,
+  speed: 2,
   availableLetters: 8,
   wordLetterSpawn: 3,
   powerupSpawn: 8,
   powerupDuration: 1000,
   powerups: POWERUPS,
-  matchLifes: 3,
+  matchLifes: 10,
   matchPowerups: {
     fire: 3,
     ice: 3,

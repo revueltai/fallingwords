@@ -25,6 +25,7 @@ export default {
   state: () => {
     return {
       speed: GAME_DEFAULTS.speed,
+      speedHelper: GAME_DEFAULTS.speed,
       offset: 0,
       powerups: GAME_DEFAULTS.powerups,
       matchLocales: {
@@ -80,12 +81,6 @@ export default {
   },
 
   mutations: {
-    ROUND_INCREASE(state) {
-      if (state.matchRoundsCurrent <= state.matchRoundsTotal - 1) {
-        state.matchRoundsCurrent++
-      }
-    },
-
     LIVES_INCREASE(state) {
       state.matchLifes++
     },
@@ -95,6 +90,17 @@ export default {
       state.matchLifes = (newLives > 0) 
         ? newLives 
         : 0
+    },
+
+    ROUND_INCREASE(state) {
+      if (state.matchRoundsCurrent <= state.matchRoundsTotal - 1) {
+        state.matchRoundsCurrent++
+      }
+    },
+
+    ROUND_SPEED_INCREASE(state: { speed: number }) {
+      state.speed += 0.5
+      console.log(state.speed)
     },
 
     POWERUP_AMOUNT_INCREASE(state, type: PowerupTypes) {
@@ -116,6 +122,7 @@ export default {
       state.matchPowerupsDuration = duration
       
       if (speed) {
+        state.speedHelper = state.speed
         state.speed = speed
       }
     },
@@ -123,12 +130,8 @@ export default {
     POWERUP_DEACTIVATE(state) {
       state.roundActivePowerup.active = false
       state.roundActivePowerup.type = null
-      state.speed = GAME_DEFAULTS.speed
+      state.speed = state.speedHelper
       state.matchPowerupsDuration = GAME_DEFAULTS.powerupDuration
-    },
-
-    SET_SPEED(state, speed: number) {
-      state.speed = speed
     },
 
     SET_MATCH_WORDS(state, wordsList: MatchLocales[]) {
@@ -144,7 +147,7 @@ export default {
       state.matchLifes = GAME_DEFAULTS.matchLifes
     },
 
-    SET_ROUND(state) {
+    SET_ROUND_WORD(state) {
       const index = state.matchRoundsCurrent
       const word = state.matchWordsList[index]
       const locales = state.matchLocales
@@ -160,6 +163,11 @@ export default {
         state.roundPowerupSpawnChance,
         state.roundWordLetterSpawnChance
       )
+    },
+
+    SET_ROUND_SPEED(state) {
+      const speedIncreasement: number = 1
+      state.speed = state.speed + speedIncreasement
     },
 
     SET_ROUND_TIME(state, timePoint: string) {
@@ -236,7 +244,8 @@ export default {
             type: 'dislike',
             message: MESSAGES.dislike[getRandomNum(MESSAGES.dislike.length)]
           }
-          
+
+          commit('ROUND_SPEED_INCREASE')
           dispatch('decreaseLifes')
           dispatch('checkRoundOver')
         }
@@ -336,11 +345,12 @@ export default {
     },
 
     prepareRound({ commit, dispatch }) {
-      commit('SET_ROUND')
+      commit('SET_ROUND_WORD')
       dispatch('gameUI/setOverlayComponent', UI.overlayComponents.countdown, { root: true })
     },
     
     initRound({ commit, dispatch }) {
+      commit('SET_ROUND_SPEED')
       commit('SET_ROUND_TIME', 'start')
       dispatch('setGamePlaying')
     }
