@@ -40,20 +40,20 @@ export const useGameUIStore = defineStore('gameUI', {
       }
     },
 
-    setOverlayFadeIn() {
+    setOverlayComponent(key: OverlayComponentMapKey) {
+      this.overlayComponent = key
+    },
+
+    fadeInOverlay() {
       this.overlayState = overlayStates.fadeIn
     },
 
-    setOverlayFadeOut() {
+    fadeOutOverlay() {
       this.overlayState = overlayStates.fadeOut
     },
 
-    setOverlayHidden() {
+    hideOverlay() {
       this.overlayState = overlayStates.hidden
-    },
-
-    setOverlayComponent(key: OverlayComponentMapKey) {
-      this.overlayComponent = key
     },
   },
 })

@@ -2,10 +2,11 @@
 import { computed, onMounted, ref } from 'vue'
 import { RouterView } from 'vue-router'
 import { useAppStore } from './stores/app.store'
+import 'movinblocks/styles'
 
 const appStore = useAppStore()
 
-const appWrapperRef = ref<HTMLElement | null>(null)
+const appWrapperRef = ref<ElementRef>(null)
 const isLoaded = ref(false)
 
 const canvasMaxWidth = computed(() => appStore.canvasMaxWidth)
@@ -18,15 +19,13 @@ function setCanvasSize() {
   }
 }
 
-function initialize() {
+onMounted(() => {
   if (appWrapperRef.value) {
     setCanvasSize()
     appStore.setElement(appWrapperRef.value)
     isLoaded.value = true
   }
-}
-
-onMounted(() => initialize())
+})
 </script>
 
 <template>
@@ -35,7 +34,7 @@ onMounted(() => initialize())
       <div
         v-show="isLoaded"
         ref="appWrapperRef"
-        class="relative w-full h-full overflow-hidden bg-secondary border rounded-xl border-tertiary"
+        class="relative w-full h-full overflow-hidden bg-secondary-dark border rounded-xl border-secondary"
       >
         <component
           :is="Component"

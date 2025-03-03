@@ -1,15 +1,11 @@
 <script setup lang="ts">
+import { useGameBoardStore } from '@/stores/gameBoard.store'
 import { computed } from 'vue'
 import Tile from './Tile.vue'
-import { useGameStore } from '@/stores/game.store'
 
-withDefaults(defineProps(), {
-  tiles: () => []
-})
+const gameBoardStore = useGameBoardStore()
 
-const store = useGameStore()
-
-const tiles = computed(() => store.roundBoardTiles)
+const tiles = computed(() => gameBoardStore.roundBoardTiles)
 </script>
 
 <template>

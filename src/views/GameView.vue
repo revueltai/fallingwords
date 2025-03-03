@@ -1,27 +1,22 @@
 <script setup lang="ts">
 import { dummyLocales, dummyWords } from '@/assets/dummyData'
 
-import GameBoard from '@/components/game/GameBoard.vue'
-import GameBottom from '@/components/game/GameBottom.vue'
-import GameOverlay from '@/components/game/GameOverlay.vue'
-import GamePowerupBar from '@/components/game/GamePowerupBar.vue'
-import GamePowerupGlow from '@/components/game/GamePowerupGlow.vue'
-import GameTop from '@/components/game/GameTop.vue'
+import GameBoard from '@/components/game/ui/GameBoard.vue'
+import GameBottom from '@/components/game/ui/GameBottom.vue'
+import GameOverlay from '@/components/game/ui/GameOverlay.vue'
+import GamePowerupBar from '@/components/game/ui/GamePowerupBar.vue'
+import GamePowerupGlow from '@/components/game/ui/GamePowerupGlow.vue'
+import GameTop from '@/components/game/ui/GameTop.vue'
 import { useGameStore } from '@/stores/game.store'
 import Movinblocks from 'movinblocks'
 import { onMounted } from 'vue'
-import 'movinblocks/styles'
 
-const store = useGameStore()
+const gameStore = useGameStore()
 
 function setUIAnimation() {
   new Movinblocks()
     .setTimeline(['gameTop', 'gameBottom'])
-    .setAnimation([
-      'slideInTop',
-      'slideInBottom',
-      // 'fadeIn',
-    ])
+    .setAnimation(['slideInTop', 'slideInBottom'])
     .setOverlap(200)
     .setDuration(800)
     .prepare()
@@ -29,11 +24,7 @@ function setUIAnimation() {
 }
 
 onMounted(() => {
-  store.prepareMatch({
-    words: dummyWords,
-    locales: dummyLocales,
-  })
-
+  gameStore.prepareGame({ words: dummyWords, locales: dummyLocales })
   setUIAnimation()
 })
 </script>

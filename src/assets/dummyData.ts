@@ -1,27 +1,32 @@
 export const dummyWords = [
   {
-    original: 'a',
-    learn: 'a'
-  },
-  {
-    original: 'b',
-    learn: 'b'
-  },
-  {
-    original: 'c',
-    learn: 'c'
-  },
-  {
-    original: 'Speed',
-    learn: 'Geschwindigkeit'
+    original: 'love',
+    learn: 'Liebe',
   },
   {
     original: 'Hello',
-    learn: 'Hallo'
-  }
+    learn: 'Hallo',
+  },
+  {
+    original: 'House',
+    learn: 'Haus',
+  },
+  {
+    original: 'Book',
+    learn: 'Buch',
+  },
+  {
+    original: 'Friend',
+    learn: 'Freund',
+  },
+  {
+    original: 'Speed',
+    learn: 'Geschwindigkeit',
+  },
+
 ]
 
-export const dummyLocales: MatchLocales = {
+export const dummyLocales: GameLocale = {
   original: 'en',
-  learn: 'de'
+  learn: 'de',
 }

@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { UI } from '@/configs/constants'
 import { useGameStore } from '@/stores/game.store'
+import { useGameRoundStore } from '@/stores/gameRound.store'
 import { isMobile } from '@/utils'
 import { computed, onBeforeUnmount, onMounted } from 'vue'
 
@@ -11,22 +12,21 @@ interface PowerupButton {
   keyboardKey: string
 }
 
-const store = useGameStore()
+const gameStore = useGameStore()
+const gameRoundstore = useGameRoundStore()
 
 const keyboardKeys = ['1', '2', '3']
 
-const isPlaying = computed(() => store.roundIsPlaying)
-const activePowerupType = computed(() => store.roundActivePowerupType)
-const isActive = computed(() => !!activePowerupType.value)
+const isActive = computed(() => !!gameRoundstore.roundActivePowerupType)
 
 const powerupButtons = computed(() => {
   const output: PowerupButton[] = []
 
-  if (store.matchPowerups) {
-    const powerups = store.powerups
+  if (gameStore.gamePowerups) {
+    const powerups = gameRoundstore.powerups
     let count: number = 0
 
-    for (const [key, value] of Object.entries(store.matchPowerups)) {
+    for (const [key, value] of Object.entries(gameStore.gamePowerups)) {
       if (key !== powerups.life.id) {
         output.push({
           id: key as PowerupName,
@@ -45,30 +45,34 @@ const powerupButtons = computed(() => {
 
 function getPowerupClasses(id: string) {
   return isActivePowerup(id as PowerupName)
-    ? UI.animationClasses.highlight
+    ? UI.animationClasses.timed.highlight
     : ''
 }
 
 function isActivePowerup(id: PowerupName): boolean {
-  return isActive.value && id === activePowerupType.value
+  return isActive.value && id === gameRoundstore.roundActivePowerupType
 }
 
-function hasPowerups(count: number): string {
+function hasPowerup(count: number): string {
   return count > 0
     ? 'opacity-100'
     : 'opacity-50'
 }
 
-function activatePowerup(type: PowerupName) {
-  if (!isActive.value && isPlaying.value) {
-    store.activatePowerup(type)
+function activatePowerup(powerupButton: PowerupButton) {
+  if (
+    !isActive.value
+    && gameRoundstore.roundIsPlaying
+    && powerupButton.count
+  ) {
+    gameRoundstore.activatePowerup(powerupButton.id)
   }
 }
 
 function handleKeydown(event: KeyboardEvent) {
   for (const powerup of powerupButtons.value) {
     if (event.key === powerup.keyboardKey) {
-      activatePowerup(powerup.id as PowerupName)
+      activatePowerup(powerup)
     }
   }
 }
@@ -91,12 +95,12 @@ onBeforeUnmount(() => {
     <Button
       v-for="powerupButton in powerupButtons"
       :key="powerupButton.id"
-      :disabled="isActive"
+      :disabled="isActive || !powerupButton.count"
       :has-background="false"
-      :class="hasPowerups(powerupButton.count)"
+      :class="hasPowerup(powerupButton.count)"
       class="relative -mt-6 transition-opacity"
       icon-only
-      @click="activatePowerup(powerupButton.id)"
+      @click="activatePowerup(powerupButton)"
     >
       <Icon
         :name="powerupButton.asset"
@@ -112,7 +116,7 @@ onBeforeUnmount(() => {
 
       <div
         v-if="!isMobile()"
-        class="absolute bottom-3 left-1.5 w-4 h-4 bg-secondary border border-quinary rounded flex items-center justify-center ui-footer__powerup-key "
+        class="absolute bottom-3 left-1.5 w-4 h-4 bg-secondary-dark border border-secondary-light rounded flex items-center justify-center ui-footer__powerup-key "
       >
         {{ powerupButton.keyboardKey }}
       </div>

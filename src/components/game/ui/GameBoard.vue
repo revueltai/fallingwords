@@ -13,20 +13,13 @@ onMounted (() => nextTick(() => {
 </script>
 
 <template>
-  <div class="ui-bg absolute left-0 top-0 bottom-0 w-full h-full bg-repeat">
+  <div class="absolute left-0 top-0 bottom-0 w-full h-full bg-repeat overflow-hidden u-bg-app">
     <Dash v-if="isUIReady" />
     <Character v-if="isUIReady" />
     <Tiles v-if="isUIReady" />
 
-    <div class="absolute bottom-0 w-full h-104 bg-gradient-to-b from-transparent to-secondary via-secondary" />
+    <div class="absolute bottom-0 w-full h-28 bg-gradient-to-b from-transparent to-secondary-dark via-secondary-dark" />
 
     <Board />
   </div>
 </template>
-
-<style scoped>
-.ui-bg {
-  background-image: url('/images/ui/bg-game.svg');
-  background-size: 100px;
-}
-</style>

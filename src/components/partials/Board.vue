@@ -8,7 +8,7 @@ const appStore = useAppStore()
 const gameBoardStore = useGameBoardStore()
 const gameUIStore = useGameUIStore()
 
-const boardRef = ref<HTMLElement | null>(null)
+const boardRef = ref<ElementRef>(null)
 const UIElementsHeight = computed(() => gameUIStore.elementsHeight)
 const canvasEl = computed(() => appStore.canvasEl)
 

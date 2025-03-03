@@ -1,10 +1,10 @@
 <svg width="0" height="0" class="hidden">
   <symbol xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" id="chevronDown">
-    <path   d="M5.5 9.5l6.5 6 6.5-6" stroke-linecap="round"></path>
+    <path d="M5.5 9.5l6.5 6 6.5-6" stroke-linecap="round"></path>
   </symbol>
   
   <symbol xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" id="chevronLeft">
-    <path   d="M15 19l-6-6.5L15 6" stroke-linecap="round"></path>
+    <path d="M15 19l-6-6.5L15 6" stroke-linecap="round"></path>
   </symbol>
   
   <symbol xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" id="chevronLeftDouble">
@@ -12,7 +12,7 @@
   </symbol>
   
   <symbol xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" id="chevronRight">
-    <path   d="M9 19l6-6.5L9 6" stroke-linecap="round"></path>
+    <path d="M9 19l6-6.5L9 6" stroke-linecap="round"></path>
   </symbol>
   
   <symbol xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" id="chevronRightDouble">
@@ -20,11 +20,11 @@
   </symbol>
   
   <symbol xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" id="chevronUp">
-    <path   d="M5.5 15.5l6.5-6 6.5 6" stroke-linecap="round"></path>
+    <path d="M5.5 15.5l6.5-6 6.5 6" stroke-linecap="round"></path>
   </symbol>
   
   <symbol xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" id="cross">
-    <path d="M18 6L6 18M6 6l12 12"   stroke-linecap="round"></path>
+    <path d="M18 6L6 18M6 6l12 12" stroke-linecap="round"></path>
   </symbol>
   
   <symbol xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" id="effects">
@@ -111,5 +111,4 @@
     </defs>
     <path d="M13.694 0L12 11.998V12l5-10.846L13.694 0zM6 1.183L12 12 9.898 0 6 1.183zM12 12l11-5.81L20.713 3 12 12zM1 6.25L11.999 12l.001-.002L3.254 3 1 6.25zm11 5.814L24 14l-.013-4L12 12.064zM.013 14l11.985-2.063.002-.002L0 10l.013 4zm11.984-2h.001l-.002.002L7 22.849 10.307 24 12 12h-.003zm.003-.002l-.006.005.011-.005v-.001H12zM12 12l8.746 9L23 17.75 12 12zm2.098 12L18 22.818 12 12l2.098 12zM1 17.807L3.29 21 12 12 1 17.807z" fill="url(#a)" fill-rule="evenodd"></path>
   </symbol>
-  
 </svg>

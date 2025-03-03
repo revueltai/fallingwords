@@ -1,21 +1,19 @@
 <script setup lang="ts">
 import { useGameStore } from '@/stores/game.store'
+import { useGameRoundStore } from '@/stores/gameRound.store'
 import { useGameUIStore } from '@/stores/gameUI.store'
 import { computed, onMounted, ref } from 'vue'
 
 const gameUIStore = useGameUIStore()
 const gameStore = useGameStore()
+const gameRoundStore = useGameRoundStore()
 
-const headerRef = ref<HTMLElement | null>(null)
+const headerRef = ref<ElementRef>(null)
 
 const isRoundOver = false
 // const isRoundOver = computed(() => gameStore.roundIsOver)
 
-const lifes = computed(() => gameStore.matchLifes)
-const totalRounds = computed(() => gameStore.matchRoundsTotal)
-const currentRound = computed(() => gameStore.matchRoundsCurrent + 1)
-const originalWord = computed(() => gameStore.roundWordOriginal)
-const guessWord = computed(() => gameStore.roundWordGuess)
+const currentRound = computed(() => gameStore.gameCurrentRound + 1)
 
 function setLetterClass(letter: Letter): string {
   return letter.guessed
@@ -32,8 +30,8 @@ function setLetterCharacter(letter: Letter): string {
 function handlePause() {
   // if (!isRoundOver.value) {
   if (!isRoundOver) {
-    gameUIStore.setOverlayFadeIn()
-    gameStore.setGamePause()
+    gameUIStore.fadeInOverlay()
+    gameRoundStore.setRoundPause()
   }
 }
 
@@ -48,7 +46,7 @@ onMounted (() => {
   <div
     id="gameTop"
     ref="headerRef"
-    class="relative pt-3 bg-secondary"
+    class="relative pt-3 bg-secondary-dark"
   >
     <Button
       :has-background="false"
@@ -64,39 +62,39 @@ onMounted (() => {
     </Button>
 
     <div class="relative ml-8 mr-12">
-      <div class="w-14 h-14 absolute -top-1 -left-1 rounded-full border-quinary border bg-secondary">
+      <div class="w-14 h-14 absolute -top-1 -left-1 rounded-full border-secondary-light border bg-secondary-dark">
         <div class="relative w-full h-full flex items-center justify-center">
           <Icon
-            :class="lifes < 2 ? 'anim-beat' : ''"
+            :class="gameStore.gameLives < 2 ? 'anim-beat' : ''"
             name="heart-full"
             type="fill"
             size="2xl"
           />
 
           <Badge
-            :value="lifes"
+            :value="gameStore.gameLives"
             class="absolute z-2 bottom-0.5 right-0.5"
           />
         </div>
       </div>
 
-      <div class="flex items-center justify-between bg-tertiary border-t border-l border-r border-quinary rounded-tl-2xl rounded-tr-2xl h-10 pl-16 overflow-hidden">
+      <div class="flex items-center justify-between bg-secondary border-t border-l border-r border-secondary-light rounded-tl-2xl rounded-tr-2xl h-10 pl-16 overflow-hidden">
         <span>
-          {{ originalWord }}
+          {{ gameRoundStore.roundWordOriginal }}
         </span>
 
-        <div class="flex items-center justify-center w-14 h-full text-s font-semibold bg-secondary bg-opacity-5 border-quinary border-l">
-          {{ currentRound }}/{{ totalRounds }}
+        <div class="flex items-center justify-center w-14 h-full text-s font-semibold bg-secondary-dark bg-opacity-5 border-secondary-light border-l">
+          {{ currentRound }}/{{ gameStore.gameTotalRounds }}
         </div>
       </div>
     </div>
 
-    <div class="border-quinary border-t border-b py-2 text-center uppercase">
+    <div class="border-secondary-light border-t border-b py-2 text-center uppercase">
       <span
-        v-for="(letter, index) in guessWord"
+        v-for="(letter, index) in gameRoundStore.roundWordGuess"
         :key="index"
         :class="setLetterClass(letter)"
-        class="px-4"
+        class="px-1"
       >
         {{ setLetterCharacter(letter) }}
       </span>

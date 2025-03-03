@@ -5,7 +5,7 @@ import GameBottomPowerups from './GameBottomPowerups.vue'
 
 const store = useGameUIStore()
 
-const footerRef = ref<HTMLElement | null>(null)
+const footerRef = ref<ElementRef>(null)
 
 onMounted(() => {
   if (footerRef.value) {
@@ -21,7 +21,7 @@ onMounted(() => {
   >
     <div
       id="gameBottom"
-      class="bg-tertiary border-t border-quinary border-l border-r rounded-tl-3xl rounded-tr-3xl px-4"
+      class="bg-secondary border-t border-secondary-light border-l border-r rounded-tl-3xl rounded-tr-3xl px-4"
     >
       <GameBottomPowerups />
     </div>

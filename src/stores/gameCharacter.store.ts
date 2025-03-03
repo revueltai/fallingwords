@@ -1,36 +1,43 @@
+import MouthChew from '@/assets/images/character/MouthChew.svg'
+import MouthDislike from '@/assets/images/character/MouthDislike.svg'
+
+import MouthIdle from '@/assets/images/character/MouthIdle.svg'
+import MouthLike from '@/assets/images/character/MouthLike.svg'
+import MouthLove from '@/assets/images/character/MouthLove.svg'
+import MouthOpen from '@/assets/images/character/MouthOpen.svg'
+import { delay } from '@/utils'
 import { defineStore } from 'pinia'
+import { nextTick } from 'vue'
 
 export const useGameCharacterStore = defineStore('character', {
   state: (): {
     offset: number
+    isEating: boolean
     characterEl: HTMLElement | null
     message: CharacterMessage
     expression: CharacterExpressionType
     expressions: Record<CharacterExpressionType, string>
   } => ({
     offset: 90,
+    isEating: false,
     characterEl: null,
     message: {
       message: '',
-      type: ''
+      type: '',
     },
     expression: 'idle',
     expressions: {
-      idle: 'MouthIdle.svg',
-      open: 'MouthOpen.svg',
-      chew: 'MouthChew.svg',
-      like: 'MouthLike.svg',
-      dislike: 'MouthDislike.svg',
-      love: 'MouthLikeHeart.svg',
-    }
+      idle: MouthIdle,
+      open: MouthOpen,
+      chew: MouthChew,
+      like: MouthLike,
+      dislike: MouthDislike,
+      love: MouthLove,
+    },
   }),
 
   getters: {
-    // message: (state) => state.message,
-    // offset: (state) => state.offset,
-    // characterEl: (state) => state.characterEl,
-    // expression: (state) => state.expression,
-    expressionAsset: (state) => `/images/character/${state.expressions[state.expression]}`,
+    expressionAsset: state => state.expressions[state.expression],
   },
 
   actions: {
@@ -39,53 +46,35 @@ export const useGameCharacterStore = defineStore('character', {
     },
 
     setMessage(message: CharacterMessage) {
-      this.message = {
-        type: message.type,
-        message: message.message
+      if (message.type) {
+        this.message = message
       }
     },
 
-    setExpression(expression: CharacterExpressionType) {
-      this.expression = expression
+    setExpression(expressionType: CharacterExpressionType) {
+      this.expression = expressionType
     },
 
-    setChewExpressions(expression: CharacterExpressionType) {
-      this.expression = 'chew'
+    async setChewExpressions(expressionType: CharacterExpressionType) {
+      this.isEating = true
 
-      setTimeout(() => {
-        this.expression = 'idle'
-      }, 50)
+      this.setExpression('chew')
+      await delay(500)
 
-      setTimeout(() => {
-        this.expression = 'chew'
-      }, 80)
+      await nextTick()
 
-      setTimeout(() => {
-        this.expression = 'idle'
-      }, 110)
+      this.setExpression(expressionType)
+      await delay(500)
 
-      setTimeout(() => {
-        this.expression = 'chew'
-      }, 140)
-
-      setTimeout(() => {
-        this.expression = 'idle'
-      }, 170)
-
-      setTimeout(() => {
-        this.expression = expression
-      }, 200)
-
-      setTimeout(() => {
-        this.expression = 'open'
-      }, 500)
+      this.setExpression('idle')
+      this.isEating = false
     },
 
     resetMessage() {
       this.message = {
         type: '',
-        message: ''
+        message: '',
       }
     },
-  }
+  },
 })

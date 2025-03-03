@@ -16,7 +16,7 @@ export const POWERUPS: Powerups = {
     id: 'fire',
     text: 'fire',
     asset: 'powerup-fire',
-    speed: -1,
+    speed: null,
     duration: 2000,
   },
   ice: {
@@ -24,7 +24,7 @@ export const POWERUPS: Powerups = {
     text: 'ice',
     asset: 'powerup-ice',
     duration: 3000,
-    speed: 1,
+    speed: 0.2,
   },
   wind: {
     id: 'wind',
@@ -50,6 +50,7 @@ export const MESSAGES = {
     'Mmm',
   ],
   dislike: [
+    '💩',
     'Ugh',
     'Yuck',
     'Ew',
@@ -61,22 +62,42 @@ export const MESSAGES = {
     'Bah',
     'Hmph',
   ],
+  love: [
+    'OMG',
+    'Looove',
+    '❤️',
+  ],
 }
 
 export const UI: {
-  animationClasses: Record<string, string>
+  animationClasses: {
+    named: Record<string, string>
+    timed: Record<string, string>
+  }
   overlayStates: Record<OverlayState, OverlayState>
   overlayComponents: OverlayComponentMap
 } = {
   animationClasses: {
-    scaleIn: 'anim-scale-in',
-    scaleOut: 'anim-scale-out',
-    fadeIn: 'anim-fade-in',
-    fadeOut: 'anim-fade-out',
-    slideInTop: 'anim-slide-in-top',
-    slideInBottom: 'anim-slide-in-bottom',
-    beat: 'anim-beat',
-    highlight: 'anim-highlight',
+    named: {
+      scaleIn: 'anim-scale-in-named',
+      scaleOut: 'anim-scale-out-named',
+      fadeIn: 'anim-fade-in-named',
+      fadeOut: 'anim-fade-out-named',
+      slideInTop: 'anim-slide-in-top-named',
+      slideInBottom: 'anim-slide-in-bottom-named',
+      beat: 'anim-beat-named',
+      highlight: 'anim-highlight-named',
+    },
+    timed: {
+      scaleIn: 'anim-scale-in-timed',
+      scaleOut: 'anim-scale-out-timed',
+      fadeIn: 'anim-fade-in-timed',
+      fadeOut: 'anim-fade-out-timed',
+      slideInTop: 'anim-slide-in-top-timed',
+      slideInBottom: 'anim-slide-in-bottom-timed',
+      beat: 'anim-beat-timed',
+      highlight: 'anim-highlight-timed',
+    },
   },
   overlayStates: {
     fadeIn: 'fadeIn',
@@ -87,7 +108,7 @@ export const UI: {
   overlayComponents: {
     countdown: 'GameOverlayInitCount',
     paused: 'GameOverlayPause',
-    roundowon: 'GameOverlayRoundWon',
+    roundwon: 'GameOverlayRoundWon',
     roundlost: 'GameOverlayRoundLost',
   },
 }
@@ -100,23 +121,23 @@ export const GAME_DEFAULTS: {
   powerupSpawn: number
   powerupDuration: number
   powerups: Powerups
-  matchLifes: number
-  matchPowerups: {
-    fire: 3
-    ice: 3
-    wind: 3
+  lives: number
+  gamePowerups: {
+    fire: number
+    ice: number
+    wind: number
   }
   roundStates: RoundStates
 } = {
   speedIncreasement: 1,
-  speed: 2,
+  speed: 0.5,
   availableLetters: 8,
-  wordLetterSpawn: 3,
-  powerupSpawn: 8,
+  wordLetterSpawn: 7,
+  powerupSpawn: 10,
   powerupDuration: 1000,
   powerups: POWERUPS,
-  matchLifes: 10,
-  matchPowerups: {
+  lives: 3,
+  gamePowerups: {
     fire: 3,
     ice: 3,
     wind: 3,
@@ -129,29 +150,4 @@ export const GAME_DEFAULTS: {
     roundwon: 'roundwon',
     roundlost: 'roundlost',
   },
-}
-
-export const DUMMIE_DATA = {
-  locales: {
-    original: 'en',
-    learn: 'de',
-  },
-  words: [
-    {
-      original: 'a',
-      learn: 'a',
-    },
-    {
-      original: 'b',
-      learn: 'b',
-    },
-    {
-      original: 'c',
-      learn: 'c',
-    },
-    // {
-    //   original: 'Speed',
-    //   learn: 'Geschwindigkeit'
-    // },
-  ],
 }

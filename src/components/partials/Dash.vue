@@ -1,17 +1,17 @@
 <script setup lang="ts">
-import { ref, computed, nextTick, onMounted, onBeforeUnmount, defineComponent } from 'vue'
-import { useGameCharacterStore } from '@/stores/gameCharacter.store'
 import { useGameBoardStore } from '@/stores/gameBoard.store'
+import { useGameCharacterStore } from '@/stores/gameCharacter.store'
+import { computed, nextTick, onBeforeUnmount, onMounted, ref } from 'vue'
 
 const store = useGameCharacterStore()
 const gameBoardStore = useGameBoardStore()
 
-const lineRef = ref<HTMLElement | null>(null)
+const lineRef = ref<ElementRef>(null)
 const offset = computed(() => store.offset)
 
-const setPosition = () => {
-  const boardRect: DOMRect = gameBoardStore.boardEl!.getBoundingClientRect()
-  const posY: number = (boardRect.height * offset.value / 100)
+function setPosition() {
+  const boardRect = gameBoardStore.boardEl!.getBoundingClientRect()
+  const posY = (boardRect.height * offset.value / 100)
 
   lineRef.value!.style.top = `${posY}px`
 }
@@ -35,7 +35,7 @@ onBeforeUnmount(() => window.removeEventListener('resize', handleResize))
     ref="lineRef"
     class="absolute w-full dash-line"
   >
-    <div class="border border-info border-dashed opacity-30" />
+    <div class="border border-senary border-dashed opacity-30" />
   </div>
 </template>
 

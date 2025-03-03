@@ -1,12 +1,12 @@
 <script setup lang="ts">
 import CharacterMessage from '@/components/partials/CharacterMessage.vue'
-import { useGameStore } from '@/stores/game.store'
 import { useGameBoardStore } from '@/stores/gameBoard.store'
 import { useGameCharacterStore } from '@/stores/gameCharacter.store'
+import { useGameRoundStore } from '@/stores/gameRound.store'
 import { isMobile } from '@/utils'
-import { computed, nextTick, onBeforeUnmount, onMounted, ref, watch } from 'vue'
+import { nextTick, onBeforeUnmount, onMounted, ref, watch } from 'vue'
 
-const gameStore = useGameStore()
+const gameRoundStore = useGameRoundStore()
 const gameBoardStore = useGameBoardStore()
 const gameCharacterStore = useGameCharacterStore()
 
@@ -14,16 +14,10 @@ let previousX: number = 0
 let posX: number = 0
 let posY: number = 0
 
-const characterRef = ref<HTMLElement | null>(null)
-const characterAssetRef = ref<HTMLElement | null>(null)
-const characterCollisionRef = ref<HTMLElement | null>(null)
+const characterRef = ref<ElementRef>(null)
+const characterAssetRef = ref<ElementRef>(null)
+const characterCollisionRef = ref<ElementRef>(null)
 const isLoaded = ref(false)
-
-const isPlaying = computed(() => gameStore.roundIsPlaying)
-const offset = computed(() => gameCharacterStore.offset)
-const characterExpression = computed(() => gameCharacterStore.expression)
-const characterExpressionAsset = computed(() => gameCharacterStore.expressionAsset)
-const boardEl = computed(() => gameBoardStore.boardEl)
 
 function isValidKeyboardKey(key: string): boolean {
   switch (key) {
@@ -57,7 +51,7 @@ function addTilt() {
 }
 
 function getBoardRect() {
-  return boardEl.value?.getBoundingClientRect()
+  return gameBoardStore.boardEl?.getBoundingClientRect()
 }
 
 function getCharacterData() {
@@ -72,7 +66,7 @@ function getPositionXFromTouch(event: TouchEvent) {
 }
 
 function getPositionXFromArrowKeys(event: KeyboardEvent, character: Character) {
-  const distance: number = 1
+  const distance: number = 10
 
   if (isValidKeyboardKey(event.key)) {
     setExpression('open')
@@ -93,75 +87,92 @@ function getPositionXFromArrowKeys(event: KeyboardEvent, character: Character) {
 
 function setCharacterPosition() {
   const { el } = getCharacterData()
+
   if (el) {
     el.style.transform = `translate(${posX}px, ${posY}px)`
   }
 }
 
 function setExpressionClasses(expression: CharacterExpressionType) {
-  if (characterAssetRef.value) {
-    const className: string = `anim-${expression}`
+  if (
+    characterAssetRef.value
+    && ['like', 'dislike'].includes(expression)
+  ) {
+    const className = `anim-${expression}`
     characterAssetRef.value.classList.add(className)
 
     setTimeout(() => {
-      characterAssetRef.value.classList.remove(className)
-    }, 800)
+      if (characterAssetRef.value) {
+        characterAssetRef.value.classList.remove(className)
+      }
+    }, 500)
   }
 }
 
-function setExpression(expression: CharacterExpressionType) {
-  setExpressionClasses(expression)
-  gameCharacterStore.setExpression(expression)
+function setExpression(expressionType: CharacterExpressionType) {
+  setExpressionClasses(expressionType)
+  gameCharacterStore.setExpression(expressionType)
 }
 
 function repositionCharacter() {
-  const boardRect: DOMRect = getBoardRect()
+  const boardRect = getBoardRect()
   const { rect } = getCharacterData()
 
-  posX = (boardRect.width / 2) - (rect.width / 2)
-  posY = (boardRect.height * offset.value / 100) - (rect.height / 2)
+  if (!boardRect || !rect) {
+    return
+  }
+
+  posX = Math.round((boardRect.width / 2) - (rect.width / 2))
+  posY = Math.round((boardRect.height * gameCharacterStore.offset / 100) - (rect.height / 2))
 
   setCharacterPosition()
 }
 
+function clampPositionToBounds(
+  positionX: number,
+  boardWidth: number,
+  characterWidth: number,
+): number {
+  return Math.max(0, Math.min(positionX, boardWidth - characterWidth))
+}
+
 function updateCharacterPosition(event: CharacterEvent) {
-  const boardRect: DOMRect = getBoardRect()
-  const character = getCharacterData()
-  let cX: number
+  const boardRect = getBoardRect()
+  const { el, rect } = getCharacterData()
+
+  if (
+    !boardRect || !gameBoardStore.boardEl || !(el && rect)
+    || gameCharacterStore.isEating
+  ) {
+    return
+  }
+
+  let cX: number = rect.left
 
   if (window.TouchEvent && event instanceof TouchEvent) {
     cX = getPositionXFromTouch(event)
+  } else if (event instanceof KeyboardEvent) {
+    cX = getPositionXFromArrowKeys(event, { el, rect }) ?? rect.left
   }
 
-  if (event instanceof KeyboardEvent) {
-    cX = getPositionXFromArrowKeys(event, character)
-  }
-
-  posX = cX - character.rect.width / 2
-
-  // Boundaries Collision
-  if (posX < 0) {
-    posX = 0
-  }
-  else if (posX > boardRect.width - character.rect.width) {
-    posX = boardRect.width - character.rect.width
-  }
+  posX = clampPositionToBounds(
+    cX - gameBoardStore.boardEl.getBoundingClientRect().left - rect.width / 2,
+    boardRect.width,
+    rect.width,
+  )
 
   setCharacterPosition()
 }
 
 function handleMove(event: CharacterEvent) {
-  if (isPlaying.value) {
+  if (!gameRoundStore.roundIsPlaying) {
+    return
+  }
+
+  if ((window.TouchEvent && event instanceof TouchEvent)
+    || (event instanceof KeyboardEvent && isValidKeyboardKey(event.key))) {
     updateCharacterPosition(event)
-
-    if (window.TouchEvent && event instanceof TouchEvent) {
-      addTilt(event)
-      return
-    }
-
-    if (event instanceof KeyboardEvent && isValidKeyboardKey(event.key)) {
-      addTilt(event)
-    }
+    addTilt()
   }
 }
 
@@ -170,7 +181,7 @@ function handleResize() {
 }
 
 function handleStart(event: TouchEvent) {
-  if (isPlaying.value) {
+  if (gameRoundStore.roundIsPlaying) {
     previousX = getPositionXFromTouch(event)
 
     if (window.TouchEvent && event instanceof TouchEvent) {
@@ -180,7 +191,7 @@ function handleStart(event: TouchEvent) {
 }
 
 function handleEnd() {
-  if (isPlaying.value) {
+  if (gameRoundStore.roundIsPlaying) {
     setExpression('idle')
     removeTilt()
   }
@@ -189,24 +200,23 @@ function handleEnd() {
 function initCharacter() {
   repositionCharacter()
   gameCharacterStore.setElement(characterCollisionRef.value)
-
-  setTimeout(() => {
-    isLoaded.value = true
-  }, 500)
+  isLoaded.value = true
 }
 
-watch(characterExpression, (newExpression: CharacterExpressionType) => setExpressionClasses(newExpression))
+watch(
+  () => gameCharacterStore.expression,
+  (newExpression: CharacterExpressionType) => setExpressionClasses(newExpression),
+)
 
 onMounted (() => {
   nextTick(() => {
     window.addEventListener('resize', handleResize, false)
 
-    if (isMobile() && boardEl.value) {
-      boardEl.value.addEventListener('touchstart', handleStart, { passive: true })
-      boardEl.value.addEventListener('touchend', handleEnd, false)
-      boardEl.value.addEventListener('touchmove', handleMove, { passive: true })
-    }
-    else {
+    if (isMobile() && gameBoardStore.boardEl) {
+      gameBoardStore.boardEl.addEventListener('touchstart', handleStart, { passive: true })
+      gameBoardStore.boardEl.addEventListener('touchend', handleEnd, false)
+      gameBoardStore.boardEl.addEventListener('touchmove', handleMove, { passive: true })
+    } else {
       window.addEventListener('keyup', handleEnd, false)
       window.addEventListener('keydown', handleMove, false)
     }
@@ -218,12 +228,11 @@ onMounted (() => {
 onBeforeUnmount(() => {
   window.removeEventListener('resize', handleResize)
 
-  if (isMobile() && boardEl.value) {
-    boardEl.value.removeEventListener('touchstart', handleStart)
-    boardEl.value.removeEventListener('touchend', handleEnd)
-    boardEl.value.removeEventListener('touchmove', handleMove)
-  }
-  else {
+  if (isMobile() && gameBoardStore.boardEl) {
+    gameBoardStore.boardEl.removeEventListener('touchstart', handleStart)
+    gameBoardStore.boardEl.removeEventListener('touchend', handleEnd)
+    gameBoardStore.boardEl.removeEventListener('touchmove', handleMove)
+  } else {
     window.removeEventListener('keyup', handleEnd)
     window.removeEventListener('keydown', handleMove)
   }
@@ -234,11 +243,11 @@ onBeforeUnmount(() => {
   <div
     ref="characterRef"
     :class="!isMobile() ? 'transition-transform origin-center linear' : ''"
-    class="absolute border-primary w-16 h-16"
+    class="absolute w-20 h-20 px-1 border bg-secondary-dark border-secondary-light rounded-full flex items-center justify-center"
   >
     <div
       ref="characterCollisionRef"
-      class="absolute z-30 w-6 h-2 -ml-3 left-2/4 bottom-4 opacity-0"
+      class="absolute z-30 w-full h-3 bottom-5 bg-primary opacity-0"
     />
 
     <div
@@ -248,8 +257,8 @@ onBeforeUnmount(() => {
       class="transform transition-all opacity-0 duration-200 ease-in-out"
     >
       <img
-        :src="characterExpressionAsset"
-        class="block anim-like"
+        :src="gameCharacterStore.expressionAsset"
+        class="block w-full h-full anim-like"
       >
     </div>
 

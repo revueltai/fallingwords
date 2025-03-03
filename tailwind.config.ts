@@ -6,106 +6,133 @@ const fontFamily = {
 }
 
 type TailwindFontSizeName = 's' | 'p' | 'h6' | 'h5' | 'h4' | 'h3' | 'h2' | 'h1' | 'hero' | 'uber' | 'colossus'
-type TailwindFontSize = [string, { fontWeight: string; lineHeight: string }]
+type TailwindFontSize = [string, { fontWeight: string, lineHeight: string }]
 
-const fontSize: Record<TailwindFontSizeName, TailwindFontSize>= {
-  's': ['var(--text-s)', {
+const colors = ['primary', 'secondary', 'tertiary', 'quaternary', 'quinary', 'senary', 'septenary']
+const colorWeights = ['light', 'dark']
+
+const fontSize: Record<TailwindFontSizeName, TailwindFontSize> = {
+  s: ['var(--text-s)', {
     fontWeight: 'var(--fw-400)',
-    lineHeight: 'var(--text-s--line-height)'
+    lineHeight: 'var(--text-s--line-height)',
   }],
-  'p': ['var(--text-p)', {
+  p: ['var(--text-p)', {
     fontWeight: 'var(--fw-400)',
-    lineHeight: 'var(--text-p--line-height)'
+    lineHeight: 'var(--text-p--line-height)',
   }],
-  'h6': ['var(--text-h6)', {
+  h6: ['var(--text-h6)', {
     fontWeight: 'var(--fw-500)',
-    lineHeight: 'var(--text-h6--line-height)'
+    lineHeight: 'var(--text-h6--line-height)',
   }],
-  'h5': ['var(--text-h5)', {
+  h5: ['var(--text-h5)', {
     fontWeight: 'var(--fw-500)',
-    lineHeight: 'var(--text-h5--line-height)'
+    lineHeight: 'var(--text-h5--line-height)',
   }],
-  'h4': ['var(--text-h4)', {
+  h4: ['var(--text-h4)', {
     fontWeight: 'var(--fw-600)',
-    lineHeight: 'var(--text-h4--line-height)'
+    lineHeight: 'var(--text-h4--line-height)',
   }],
-  'h3': ['var(--text-h3)', {
+  h3: ['var(--text-h3)', {
     fontWeight: 'var(--fw-600)',
-    lineHeight: 'var(--text-h3--line-height)'
+    lineHeight: 'var(--text-h3--line-height)',
   }],
-  'h2': ['var(--text-h2)', {
+  h2: ['var(--text-h2)', {
     fontWeight: 'var(--fw-700)',
-    lineHeight: 'var(--text-h2--line-height)'
+    lineHeight: 'var(--text-h2--line-height)',
   }],
-  'h1': ['var(--text-h1)', {
+  h1: ['var(--text-h1)', {
     fontWeight: 'var(--fw-700)',
-    lineHeight: 'var(--text-h1--line-height)'
+    lineHeight: 'var(--text-h1--line-height)',
   }],
-  'hero': ['var(--text-hero)', {
+  hero: ['var(--text-hero)', {
     fontWeight: 'var(--fw-800)',
-    lineHeight: 'var(--text-hero--line-height)'
+    lineHeight: 'var(--text-hero--line-height)',
   }],
-  'uber': ['var(--text-uber)', {
+  uber: ['var(--text-uber)', {
     fontWeight: 'var(--fw-800)',
-    lineHeight: 'var(--text-uber--line-height)'
+    lineHeight: 'var(--text-uber--line-height)',
   }],
-  'colossus': ['var(--text-colossus)', {
+  colossus: ['var(--text-colossus)', {
     fontWeight: 'var(--fw-900)',
-    lineHeight: 'var(--text-colossus--line-height)'
-   }]
+    lineHeight: 'var(--text-colossus--line-height)',
+  }],
 }
 
-const colors = {
-  'black': 'var(--color-black)',
-  'white': 'var(--color-white)',
-  'grey': 'var(--color-grey)',
-  'primary': 'var(--color-primary)',
-  'primary-lighter': 'var(--color-primary-lighter)',
-  'secondary': 'var(--color-secondary)',
-  'tertiary': 'var(--color-tertiary)',
-  'quaternary': 'var(--color-quaternary)',
-  'quinary': 'var(--color-quinary)',
-  'warning': 'var(--color-warning)',
-  'success': 'var(--color-success)',
-  'danger': 'var(--color-danger)',
-  'info': 'var(--color-info)',
-  'info-alternative': 'var(--color-info-alternative)',
+const strokeWidth = {
+  2: '2',
+  3: '3',
+  4: '4',
+}
+
+function getColors(): Record<Color, string> {
+  const output = {
+    black: 'var(--color-black)',
+    white: 'var(--color-white)',
+    grey: 'var(--color-grey)',
+  }
+
+  colors.forEach((color) => {
+    output[color] = `var(--color-${color})`
+
+    colorWeights.forEach((weight) => {
+      output[`${color}-${weight}`] = `var(--color-${color}-${weight})`
+    })
+  })
+
+  return output
 }
 
 function getSafelist() {
-  return [
+  const output: any = [
     'stroke-2',
+    'stroke-3',
+    'stroke-4',
     'stroke-current',
     'fill-current',
-    'bg-warning',
-    'bg-quinary',
     'opacity-100',
     'opacity-50',
-    // 'w-8',
-    // 'w-16',
-    // 'w-6',
-    // 'w-32',
-    // 'w-40',
-    // 'w-48',
-    // 'w-56',
-    // 'w-64',
-    // 'h-24',
-    // 'h-32'
   ]
+
+  // Colors
+  const colorsWithWeights: string[] = []
+  colors.forEach((color) => {
+    colorWeights.forEach((weight) => {
+      colorsWithWeights.push(`${color}-${weight}`)
+    })
+  })
+
+  const safeColors = [
+    ['black', 'white', 'grey'].join('|'),
+    colors.join('|'),
+    colorsWithWeights.join('|'),
+  ].flatMap(color => color).join('|')
+
+  output.push({
+    pattern: new RegExp(`(stroke|text|bg|border|ring|fill)-(black|grey|white|${safeColors})`, 'g'),
+    variants: ['hover', 'focus', 'active'],
+  })
+
+  // Fonts
+  output.push({
+    pattern: new RegExp(`(text)-(${[...Object.keys(fontSize)].join('|')})`, 'g'),
+  })
+
+  return output
 }
 
 export default {
   content: [
     './index.html',
-    './src/**/*.{js,ts,jsx,tsx,mdx,vue}'
+    './src/**/*.{js,ts,jsx,tsx,mdx,vue}',
   ],
   safelist: getSafelist(),
   theme: {
     extend: {
       fontFamily,
       fontSize,
-      colors,
-    }
+      strokeWidth,
+      colors: getColors(),
+    },
   },
   plugins: [],
 } satisfies Config

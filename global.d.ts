@@ -1,16 +1,21 @@
 declare global {
   type ValueOf<T> = T[keyof T]
+  type ElementRef = ref<ElementRef>
 
   // UI
   type Size = 'xs' | 'sm' | 'md' | 'lg' | 'xl' | '2xl' | '3xl' | '4xl'
-  type Color = 'black' | 'white' | 'grey' | 'primary' | 'primary-lighter' | 'secondary' | 'tertiary' | 'quaternary' | 'quinary' | 'warning' | 'success' | 'danger' | 'info' | 'info-alternative'
+  type TextSize = 's' | 'p' | 'h6' | 'h5' | 'h4' | 'h3' | 'h2' | 'h1' | 'hero' | 'uber' | 'colossus'
+  type ColorScale = 'primary' | 'secondary' | 'tertiary' | 'quaternary' | 'quinary' | 'senary' | 'septenary'
+  type ColorWeights = 'light' | 'dark'
+  type ColorBase = 'black' | 'white' | 'grey'
+  type Color = ColorBase | ColorScale | `${ColorScale}-${ColorWeights}`
 
   type OverlayState = 'fadeIn' | 'visible' | 'fadeOut' | 'hidden'
 
   interface OverlayComponentMap {
     countdown: 'GameOverlayInitCount'
     paused: 'GameOverlayPause'
-    roundowon: 'GameOverlayRoundWon'
+    roundwon: 'GameOverlayRoundWon'
     roundlost: 'GameOverlayRoundLost'
   }
 
@@ -38,7 +43,7 @@ declare global {
     id: number
     type: string
     letter: string// | null
-    powerup: Powerup// | null
+    powerup: Powerup | null
   }
 
   type PowerupName = 'life' | 'fire' | 'ice' | 'wind'
@@ -48,19 +53,19 @@ declare global {
     text: string
     asset: string
     duration: number
-    speed: number // | boolean;
+    speed: number | null
     // name: string
     // type: string
   }
 
   type Powerups = { [key in PowerupName]: Powerup }
 
-  type MatchPowerups = Partial<Record<keyof Powerups, number>>
-  type MatchLocale = null | GameAlphabetLocale
+  type GamePowerups = Partial<Record<keyof Powerups, number>>
+  type RoundLocaleCodes = null | GameAlphabetLocale
 
-  interface MatchLocales {
-    original: MatchLocale
-    learn: MatchLocale
+  interface GameLocale {
+    original: RoundLocaleCodes
+    learn: RoundLocaleCodes
   }
 
   interface RoundWord {
@@ -68,7 +73,7 @@ declare global {
     learn: string
   }
 
-  type RoundWords = RoundWord[]
+  type GameWords = RoundWord[]
 
   type RoundState = 'loading' | 'ready' | 'paused' | 'playing' | 'roundwon' | 'roundlost'
 
@@ -86,13 +91,19 @@ declare global {
     rect: DOMRect
   }
 
-  interface CharacterMessage {
-    message: string
-    type: 'powerup' | 'like' | 'dislike' | ''
+  type CharacterEvent = TouchEvent | KeyboardEvent
+  type CharacterExpressionType = 'idle' | 'open' | 'chew' | 'like' | 'dislike' | 'love'
+
+  interface CharacterExpressionData {
+    asset: string
+    duration: number
   }
 
-  type CharacterExpressionType = 'idle' | 'open' | 'chew' | 'like' | 'dislike' | 'love'
-  type CharacterEvent = TouchEvent | KeyboardEvent
+  type CharacterMessageType = 'love' | 'like' | 'dislike'
+  interface CharacterMessage {
+    type: CharacterMessageType | ''
+    message: string
+  }
 }
 
 export { }

@@ -1,10 +1,11 @@
+import type { ShallowRef } from 'vue'
 import { defineStore } from 'pinia'
-import { shallowRef, type ShallowRef } from 'vue'
+import { shallowRef } from 'vue'
 
 export const useAppStore = defineStore('app', () => {
   const canvasMaxWidth = 600
   const canvasMaxHeight = 800
-  const canvasEl: ShallowRef<HTMLElement | null> = shallowRef(null)
+  const canvasEl: ShallowRef<ElementRef> = shallowRef(null)
 
   const setElement = (el: HTMLElement) => {
     canvasEl.value = el
@@ -14,6 +15,6 @@ export const useAppStore = defineStore('app', () => {
     canvasMaxWidth,
     canvasMaxHeight,
     canvasEl,
-    setElement
+    setElement,
   }
 })

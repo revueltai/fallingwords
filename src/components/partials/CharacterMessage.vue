@@ -1,29 +1,30 @@
 <script setup lang="ts">
 import { useGameCharacterStore } from '@/stores/gameCharacter.store'
-import { ref, computed, watch } from 'vue'
+import { ref, watch } from 'vue'
 
-const store = useGameCharacterStore()
+const gameCharacterStore = useGameCharacterStore()
 
 const showClass = 'show'
 const cssClasses = ref('')
-const characterMessageRef = ref<HTMLElement | null>(null)
+const characterMessageRef = ref<ElementRef>(null)
 
-const message = computed(() => store.message)
-
-function handleAnimationEnd (event: AnimationEvent) {
+function handleAnimationEnd(event: AnimationEvent) {
   event.stopPropagation()
   cssClasses.value = ''
-  store.resetMessage()
+  gameCharacterStore.resetMessage()
   characterMessageRef.value?.classList.remove(showClass)
 }
 
-watch(message, (newMessage) => {
-  if (newMessage.message && characterMessageRef.value) {
-    cssClasses.value = newMessage.type
-    characterMessageRef.value.classList.add(showClass)
-    characterMessageRef.value.addEventListener('animationend', handleAnimationEnd)
-  }
-})
+watch(
+  () => gameCharacterStore.message,
+  (newMessage) => {
+    if (newMessage.message && characterMessageRef.value) {
+      cssClasses.value = newMessage.type
+      characterMessageRef.value.classList.add(showClass)
+      characterMessageRef.value.addEventListener('animationend', handleAnimationEnd)
+    }
+  },
+)
 </script>
 
 <template>
@@ -36,7 +37,7 @@ watch(message, (newMessage) => {
       :key="index"
       :class="`absolute font-bold text-center right-0 -top-6 w-full message t${index} ${cssClasses}`"
     >
-      {{ message.message }}
+      {{ gameCharacterStore.message.message }}
     </span>
   </div>
 </template>
@@ -77,11 +78,11 @@ watch(message, (newMessage) => {
   animation-delay: .2s;
 }
 
-/* .message.powerup {
-  @apply text-success;
+.message.powerup {
+  @apply text-secondary;
 }
 
 .message.dislike {
-  @apply text-danger;
-} */
+  @apply text-white;
+}
 </style>
