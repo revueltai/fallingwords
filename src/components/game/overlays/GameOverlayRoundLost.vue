@@ -34,6 +34,7 @@ onMounted(() => gameUIStore.fadeInOverlay())
 <template>
   <GameOverlayRoundEnd
     heading="Out of Lives!"
+    result="lost"
     :has-close-button="false"
   >
     <img

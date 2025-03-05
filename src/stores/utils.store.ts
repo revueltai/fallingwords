@@ -55,6 +55,14 @@ function createPowerup(powerups: Powerups): Powerup {
   return powerups[types[index]]
 }
 
+/**
+ * Generates a single letter based on game parameters and word completion status
+ *
+ * @param locale - The locale code determining which alphabet to use
+ * @param roundWordGuess - The word being guessed in the current round
+ * @param wordLetterSpawnChance - Probability (0-1) of spawning a letter from the word vs a random letter
+ * @returns A single letter character - either from the remaining letters in the word or a random letter from the alphabet
+ */
 function createLetter(
   locale: RoundLocaleCodes,
   roundWordGuess: Word,
@@ -64,17 +72,31 @@ function createLetter(
   const pendingLetters = getPendingLettersInWord(roundWordGuess)
 
   if (spawnWordLetter(wordLetterSpawnChance) || !pendingLetters) {
-    return a.charAt(getRandomNum(a.length))
+    return pendingLetters.charAt(getRandomNum(pendingLetters.length))
   }
 
-  return pendingLetters.charAt(getRandomNum(pendingLetters.length))
+  return a.charAt(getRandomNum(a.length))
 }
 
+/**
+ * Checks if a given letter exists in the word and hasn't been guessed yet.
+ *
+ * @param {string} letter - The letter to check for in the word
+ * @param {Word} word - The word to search through
+ * @returns {boolean} True if the unguessed letter exists in the word, false otherwise
+ */
 export function isLetterInWord(letter: string, word: Word): boolean {
   const arr = word.filter((l: Letter) => !l.guessed && l.letter.toLowerCase() === letter.toLowerCase())
   return arr.length > 0
 }
 
+/**
+ * Finds the index of an unguessed letter in the word.
+ *
+ * @param {string} letter - The letter to find the index for
+ * @param {Word} word - The word to search through
+ * @returns {number} The index of the first matching unguessed letter, or -1 if not found
+ */
 export function getLetterIndexInWord(letter: string, word: Word): number {
   return word.findIndex((l: Letter) => !l.guessed && l.letter.toLowerCase() === letter.toLowerCase())
 }
@@ -85,8 +107,8 @@ export function getLetterIndexInWord(letter: string, word: Word): number {
  * @param {Powerups} powerups   - Powerups object
  * @param {RoundLocaleCodes} locale - Round locale code
  * @param {Word} roundWordGuess - Round word guess
- * @param {number} powerupSpawnChance - Powerup spawn chance
- * @param {number} wordLetterSpawnChance - Word letter spawn chance
+ * @param {number} powerupSpawnChance - Chance to get a Powerup spawn
+ * @param {number} wordLetterSpawnChance - Chance to get a Word letter spawn
  * @returns {BoardLetter} - Board letter object
  */
 export function getLetter(
@@ -123,8 +145,8 @@ export function getLetter(
  * @param {RoundLocaleCodes} locale - Round locale code
  * @param {Word} roundWordGuess - Round word guess
  * @param {number} total - Total board letters to create
- * @param {number} powerupSpawnChance - Powerup spawn chance
- * @param {number} wordLetterSpawnChance - Word letter spawn chance
+ * @param {number} powerupSpawnChance - Chance to get a Powerup spawn
+ * @param {number} wordLetterSpawnChance - Chance to get a Word letter spawn
  * @returns {BoardLetter[]} - List of board letters
  */
 export function getLetters(

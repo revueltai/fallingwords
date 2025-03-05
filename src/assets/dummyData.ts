@@ -1,7 +1,19 @@
 export const dummyWords = [
   {
     original: 'love',
-    learn: 'Liebe',
+    learn: 'a',
+  },
+  {
+    original: 'love',
+    learn: 'a',
+  },
+  {
+    original: 'love',
+    learn: 'a',
+  },
+  {
+    original: 'love',
+    learn: 'a',
   },
   {
     original: 'Hello',

@@ -45,8 +45,8 @@ export const useGameRoundStore = defineStore('gameRound', {
       start: 0,
       end: 0,
     },
-    roundPowerupSpawnChance: GAME_DEFAULTS.powerupSpawn,
-    roundWordLetterSpawnChance: GAME_DEFAULTS.wordLetterSpawn,
+    roundPowerupSpawnChance: GAME_DEFAULTS.powerupSpawnChance,
+    roundWordLetterSpawnChance: GAME_DEFAULTS.wordLetterSpawnChance,
     roundActivePowerup: {
       active: false,
       type: null,

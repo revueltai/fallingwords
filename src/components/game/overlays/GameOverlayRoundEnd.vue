@@ -1,15 +1,19 @@
 <script setup lang="ts">
 import type { Slot } from 'vue'
+import gameRoundOverLost from '@/assets/images/ui/gameRoundOverLost.svg'
+import gameRoundOverWon from '@/assets/images/ui/gameRoundOverWon.svg'
 import GameOverlayContent from '@/components/game/overlays/GameOverlayContent.vue'
 import { onMounted, ref, useSlots } from 'vue'
 
 interface Props {
+  result?: 'won' | 'lost'
   heading?: string
   hasCloseButton?: boolean
 }
 
-withDefaults(defineProps<Props>(), {
+const props = withDefaults(defineProps<Props>(), {
   heading: '',
+  result: 'won',
   hasCloseButton: true,
 })
 
@@ -22,18 +26,25 @@ const slots = useSlots() as {
 }
 
 const animRef = ref<HTMLElement | null>(null)
+const assetSrc = ref('')
 const animIsVisible = ref(true)
 
-onMounted(() => setTimeout(() => animIsVisible.value = false, 1500))
+onMounted(() => {
+  assetSrc.value = props.result === 'lost'
+    ? gameRoundOverLost
+    : gameRoundOverWon
+
+  setTimeout(() => animIsVisible.value = false, 1500)
+})
 </script>
 
 <template>
   <img
     v-if="animIsVisible"
     ref="animRef"
+    :src="assetSrc"
     width="252"
     height="252"
-    src="/images/ui/gameRoundOver.svg"
     class="w-64 h-64"
   >
 

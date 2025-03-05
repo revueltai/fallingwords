@@ -7,13 +7,9 @@ import { onMounted } from 'vue'
 onMounted(() => {
   new Movinblocks()
     .setTimeline(['logo', 'gameStart', 'tutorial'])
-    .setAnimation([
-      'revealInTop',
-      UI.animationClasses.named.scaleIn as MbCustomAnimation,
-      UI.animationClasses.named.scaleIn as MbCustomAnimation,
-    ])
+    .setAnimation(UI.animationClasses.named.scaleIn as MbCustomAnimation)
     .setOverlap(200)
-    .setDuration([800, 600, 200])
+    .setDuration([1100, 600, 200])
     .prepare()
     .start()
 })
@@ -25,7 +21,7 @@ onMounted(() => {
       <div class="flex items-center justify-center flex-col gap-20 h-full">
         <img
           id="logo"
-          src="/images/ui/logo.png"
+          src="/images/ui/logo.svg"
           alt="logo"
           class="w-80 mx-auto"
           width="260"

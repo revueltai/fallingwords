@@ -91,7 +91,7 @@ onMounted(() => gameUIStore.fadeInOverlay())
     heading="Round Complete!"
   >
     <template #header>
-      <div class="flex items-end justify-center">
+      <div class="flex items-end justify-center w-full -mb-6 stars">
         <img
           v-for="(star, index) in roundStars"
           :id="`star${index}`"

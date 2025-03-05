@@ -23,7 +23,7 @@ export const POWERUPS: Powerups = {
     id: 'ice',
     text: 'ice',
     asset: 'powerup-ice',
-    duration: 3000,
+    duration: 4000,
     speed: 0.2,
   },
   wind: {
@@ -117,8 +117,8 @@ export const GAME_DEFAULTS: {
   speedIncreasement: number
   speed: number
   availableLetters: number
-  wordLetterSpawn: number
-  powerupSpawn: number
+  wordLetterSpawnChance: number
+  powerupSpawnChance: number
   powerupDuration: number
   powerups: Powerups
   lives: number
@@ -132,8 +132,8 @@ export const GAME_DEFAULTS: {
   speedIncreasement: 1,
   speed: 0.5,
   availableLetters: 8,
-  wordLetterSpawn: 7,
-  powerupSpawn: 10,
+  wordLetterSpawnChance: 10, // 1/10 chance
+  powerupSpawnChance: 10, // 1/10 chance
   powerupDuration: 1000,
   powerups: POWERUPS,
   lives: 3,

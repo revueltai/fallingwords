@@ -204,6 +204,19 @@ function initCharacter() {
 }
 
 watch(
+  () => [
+    gameRoundStore.roundIsWon,
+    gameRoundStore.roundIsLost,
+  ],
+  ([roundIsWon, roundIsLost]) => {
+    if (roundIsWon || roundIsLost) {
+      repositionCharacter()
+    }
+  },
+  { immediate: true },
+)
+
+watch(
   () => gameCharacterStore.expression,
   (newExpression: CharacterExpressionType) => setExpressionClasses(newExpression),
 )
