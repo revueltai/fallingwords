@@ -3,7 +3,7 @@ import type { RouteLocationRaw } from 'vue-router'
 import { createCssVar } from '@/utils'
 import { computed } from 'vue'
 
-type ButtonSize = 'sm' | 'md' | 'lg'
+type ButtonSize = 'xs' | 'sm' | 'md' | 'lg'
 
 interface Props {
   size?: ButtonSize
@@ -52,12 +52,6 @@ const cssClasses = computed(() => {
   }
 
   payload.push(
-    props.iconOnly
-      ? 'p-2'
-      : 'py-2 px-4',
-  )
-
-  payload.push(
     props.isRounded
       ? 'rounded-2'
       : props.isSquared
@@ -69,18 +63,26 @@ const cssClasses = computed(() => {
     payload.push('gap-2')
   }
 
-  switch (props.size) {
-    case 'sm':
-      payload.push('text-s')
-      break
+  if (props.iconOnly) {
+    payload.push('p-2')
+  } else {
+    switch (props.size) {
+      case 'xs':
+        payload.push('text-xs py-1 px-2')
+        break
 
-    case 'md':
-      payload.push('text-p')
-      break
+      case 'sm':
+        payload.push('text-sm py-1 px-2')
+        break
 
-    case 'lg':
-      payload.push('text-h5')
-      break
+      case 'md':
+        payload.push('text-p py-2 px-4')
+        break
+
+      case 'lg':
+        payload.push('text-h5 py-2 px-4')
+        break
+    }
   }
 
   return payload.join(' ')

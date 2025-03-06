@@ -336,13 +336,13 @@ onBeforeUnmount (() => cancelAnimationFrame(raf))
 /* ICE Powerup */
 .type__powerup-ice {
   height: 53px;
-  background-image: url('/images/tile/powerup-ice__deco2.svg');
+  background-image: url('/images/game/powerupIceDeco2.svg');
   background-position: center bottom;
 }
 
 .type__powerup-ice .tile__wrapper {
   @apply border-primary text-primary-light bg-secondary-dark;
-  background-image: url('/images/tile/powerup-ice__deco1.svg');
+  background-image: url('/images/game/powerupIceDeco1.svg');
   background-position: center top;
 }
 

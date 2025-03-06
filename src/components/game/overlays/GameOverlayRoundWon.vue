@@ -96,7 +96,7 @@ onMounted(() => gameUIStore.fadeInOverlay())
           v-for="(star, index) in roundStars"
           :id="`star${index}`"
           :key="index"
-          :src="`/images/ui/gameWon${star}.svg`"
+          :src="`/images/game/gameWon${star}.svg`"
           class="star"
           :class="index === 1 ? 'order-3' : ''"
           :width="getStarSize(index)"
@@ -107,13 +107,13 @@ onMounted(() => gameUIStore.fadeInOverlay())
 
     <div class="">
       <img
-        src="/images/ui/gameWon.svg"
+        src="/images/game/gameWon.svg"
         width="160"
         height="160"
       >
 
       <span class="relative z-30 rounded-xl border border-senary-light shadow-sm bg-secondary-light text-center text-xl pt pb-1 px-2 block mx-auto -mt-12 mb-2 w-[120px]">
-        <span class="block text-s mt-2 text-primary-light uppercase">Your time</span>
+        <span class="block text-sm mt-2 text-primary-light uppercase">Your time</span>
         {{ roundTimeLabel }}
       </span>
     </div>

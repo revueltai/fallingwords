@@ -1,17 +1,15 @@
 <script setup lang="ts">
-import { dummyLocales, dummyWords } from '@/assets/dummyData'
-
 import GameBoard from '@/components/game/ui/GameBoard.vue'
 import GameBottom from '@/components/game/ui/GameBottom.vue'
 import GameOverlay from '@/components/game/ui/GameOverlay.vue'
 import GamePowerupBar from '@/components/game/ui/GamePowerupBar.vue'
 import GamePowerupGlow from '@/components/game/ui/GamePowerupGlow.vue'
 import GameTop from '@/components/game/ui/GameTop.vue'
-import { useGameStore } from '@/stores/game.store'
+import { useGameRoundStore } from '@/stores/gameRound.store'
 import Movinblocks from 'movinblocks'
 import { onMounted } from 'vue'
 
-const gameStore = useGameStore()
+const gameRoundStore = useGameRoundStore()
 
 function setUIAnimation() {
   new Movinblocks()
@@ -24,8 +22,8 @@ function setUIAnimation() {
 }
 
 onMounted(() => {
-  gameStore.prepareGame({ words: dummyWords, locales: dummyLocales })
   setUIAnimation()
+  gameRoundStore.prepareRound()
 })
 </script>
 

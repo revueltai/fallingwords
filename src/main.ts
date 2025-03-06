@@ -1,6 +1,6 @@
-import Badge from '@/components/ui/Badge.vue'
-import Button from '@/components/ui/Button.vue'
-import Icon from '@/components/ui/Icon.vue'
+import Badge from '@/components/shared/Badge.vue'
+import Button from '@/components/shared/Button.vue'
+import Icon from '@/components/shared/Icon.vue'
 
 import { createPinia } from 'pinia'
 import { createApp } from 'vue'

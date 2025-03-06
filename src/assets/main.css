@@ -5,7 +5,8 @@
 @tailwind utilities;
 
 :root {
-  --text-s: 0.75rem;
+  --text-xs: 0.5rem;
+  --text-sm: 0.75rem;
   --text-p: 1rem;
   --text-h6: 1.25rem;
   --text-h5: 1.5rem;
@@ -17,7 +18,8 @@
   --text-uber: 6rem;
   --text-colossus: 7rem;
   
-  --text-s--line-height: 1rem;
+  --text-xs--line-height: 0.75rem;
+  --text-sm--line-height: 1rem;
   --text-p--line-height: 1.5rem;
   --text-h6--line-height: 2rem;
   --text-h5--line-height: 2rem;
@@ -88,7 +90,7 @@ body {
 
 @layer components {
   .u-bg-app {
-    background-image: url('/images/ui/bgGame.svg');
+    background-image: url('/images/shared/bgGame.svg');
     background-size: 100px;
   }
 }

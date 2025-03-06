@@ -10,6 +10,11 @@ const router = createRouter({
       component: () => import('../views/SplashView.vue'),
     },
     {
+      path: '/dashboard',
+      name: 'Dashboard',
+      component: () => import('../views/DashboardView.vue'),
+    },
+    {
       path: '/game',
       name: 'Game',
       component: () => import('../views/GameView.vue'),

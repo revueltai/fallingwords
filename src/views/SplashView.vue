@@ -21,7 +21,7 @@ onMounted(() => {
       <div class="flex items-center justify-center flex-col gap-20 h-full">
         <img
           id="logo"
-          src="/images/ui/logo.svg"
+          src="/images/shared/logo.svg"
           alt="logo"
           class="w-80 mx-auto"
           width="260"
@@ -31,7 +31,7 @@ onMounted(() => {
         <div class="flex flex-col gap-6 text-center p-10">
           <div id="gameStart">
             <Button
-              to="game"
+              to="dashboard"
               background-color="tertiary"
               border-color="tertiary-light"
               class="w-[200px]"

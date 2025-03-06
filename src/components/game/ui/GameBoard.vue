@@ -1,8 +1,8 @@
 <script setup lang="ts">
-import Board from '@/components/partials/Board.vue'
-import Character from '@/components/partials/Character.vue'
-import Dash from '@/components/partials/Dash.vue'
-import Tiles from '@/components/partials/Tiles.vue'
+import Board from '@/components/game/partials/Board.vue'
+import Character from '@/components/game/partials/Character.vue'
+import Dash from '@/components/game/partials/Dash.vue'
+import Tiles from '@/components/game/partials/Tiles.vue'
 import { nextTick, onMounted, ref } from 'vue'
 
 const isUIReady = ref(false)

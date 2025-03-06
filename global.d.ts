@@ -68,12 +68,19 @@ declare global {
     learn: RoundLocaleCodes
   }
 
-  interface RoundWord {
+  interface GameCollection {
+    uid: string
+    name: string
+    locales: GameLocale
+    words: GameWords
+  }
+
+  interface GameWord {
     original: string
     learn: string
   }
 
-  type GameWords = RoundWord[]
+  type GameWords = GameWord[]
 
   type RoundState = 'loading' | 'ready' | 'paused' | 'playing' | 'roundwon' | 'roundlost'
 

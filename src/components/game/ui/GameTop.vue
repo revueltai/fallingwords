@@ -83,7 +83,7 @@ onMounted (() => {
           {{ gameRoundStore.roundWordOriginal }}
         </span>
 
-        <div class="flex items-center justify-center w-14 h-full text-s font-semibold bg-secondary-dark bg-opacity-5 border-secondary-light border-l">
+        <div class="flex items-center justify-center w-14 h-full text-sm font-semibold bg-secondary-dark bg-opacity-5 border-secondary-light border-l">
           {{ currentRound }}/{{ gameStore.gameTotalRounds }}
         </div>
       </div>

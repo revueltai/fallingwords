@@ -5,16 +5,20 @@ const fontFamily = {
   sans: ['Lexend', ...defaultTheme.fontFamily.sans],
 }
 
-type TailwindFontSizeName = 's' | 'p' | 'h6' | 'h5' | 'h4' | 'h3' | 'h2' | 'h1' | 'hero' | 'uber' | 'colossus'
+type TailwindFontSizeName = 'xs' | 'sm' | 'p' | 'h6' | 'h5' | 'h4' | 'h3' | 'h2' | 'h1' | 'hero' | 'uber' | 'colossus'
 type TailwindFontSize = [string, { fontWeight: string, lineHeight: string }]
 
 const colors = ['primary', 'secondary', 'tertiary', 'quaternary', 'quinary', 'senary', 'septenary']
 const colorWeights = ['light', 'dark']
 
 const fontSize: Record<TailwindFontSizeName, TailwindFontSize> = {
-  s: ['var(--text-s)', {
+  xs: ['var(--text-xs)', {
     fontWeight: 'var(--fw-400)',
-    lineHeight: 'var(--text-s--line-height)',
+    lineHeight: 'var(--text-xs--line-height)',
+  }],
+  sm: ['var(--text-sm)', {
+    fontWeight: 'var(--fw-400)',
+    lineHeight: 'var(--text-sm--line-height)',
   }],
   p: ['var(--text-p)', {
     fontWeight: 'var(--fw-400)',

@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import CharacterMessage from '@/components/partials/CharacterMessage.vue'
+import CharacterMessage from '@/components/game/partials/CharacterMessage.vue'
 import { useGameBoardStore } from '@/stores/gameBoard.store'
 import { useGameCharacterStore } from '@/stores/gameCharacter.store'
 import { useGameRoundStore } from '@/stores/gameRound.store'
