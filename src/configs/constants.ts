@@ -136,11 +136,11 @@ export const GAME_DEFAULTS: {
   powerupSpawnChance: 10, // 1/10 chance
   powerupDuration: 1000,
   powerups: POWERUPS,
-  lives: 3,
+  lives: 13,
   gamePowerups: {
     fire: 3,
     ice: 3,
-    wind: 3,
+    wind: 33,
   },
   roundStates: {
     loading: 'loading',

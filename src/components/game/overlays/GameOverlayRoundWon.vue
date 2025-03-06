@@ -77,7 +77,7 @@ watch(
   (newState) => {
     if (newState === UI.overlayStates.hidden) {
       gameStore.increaseGameRound()
-      gameRoundStore.setRoundStart()
+      gameRoundStore.prepareRound()
     }
   },
 )

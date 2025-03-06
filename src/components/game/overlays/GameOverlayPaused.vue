@@ -23,7 +23,7 @@ function handleGameCancelation() {
 }
 
 function handleGameResume() {
-  gameRoundStore.setRoundPlaying()
+  gameRoundStore.resumeRound()
   hideOverlay()
 }
 

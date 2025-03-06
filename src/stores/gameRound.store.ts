@@ -61,6 +61,8 @@ export const useGameRoundStore = defineStore('gameRound', {
       return useGameUIStore()
     },
     roundTotalTime: state => logTimeDifference(state.roundTime.start, state.roundTime.end),
+    roundIsLoading: state => state.roundState === state.roundStates.loading,
+    roundIsReady: state => state.roundState === state.roundStates.ready,
     roundIsPlaying: state => state.roundState === state.roundStates.playing,
     roundIsPaused: state => state.roundState === state.roundStates.paused,
     roundIsWon: state => state.roundState === state.roundStates.roundwon,
@@ -137,16 +139,23 @@ export const useGameRoundStore = defineStore('gameRound', {
       this.roundState = newRoundState
     },
 
-    setRoundStart() {
+    prepareRound() {
       this.setRoundWord()
       this.gameUIStore.setOverlayComponent('countdown')
+      this.setRoundState(roundStates.ready)
     },
 
-    setRoundPlaying() {
+    startRound() {
+      this.setRoundSpeed()
+      this.setRoundTime('start')
+      this.resumeRound()
+    },
+
+    resumeRound() {
       this.setRoundState(roundStates.playing)
     },
 
-    setRoundPause() {
+    pauseRound() {
       const { roundlost, paused } = roundStates
 
       if (
@@ -167,12 +176,6 @@ export const useGameRoundStore = defineStore('gameRound', {
     setRoundLost() {
       this.setRoundState(roundStates.roundlost)
       this.gameUIStore.setOverlayComponent('roundlost')
-    },
-
-    initRound() {
-      this.setRoundSpeed()
-      this.setRoundTime('start')
-      this.setRoundPlaying()
     },
 
     handleRoundState() {

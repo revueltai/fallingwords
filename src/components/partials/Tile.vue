@@ -11,9 +11,8 @@ import { computed, nextTick, onBeforeUnmount, onMounted, ref, watch } from 'vue'
 const props = defineProps<{ tile: BoardLetter }>()
 
 let posX: number = 0
-let posY: number = 0
+let posY: number = -100
 let raf: number = 0
-// let tileSpeed: number = 0
 const tileSpeedMultiplier = {
   min: 0.7,
   max: 2,
@@ -25,16 +24,21 @@ const gameRoundStore = useGameRoundStore()
 const gameCharacterStore = useGameCharacterStore()
 const gameBoardStore = useGameBoardStore()
 
+const initialTileSpeed = ref<number | null>(null)
 const tileRef = ref<ElementRef>(null)
 const tileWrapperRef = ref<ElementRef>(null)
-const isVisible = ref(true)
-const isPlaying = ref(true)
+const isVisible = ref(false)
+const animationIsPlaying = ref(true)
 
 const hasActivePowerup = computed(() => !!gameRoundStore.roundActivePowerupType)
 
 const isPowerupTile = computed(() => !!props.tile.powerup)
 
 const cssClasses = computed(() => {
+  if (gameRoundStore.roundIsLoading || gameRoundStore.roundIsReady) {
+    return 'opacity-0'
+  }
+
   const eatingClasses = gameCharacterStore.isEating
     ? 'opacity-50'
     : ''
@@ -53,9 +57,10 @@ const displayPowerup = computed(() => isPowerupTile.value
   : null,
 )
 
-const tileSpeed = computed(() => {
-  return Math.round((Math.random() * (tileSpeedMultiplier.max - tileSpeedMultiplier.min) + tileSpeedMultiplier.min) * gameRoundStore.speed)
-})
+const tileSpeed = computed(() => initialTileSpeed.value
+  ? Number((initialTileSpeed.value * gameRoundStore.speed).toFixed(1))
+  : 0,
+)
 
 function getClassnameForTileType() {
   return isPowerupTile.value
@@ -146,6 +151,12 @@ function animateNewFrame() {
   raf = requestAnimationFrame(updateTileAnimation)
 }
 
+function setInitialTileSpeed() {
+  if (!initialTileSpeed.value) {
+    initialTileSpeed.value = Number((Math.random() * (tileSpeedMultiplier.max - tileSpeedMultiplier.min) + tileSpeedMultiplier.min).toFixed(1))
+  }
+}
+
 function moveTile() {
   posY += tileSpeed.value
 
@@ -171,13 +182,13 @@ function repurposeTile() {
 }
 
 function stopAnimation() {
-  isPlaying.value = false
+  animationIsPlaying.value = false
   cancelAnimationFrame(raf)
 }
 
 function resumeAnimation() {
   if (!gameRoundStore.roundIsPaused) {
-    isPlaying.value = true
+    animationIsPlaying.value = true
     animateNewFrame()
   }
 }
@@ -210,9 +221,11 @@ function updateTileAnimation() {
 }
 
 function startAnimationLoop() {
+  isVisible.value = true
+
   nextTick(() => {
     setCoordinates()
-    // setTileSpeed()
+    setInitialTileSpeed()
     animateNewFrame()
   })
 }
@@ -236,10 +249,11 @@ watch(
 
       switch (type) {
         case wind.id: {
-          const tileWrapperEl = tileWrapperRef.value
-          const duration = gameStore.gamePowerupsDuration
-
-          tileWrapperEl.style.animationDuration = `${duration}ms`
+          tileWrapperRef.value.style.animationDuration = `${gameStore.gamePowerupsDuration}ms`
+          tileWrapperRef.value.addEventListener('animationend', () => {
+            cancelAnimationFrame(raf)
+            repurposeTile()
+          })
           break
         }
       }
@@ -254,7 +268,6 @@ onBeforeUnmount (() => cancelAnimationFrame(raf))
 
 <template>
   <div
-    v-if="isVisible"
     ref="tileRef"
     :class="cssClasses"
     class="absolute -top-3 left-0 w-12 h-12 origin-center tile"

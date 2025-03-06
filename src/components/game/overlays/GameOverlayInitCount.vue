@@ -13,7 +13,7 @@ const counterRef = ref<ElementRef>(null)
 
 function hideOverlay() {
   gameUIStore.fadeOutOverlay()
-  gameRoundStore.initRound()
+  gameRoundStore.startRound()
 }
 
 function handleAnimationEnd(event: AnimationEvent) {

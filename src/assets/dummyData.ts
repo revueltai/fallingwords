@@ -1,20 +1,20 @@
 export const dummyWords = [
-  {
-    original: 'love',
-    learn: 'a',
-  },
-  {
-    original: 'love',
-    learn: 'a',
-  },
-  {
-    original: 'love',
-    learn: 'a',
-  },
-  {
-    original: 'love',
-    learn: 'a',
-  },
+  // {
+  //   original: 'love',
+  //   learn: 'a',
+  // },
+  // {
+  //   original: 'love',
+  //   learn: 'a',
+  // },
+  // {
+  //   original: 'love',
+  //   learn: 'a',
+  // },
+  // {
+  //   original: 'love',
+  //   learn: 'a',
+  // },
   {
     original: 'Hello',
     learn: 'Hallo',

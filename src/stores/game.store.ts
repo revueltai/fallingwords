@@ -86,7 +86,7 @@ export const useGameStore = defineStore('game', {
       this.setGameLocales(locales)
       this.setGameLives(GAME_DEFAULTS.lives)
 
-      gameRoundStore.setRoundStart()
+      gameRoundStore.prepareRound()
     },
   },
 })

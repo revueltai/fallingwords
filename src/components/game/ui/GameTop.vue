@@ -31,7 +31,7 @@ function handlePause() {
   // if (!isRoundOver.value) {
   if (!isRoundOver) {
     gameUIStore.fadeInOverlay()
-    gameRoundStore.setRoundPause()
+    gameRoundStore.pauseRound()
   }
 }
 
