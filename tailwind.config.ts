@@ -62,6 +62,10 @@ const fontSize: Record<TailwindFontSizeName, TailwindFontSize> = {
   }],
 }
 
+const screens = {
+  xs: { max: '639px' },
+}
+
 const strokeWidth = {
   2: '2',
   3: '3',
@@ -136,6 +140,7 @@ export default {
       fontSize,
       strokeWidth,
       colors: getColors(),
+      screens,
     },
   },
   plugins: [],

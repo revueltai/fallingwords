@@ -1,0 +1,3 @@
+<template>
+  collection create
+</template>

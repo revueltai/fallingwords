@@ -1,3 +1,24 @@
+export const DASHBOARD_MENU: DashboardMenu[] = [
+  {
+    id: 'collections',
+    heading: 'Collections',
+    url: 'collections',
+    iconName: 'collection',
+  },
+  {
+    id: 'play',
+    heading: 'Play',
+    url: 'gameLobby',
+    iconName: 'play',
+  },
+  {
+    id: 'settings',
+    heading: 'Settings',
+    url: 'settings',
+    iconName: 'gear',
+  },
+]
+
 export const ALPHABETS: GameAlphabet = {
   en: 'abcdefghijklmnopqrstuvwxyz',
   es: 'abcdefghijklmnopqrstuvwxyzñàèìòùü',
@@ -17,20 +38,20 @@ export const POWERUPS: Powerups = {
     text: 'fire',
     asset: 'powerup-fire',
     speed: null,
-    duration: 2000,
+    duration: 3000,
   },
   ice: {
     id: 'ice',
     text: 'ice',
     asset: 'powerup-ice',
-    duration: 4000,
+    duration: 5000,
     speed: 0.2,
   },
   wind: {
     id: 'wind',
     text: 'wind',
     asset: 'powerup-wind',
-    duration: 400,
+    duration: 500,
     speed: 0,
   },
 }
@@ -94,6 +115,7 @@ export const UI: {
       fadeIn: 'anim-fade-in-timed',
       fadeOut: 'anim-fade-out-timed',
       slideInTop: 'anim-slide-in-top-timed',
+      slideInOutTop: 'anim-slide-in-out-top-timed',
       slideInBottom: 'anim-slide-in-bottom-timed',
       beat: 'anim-beat-timed',
       highlight: 'anim-highlight-timed',
@@ -130,7 +152,7 @@ export const GAME_DEFAULTS: {
   roundStates: RoundStates
 } = {
   speedIncreasement: 1,
-  speed: 0.5,
+  speed: 1,
   availableLetters: 8,
   wordLetterSpawnChance: 10, // 1/10 chance
   powerupSpawnChance: 10, // 1/10 chance

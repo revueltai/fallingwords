@@ -256,7 +256,7 @@ onBeforeUnmount(() => {
   <div
     ref="characterRef"
     :class="!isMobile() ? 'transition-transform origin-center linear' : ''"
-    class="absolute w-20 h-20 px-1 border bg-secondary-dark border-secondary-light rounded-full flex items-center justify-center"
+    class="absolute w-20 h-20 px-1 border bg-secondary-dark border-secondary-light rounded-full flex items-center justify-center xs:w-16 xs:h-16"
   >
     <div
       ref="characterCollisionRef"

@@ -1,39 +1,98 @@
 <script setup lang="ts">
-import { dummyCollection } from '@/assets/dummyData'
-import CollectionItem from '@/components/ui/CollectionItem.vue'
+import type { MbCustomAnimation } from 'movinblocks'
+import DashboardCollections from '@/components/ui/DashboardCollections.vue'
+import DashboardFooter from '@/components/ui/DashboardFooter.vue'
+import DashboardHeader from '@/components/ui/DashboardHeader.vue'
+import { DASHBOARD_MENU, UI } from '@/configs/constants'
+import { useAppStore } from '@/stores/app.store'
 import { useGameStore } from '@/stores/game.store'
+import Movinblocks from 'movinblocks'
+import { onMounted, ref } from 'vue'
 import { useRouter } from 'vue-router'
 
 const router = useRouter()
 const gameStore = useGameStore()
+const appStore = useAppStore()
+
+const lobbyMode = ref(false)
+const selectedCollections = ref<GameCollection[]>([])
+
+function handleShowLobby() {
+  lobbyMode.value = true
+}
+
+function handleShowDashboard() {
+  selectedCollections.value = []
+  lobbyMode.value = false
+}
+
+function handleCollectionToggling(collection: GameCollection) {
+  const index = selectedCollections.value.findIndex(item => item.uid === collection.uid)
+
+  if (index !== -1) {
+    selectedCollections.value.splice(index, 1)
+  } else if (selectedCollections.value.length < 4) {
+    selectedCollections.value.push(collection)
+  }
+}
 
 function handleGameStart() {
-  gameStore.prepareGame({
-    words: dummyCollection[0].words,
-    locales: dummyCollection[0].locales,
-  })
-
+  gameStore.prepareGame(selectedCollections.value)
   router.push('game')
 }
+
+onMounted(() => {
+  const streakAnim = new Movinblocks()
+    .setTimeline(Array.from({ length: 7 }, (_, i) => `streakDay${i}`))
+    .setAnimation(UI.animationClasses.named.scaleIn as MbCustomAnimation)
+    .setOverlap(200)
+    .setDuration(300)
+    .prepare()
+
+  new Movinblocks()
+    .setTimeline(['header', 'character', 'heading', 'status', 'streak', 'footer', 'list'])
+    .setAnimation([
+      'fadeIn',
+      UI.animationClasses.named.scaleIn as MbCustomAnimation,
+      'fadeIn',
+      UI.animationClasses.named.scaleIn as MbCustomAnimation,
+      'fadeIn',
+      'revealInBottom',
+      'fadeIn',
+    ])
+    .setOverlap(200)
+    .setDuration([600, 400, 400, 400, 400, 400, 600])
+    .on('animationEnd', (data) => {
+      if (data.currentElement.id === 'streak') {
+        streakAnim.start()
+      }
+    })
+    .prepare()
+    .start()
+})
 </script>
 
 <template>
-  <section class="">
-    <div class="px-4 flex flex-col gap-6">
-      <CollectionItem
-        v-for="(collection, index) in dummyCollection"
-        :key="index"
-        :uid="collection.uid"
-        :name="collection.name"
-        :word-count="collection.words.length"
-      />
-    </div>
+  <div class="h-full overflow-y-auto pb-32">
+    <DashboardHeader
+      :is-lobby="lobbyMode"
+      class="mb-5"
+      @show-dashboard="handleShowDashboard"
+    />
 
-    <Button
-      size="sm"
-      @click="handleGameStart"
-    >
-      Play Game
-    </Button>
-  </section>
+    <DashboardCollections
+      :is-lobby="lobbyMode"
+      :collections="appStore.collections"
+      :selected-collections="selectedCollections"
+      @forward-collection="handleCollectionToggling"
+    />
+  </div>
+
+  <DashboardFooter
+    :menu-items="DASHBOARD_MENU"
+    :is-lobby="lobbyMode"
+    :has-selected-collections="!!selectedCollections.length"
+    @show-lobby="handleShowLobby"
+    @start-game="handleGameStart"
+  />
 </template>

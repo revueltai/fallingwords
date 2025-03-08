@@ -6,10 +6,12 @@ type BadgeSize = 'xs' | 'sm' | 'md' | 'lg' | 'xl' | '2xl' | '3xl' | '4xl'
 interface Props {
   value: string | number
   size?: Size
+  textSize?: Size
 }
 
 const props = withDefaults(defineProps<Props>(), {
   size: 'md',
+  textSize: 'sm',
 })
 
 const sizes: Record<BadgeSize, string> = {
@@ -23,13 +25,16 @@ const sizes: Record<BadgeSize, string> = {
   '4xl': 'w-1 h-6',
 }
 
-const cssClasses = computed(() => sizes[props.size])
+const cssClasses = computed(() => [
+  sizes[props.size],
+  `text-${props.textSize}`,
+])
 </script>
 
 <template>
   <span
     :class="cssClasses"
-    class="rounded-full bg-primary flex items-center justify-center text-xs font-semibold border-2 border-secondary-dark"
+    class="rounded-full bg-primary flex items-center justify-center font-semibold border-2 border-secondary-dark"
   >
     {{ value }}
   </span>

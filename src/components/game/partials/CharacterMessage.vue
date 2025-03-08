@@ -70,12 +70,16 @@ watch(
   animation: slideInMessage .8s ease-in-out both;
 }
 
+.character-message.show .t1 {
+  animation-delay: 200ms;
+}
+
 .character-message.show .t2 {
-  animation-delay: .1s;
+  animation-delay: 300ms;
 }
 
 .character-message.show .t3 {
-  animation-delay: .2s;
+  animation-delay: 400ms;
 }
 
 .message.powerup {

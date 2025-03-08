@@ -58,7 +58,7 @@ const displayPowerup = computed(() => isPowerupTile.value
 )
 
 const tileSpeed = computed(() => initialTileSpeed.value
-  ? Number((initialTileSpeed.value * gameRoundStore.speed).toFixed(1))
+  ? Number((initialTileSpeed.value * gameRoundStore.roundSpeed).toFixed(1))
   : 0,
 )
 
@@ -270,14 +270,14 @@ onBeforeUnmount (() => cancelAnimationFrame(raf))
   <div
     ref="tileRef"
     :class="cssClasses"
-    class="absolute -top-3 left-0 w-12 h-12 origin-center tile"
+    class="absolute -top-3 left-0  origin-center tile w-12 h-12 xs:w-8 xs:h-8"
   >
     <div
       ref="tileWrapperRef"
-      class="tile__wrapper rounded-full w-12 h-12 border transform transition-all duration-150"
+      class="tile__wrapper rounded-full border transform transition-all duration-150 w-12 h-12 xs:w-8 xs:h-8"
     >
       <div class="relative h-full flex items-center justify-center">
-        <div class="flex items-center justify-center h-full uppercase text-h5">
+        <div class="flex items-center justify-center h-full uppercase text-h5 xs:text-p">
           <span v-if="displayLetter">
             {{ displayLetter }}
           </span>
@@ -334,16 +334,10 @@ onBeforeUnmount (() => cancelAnimationFrame(raf))
 }
 
 /* ICE Powerup */
-.type__powerup-ice {
-  height: 53px;
-  background-image: url('/images/game/powerupIceDeco2.svg');
-  background-position: center bottom;
-}
-
 .type__powerup-ice .tile__wrapper {
   @apply border-primary text-primary-light bg-secondary-dark;
-  background-image: url('/images/game/powerupIceDeco1.svg');
-  background-position: center top;
+  background-image: url('/images/game/powerupIceDeco1.svg'), url('/images/game/powerupIceDeco2.svg');
+  background-position: center top, center bottom;
 }
 
 /* FIRE Powerup */

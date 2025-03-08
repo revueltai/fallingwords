@@ -2,6 +2,7 @@
 import { useGameStore } from '@/stores/game.store'
 import { useGameRoundStore } from '@/stores/gameRound.store'
 import { useGameUIStore } from '@/stores/gameUI.store'
+import { isMobile } from '@/utils'
 import { computed, onMounted, ref } from 'vue'
 
 const gameUIStore = useGameUIStore()
@@ -66,9 +67,9 @@ onMounted (() => {
         <div class="relative w-full h-full flex items-center justify-center">
           <Icon
             :class="gameStore.gameLives < 2 ? 'anim-beat' : ''"
+            :size="isMobile() ? 'xl' : '2xl'"
             name="heart-full"
             type="fill"
-            size="2xl"
           />
 
           <Badge
@@ -78,26 +79,32 @@ onMounted (() => {
         </div>
       </div>
 
-      <div class="flex items-center justify-between bg-secondary border-t border-l border-r border-secondary-light rounded-tl-2xl rounded-tr-2xl h-10 pl-16 overflow-hidden">
-        <span>
+      <div class="flex items-center justify-between bg-secondary border-t border-l border-r border-secondary-light rounded-tl-2xl rounded-tr-2xl h-10 pl-14 overflow-hidden">
+        <span class="flex justify-center gap-2">
+          <Flag :country-code="gameRoundStore.roundWordLocales?.original" />
+
           {{ gameRoundStore.roundWordOriginal }}
         </span>
 
-        <div class="flex items-center justify-center w-14 h-full text-sm font-semibold bg-secondary-dark bg-opacity-5 border-secondary-light border-l">
+        <div class="flex items-center justify-center w-14 h-full text-sm font-semibold bg-secondary-dark bg-opacity-5 border-secondary-light border-l xs:text-sm">
           {{ currentRound }}/{{ gameStore.gameTotalRounds }}
         </div>
       </div>
     </div>
 
-    <div class="border-secondary-light border-t border-b py-2 text-center uppercase">
-      <span
-        v-for="(letter, index) in gameRoundStore.roundWordGuess"
-        :key="index"
-        :class="setLetterClass(letter)"
-        class="px-1"
-      >
-        {{ setLetterCharacter(letter) }}
-      </span>
+    <div class="border-secondary-light border-t border-b py-2 text-center uppercase flex items-center justify-center gap-4">
+      <Flag :country-code="gameRoundStore.roundWordLocales?.learn" />
+
+      <div>
+        <span
+          v-for="(letter, index) in gameRoundStore.roundWordGuess"
+          :key="index"
+          :class="setLetterClass(letter)"
+          class="px-1"
+        >
+          {{ setLetterCharacter(letter) }}
+        </span>
+      </div>
     </div>
   </div>
 </template>

@@ -3,7 +3,6 @@ import { computed } from 'vue'
 
 type IconType = 'fill' | 'stroke'
 type IconSizeName = 'xs' | 'sm' | 'md' | 'lg' | 'xl' | '2xl' | '3xl'
-type IconName = 'chevronDown' | 'chevronLeft' | 'chevronLeftDouble' | 'chevronRight' | 'chevronRightDouble' | 'chevronUp' | 'cross' | 'effects' | 'heart-empty' | 'heart-full' | 'home' | 'info' | 'list' | 'menu' | 'pause' | 'plus' | 'powerup-fire' | 'powerup-ice' | 'powerup-wind' | 'skip' | 'sound' | 'starEmpty' | 'starFull' | 'sunray' | 'a'
 
 interface Props {
   name: IconName
@@ -15,7 +14,7 @@ interface Props {
 }
 
 const props = withDefaults(defineProps<Props>(), {
-  iconset: '/iconset.svg',
+  iconset: `/iconset.svg?v${Date.now()}`,
   type: 'stroke',
   size: 'sm',
   color: 'white',

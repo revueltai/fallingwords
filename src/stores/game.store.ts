@@ -1,9 +1,10 @@
 import { GAME_DEFAULTS } from '@/configs/constants'
-import { isEmptyObject } from '@/utils'
+import { isEmptyArray, isEmptyObject } from '@/utils'
 import { defineStore } from 'pinia'
-import { useGameRoundStore } from './gameRound.store'
+import { useAppStore } from './app.store'
 
 interface GameState {
+  gameMaxRounds: number
   gameTotalRounds: number
   gameCurrentRound: number
   gameWordsList: GameWords
@@ -13,10 +14,9 @@ interface GameState {
   gameLives: number
 }
 
-const gameRoundStore = useGameRoundStore()
-
 function initialState(): GameState {
   return {
+    gameMaxRounds: 10,
     gameTotalRounds: 0,
     gameCurrentRound: 0,
     gameWordsList: [],
@@ -34,6 +34,9 @@ export const useGameStore = defineStore('game', {
   state: initialState,
 
   getters: {
+    appStore() {
+      return useAppStore()
+    },
     isGameOver: state => state.gameCurrentRound === state.gameTotalRounds - 1,
   },
 
@@ -81,10 +84,29 @@ export const useGameStore = defineStore('game', {
       Object.assign(this, initialState())
     },
 
-    prepareGame({ words, locales }: { words: GameWords, locales: GameLocale }) {
-      this.setGameWords(words)
-      this.setGameLocales(locales)
+    prepareGame(userSelectedCollections: GameCollection[]) {
+      const collections: GameCollection[] = userSelectedCollections || this.appStore.collections
+
+      if (isEmptyArray(collections)) {
+        throw new Error('no data')
+      }
+
+      const mergedWords = collections.flatMap(({ words, locales }) =>
+        words.map(word => ({
+          ...word,
+          locales,
+        })),
+      )
+
+      const shuffledWords = mergedWords
+        .sort(() => Math.random() - 0.5)
+        .slice(0, this.gameMaxRounds)
+
+      const gameLocales = collections[0]?.locales
+
       this.setGameLives(GAME_DEFAULTS.lives)
+      this.setGameWords(shuffledWords)
+      this.setGameLocales(gameLocales)
     },
   },
 })

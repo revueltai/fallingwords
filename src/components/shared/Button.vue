@@ -9,6 +9,7 @@ interface Props {
   size?: ButtonSize
   backgroundColor?: Color
   borderColor?: Color
+  borderStrokeWidth?: 0 | 1 | 2 | '0' | '1' | '2'
   textColor?: Color
   cssClasses?: string
   textAlignment?: 'center'
@@ -16,15 +17,18 @@ interface Props {
   disabled?: boolean
   iconOnly?: boolean
   hasIcon?: boolean
+  hasShadow?: boolean
   hasBackground?: boolean
   isRounded?: boolean
   isSquared?: boolean
+  isLink?: boolean
 }
 
 const props = withDefaults(defineProps<Props>(), {
   size: 'lg',
   backgroundColor: 'primary',
   borderColor: 'primary-light',
+  borderStrokeWidth: 2,
   textColor: 'white',
   textSize: 'h5',
   cssClasses: '',
@@ -33,9 +37,11 @@ const props = withDefaults(defineProps<Props>(), {
   disabled: false,
   iconOnly: false,
   hasIcon: false,
+  hasShadow: true,
   hasBackground: true,
   isRounded: false,
   isSquared: false,
+  isLink: false,
 })
 
 const emit = defineEmits(['click'])
@@ -44,11 +50,24 @@ const isRouterLink = computed(() => props.to)
 
 const cssClasses = computed(() => {
   const payload = [
-    `hover:scale-105 transition-all disabled:opacity-50 focus:outline-none inline-flex justify-center items-center text-${props.textAlignment} ${props.cssClasses}`,
+    `transition-all duration-500 inline-flex justify-center items-center hover:scale-105 disabled:grayscale disabled:opacity-50 focus:outline-none text-${props.textAlignment} ${props.cssClasses}`,
   ]
 
-  if (props.hasBackground) {
-    payload.push(`shadow border-2 border-${props.borderColor} bg-${props.backgroundColor} text-${props.textColor}`)
+  if (props.hasBackground && !props.isLink) {
+    payload.push(`bg-${props.backgroundColor} text-${props.textColor}`)
+
+    if (props.borderColor !== 'none') {
+      payload.push(`border-${props.borderColor}`)
+
+      payload.push(Number(props.borderStrokeWidth) === 1
+        ? 'border'
+        : `border-${props.borderStrokeWidth}`,
+      )
+    }
+
+    if (props.hasShadow) {
+      payload.push('shadow')
+    }
   }
 
   payload.push(
@@ -65,7 +84,7 @@ const cssClasses = computed(() => {
 
   if (props.iconOnly) {
     payload.push('p-2')
-  } else {
+  } else if (!props.isLink) {
     switch (props.size) {
       case 'xs':
         payload.push('text-xs py-1 px-2')
@@ -111,7 +130,6 @@ function onClick(event: Event) {
   <button
     v-else
     role="button"
-
     :class="cssClasses"
     :disabled="disabled"
     :style="cssStyles"

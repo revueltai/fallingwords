@@ -6,14 +6,15 @@ import {
   createWord,
   getLetters,
 } from '@/stores/utils.store'
-import { getTimestamp, logTimeDifference } from '@/utils'
+import { getTimestamp, isEmptyArray, logTimeDifference } from '@/utils'
 import { defineStore } from 'pinia'
 
 interface GameState {
-  speed: number
-  speedHelper: number
+  roundSpeed: number
+  roundSpeedHelper: number
   powerups: Powerups
   roundWordsList: GameWords
+  roundWordLocales: GameLocale | null
   roundStates: RoundStates
   roundState: RoundState
   roundTotalAvailableLetters: number
@@ -32,10 +33,11 @@ const roundStates = GAME_DEFAULTS.roundStates
 
 export const useGameRoundStore = defineStore('gameRound', {
   state: (): GameState => ({
-    speed: GAME_DEFAULTS.speed,
-    speedHelper: GAME_DEFAULTS.speed,
+    roundSpeed: GAME_DEFAULTS.speed,
+    roundSpeedHelper: GAME_DEFAULTS.speed,
     powerups: GAME_DEFAULTS.powerups,
     roundWordsList: [],
+    roundWordLocales: null,
     roundStates,
     roundState: roundStates.loading,
     roundTotalAvailableLetters: GAME_DEFAULTS.availableLetters,
@@ -83,8 +85,8 @@ export const useGameRoundStore = defineStore('gameRound', {
       this.gameStore.gamePowerupsDuration = duration
 
       if (speed) {
-        this.speedHelper = this.speed
-        this.speed = speed
+        this.roundSpeedHelper = this.roundSpeed
+        this.roundSpeed = speed
       }
     },
 
@@ -94,7 +96,7 @@ export const useGameRoundStore = defineStore('gameRound', {
         type: null,
       }
 
-      this.speed = this.speedHelper
+      this.roundSpeed = this.roundSpeedHelper
       this.gameStore.gamePowerupsDuration = GAME_DEFAULTS.powerupDuration
     },
 
@@ -111,9 +113,14 @@ export const useGameRoundStore = defineStore('gameRound', {
     },
 
     setRoundWord() {
+      if (isEmptyArray(this.gameStore.gameWordsList)) {
+        return
+      }
+
       const word = this.gameStore.gameWordsList[this.gameStore.gameCurrentRound]
 
       this.roundWordOriginal = word.original
+      this.roundWordLocales = word.locales
       this.roundWordGuess = createWord(word.learn)
 
       const gameBoardStore = useGameBoardStore()
@@ -127,8 +134,12 @@ export const useGameRoundStore = defineStore('gameRound', {
       )
     },
 
-    setRoundSpeed(speed?: number) {
-      this.speed += speed || GAME_DEFAULTS.speedIncreasement
+    setRoundSpeed() {
+      if (this.gameStore.gameCurrentRound === 0) {
+        return
+      }
+
+      this.roundSpeed += GAME_DEFAULTS.speedIncreasement
     },
 
     setRoundTime(timePoint: keyof RoundTime) {

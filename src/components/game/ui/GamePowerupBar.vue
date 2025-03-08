@@ -6,7 +6,7 @@ import { computed, nextTick, onBeforeUnmount, ref, watch } from 'vue'
 const gameStore = useGameStore()
 const gameRoundStore = useGameRoundStore()
 
-const barAnimation = 'a__powerup-cooldown'
+const barAnimation = 'anim-powerupCooldown'
 
 const barRef = ref<ElementRef>(null)
 
@@ -48,6 +48,17 @@ function handleAnimationEnd() {
 }
 
 watch(
+  () => gameRoundStore.roundIsPaused,
+  (isPaused) => {
+    if (isPaused) {
+      barRef.value?.classList.add('paused')
+    } else {
+      barRef.value?.classList.remove('paused')
+    }
+  },
+)
+
+watch(
   () => gameRoundStore.roundHasActivePowerup,
   (newVal) => {
     if (newVal) {
@@ -75,7 +86,7 @@ onBeforeUnmount (() => barRef.value?.removeEventListener('animationend', handleA
       />
     </div>
 
-    <div class="-ml-2 relative rounded-tr-full rounded-br-full w-16 h-4 border border-secondary-light">
+    <div class="-ml-2 relative rounded-tr-full rounded-br-full w-16 h-4 border border-secondary-light bg-secondary-dark">
       <div
         ref="barRef"
         :class="cssClasses"
@@ -97,7 +108,11 @@ onBeforeUnmount (() => barRef.value?.removeEventListener('animationend', handleA
   }
 }
 
-.a__powerup-cooldown {
+.paused {
+  animation-play-state: paused;
+}
+
+.anim-powerupCooldown {
   animation-name: powerupCooldown;
   animation-timing-function: ease-out;
   animation-direction: forwards;

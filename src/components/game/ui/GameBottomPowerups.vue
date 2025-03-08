@@ -105,18 +105,19 @@ onBeforeUnmount(() => {
       <Icon
         :name="powerupButton.asset"
         :class="getPowerupClasses(powerupButton.id)"
-        size="3xl"
+        :size="isMobile() ? 'xl' : '3xl'"
         type="fill"
       />
 
       <Badge
         :value="powerupButton.count"
+        :size="isMobile() ? 'sm' : 'md'"
         class="absolute z-0 bottom-2 right-2"
       />
 
       <div
         v-if="!isMobile()"
-        class="absolute bottom-3 left-1.5 w-4 h-4 bg-secondary-dark border border-secondary-light rounded flex items-center justify-center ui-footer__powerup-key "
+        class="absolute bottom-3 left-1.5 w-4 h-4 bg-secondary-dark border border-secondary-light rounded flex items-center justify-center ui-footer__powerup-key"
       >
         {{ powerupButton.keyboardKey }}
       </div>

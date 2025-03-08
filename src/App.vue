@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { computed, onMounted, ref } from 'vue'
 import { RouterView } from 'vue-router'
+import Toast from './components/shared/Toast.vue'
 import { useAppStore } from './stores/app.store'
 import 'movinblocks/styles'
 
@@ -22,7 +23,7 @@ function setCanvasSize() {
 onMounted(() => {
   if (appWrapperRef.value) {
     setCanvasSize()
-    appStore.setElement(appWrapperRef.value)
+    appStore.setCanvasElement(appWrapperRef.value)
     isLoaded.value = true
   }
 })
@@ -40,6 +41,10 @@ onMounted(() => {
           :is="Component"
           v-if="isLoaded"
         />
+
+        <div id="modal" />
+
+        <Toast />
       </div>
     </transition>
   </RouterView>
