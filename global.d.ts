@@ -39,7 +39,7 @@ declare global {
   }
 
   interface CollectionUpdate {
-    uid: string
+    uid?: string
     name: string
     localeOriginal: RoundLocaleCodes
     localeLearn: RoundLocaleCodes

@@ -88,7 +88,10 @@ function handleSelectCollection() {
             {{ name }}
           </h3>
 
-          <p class="text-primary text-xs">
+          <p
+            class="text-xs"
+            :class="wordCount ? 'text-primary' : 'text-quaternary-light'"
+          >
             {{ wordCount }} words
           </p>
         </div>

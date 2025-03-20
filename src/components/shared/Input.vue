@@ -4,6 +4,7 @@ import { computed, defineProps } from 'vue'
 
 interface Props {
   label?: string
+  placeholder?: string
   name: string
   required?: boolean
   disabled?: boolean
@@ -12,6 +13,7 @@ interface Props {
 
 const props = withDefaults(defineProps<Props>(), {
   label: '',
+  placeholder: 'Enter a text',
   type: 'text',
   required: false,
   disabled: false,
@@ -45,13 +47,14 @@ const cssClasses = computed(() => {
 
     <div
       :class="cssClasses"
-      class="bg-white border-2 border-grey p-2 rounded-lg transition-colors hover:border-primary form-shadow-top"
+      class="bg-white border-2 border-grey p-2 rounded-lg transition-colors hover:border-primary invalid:text-quaternary form-shadow-top"
     >
       <input
         :id="name"
         v-model="inputModel"
         :type="type"
         :name="name"
+        :placeholder="placeholder"
         :required="required"
         :disabled="disabled"
         class="bg-transparent outline-none text-black disabled:text-grey invalid:text-quaternary"

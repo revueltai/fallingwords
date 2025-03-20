@@ -16,6 +16,7 @@ type CollectionActions = 'create' | 'update' | 'delete'
 
 interface OverlayListeners {
   onDelete?: (uid: string) => void
+  onCreate?: (payload: CollectionUpdate) => void
   onUpdate?: (payload: CollectionUpdate) => void
 }
 
@@ -65,6 +66,17 @@ function handleDelete(uid: string) {
   }
 }
 
+function handleCreate(payload: CollectionUpdate) {
+  const rs = appStore.createCollection(payload)
+
+  if (rs) {
+    resetModal()
+    toastEmitter.emit('toast', { message: 'Collection created!', type: 'success' })
+  } else {
+    toastEmitter.emit('toast', { message: 'Failed to create Collection', type: 'error' })
+  }
+}
+
 async function handleUpdate(payload: CollectionUpdate) {
   if (payload.localeOriginal === payload.localeLearn) {
     toastEmitter.emit('toast', { message: 'Cannot save the same language', type: 'error' })
@@ -75,6 +87,8 @@ async function handleUpdate(payload: CollectionUpdate) {
   if (rs) {
     toastEmitter.emit('toast', { message: 'Collection saved!', type: 'success' })
     resetModal()
+  } else {
+    toastEmitter.emit('toast', { message: 'Failed to update Collection', type: 'error' })
   }
 }
 
@@ -83,6 +97,10 @@ function getOverlayListeners(): OverlayListeners {
 
   if (actions.value === 'delete') {
     listeners.onDelete = handleDelete
+  }
+
+  if (actions.value === 'create') {
+    listeners.onCreate = handleCreate
   }
 
   if (actions.value === 'update') {

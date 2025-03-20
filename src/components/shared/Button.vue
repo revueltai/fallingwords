@@ -7,6 +7,7 @@ type ButtonSize = 'xs' | 'sm' | 'md' | 'lg'
 
 interface Props {
   size?: ButtonSize
+  type?: 'submit' | 'button'
   backgroundColor?: Color
   borderColor?: Color
   borderStrokeWidth?: 0 | 1 | 2 | '0' | '1' | '2'
@@ -26,6 +27,7 @@ interface Props {
 
 const props = withDefaults(defineProps<Props>(), {
   size: 'lg',
+  type: 'button',
   backgroundColor: 'primary',
   borderColor: 'primary-light',
   borderStrokeWidth: 2,
@@ -130,6 +132,7 @@ function onClick(event: Event) {
   <button
     v-else
     role="button"
+    :type="type"
     :class="cssClasses"
     :disabled="disabled"
     :style="cssStyles"

@@ -43,6 +43,10 @@ export function makeNegative(num: number): number {
   return -Math.abs(num)
 }
 
+export function createUID(value: string): string {
+  return `${Date.now()}-${value}`
+}
+
 /**
  * Returns a random number within the given range.
  *

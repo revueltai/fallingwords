@@ -38,7 +38,7 @@ function isSelectedCollection(collection: GameCollection) {
         v-if="isLobby"
         class="text-primary text-xs"
       >
-        Select up to 4 collections to practice in the game
+        Click and select up to <strong class="text-primary-light">4 collections</strong> to practice in the game
       </p>
     </div>
 

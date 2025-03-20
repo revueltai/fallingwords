@@ -7,10 +7,14 @@ import GamePowerupGlow from '@/components/game/ui/GamePowerupGlow.vue'
 import GameTop from '@/components/game/ui/GameTop.vue'
 import { useGameStore } from '@/stores/game.store'
 import { useGameRoundStore } from '@/stores/gameRound.store'
+import { isEmptyArray } from '@/utils'
 import Movinblocks from 'movinblocks'
 import { onMounted } from 'vue'
+import { useRouter } from 'vue-router'
 
-const gameStore = useGameStore() // temp remove after tests
+const router = useRouter()
+
+const gameStore = useGameStore()
 const gameRoundStore = useGameRoundStore()
 
 function setUIAnimation() {
@@ -26,7 +30,10 @@ function setUIAnimation() {
 onMounted(() => {
   setUIAnimation()
 
-  gameStore.prepareGame() // TODO: REMOVE TEST CALL!!!!
+  if (isEmptyArray(gameStore.gameWordsList)) {
+    router.push('/')
+    return
+  }
 
   gameRoundStore.prepareRound()
 })

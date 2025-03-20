@@ -1,4 +1,4 @@
-import { isEmptyArray } from '@/utils'
+import { createUID, isEmptyArray } from '@/utils'
 import { defineStore } from 'pinia'
 import { ref, shallowRef } from 'vue'
 
@@ -39,6 +39,20 @@ export const useAppStore = defineStore('app', () => {
 
   async function getCollectionById(uid: string) {
     return collections.value.find(collection => collection.uid === uid)
+  }
+
+  async function createCollection(payload: CollectionUpdate) {
+    const uid = createUID(payload.name)
+
+    collections.value.push({
+      uid,
+      name: payload.name,
+      locales: {
+        original: payload.localeOriginal,
+        learn: payload.localeLearn,
+      },
+      words: [],
+    })
   }
 
   async function updateCollection(payload: CollectionUpdate) {
@@ -87,6 +101,7 @@ export const useAppStore = defineStore('app', () => {
     setCanvasElement,
     setFormLocales,
     setCollections,
+    createCollection,
     updateCollection,
     deleteCollection,
     getCollectionById,

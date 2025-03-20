@@ -25,7 +25,7 @@ function handleGameRetry() {
   const locales = gameStore.gameLocales
 
   gameStore.setGameReset()
-  gameStore.prepareGame({ words, locales })
+  // gameStore.prepareGame({ words, locales })
 }
 
 onMounted(() => gameUIStore.fadeInOverlay())

@@ -6,6 +6,7 @@ import DashboardHeader from '@/components/ui/DashboardHeader.vue'
 import { DASHBOARD_MENU, UI } from '@/configs/constants'
 import { useAppStore } from '@/stores/app.store'
 import { useGameStore } from '@/stores/game.store'
+import { toastEmitter } from '@/utils/ToastEmitter'
 import Movinblocks from 'movinblocks'
 import { onMounted, ref } from 'vue'
 import { useRouter } from 'vue-router'
@@ -37,8 +38,14 @@ function handleCollectionToggling(collection: GameCollection) {
 }
 
 function handleGameStart() {
-  gameStore.prepareGame(selectedCollections.value)
-  router.push('game')
+  const rs = gameStore.prepareGame(selectedCollections.value)
+
+  if (rs) {
+    router.push('game')
+  } else {
+    toastEmitter.emit('toast', { message: 'Failed to start game', type: 'error' })
+    router.push('/')
+  }
 }
 
 onMounted(() => {
