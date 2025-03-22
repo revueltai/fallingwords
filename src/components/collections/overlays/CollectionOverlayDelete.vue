@@ -6,7 +6,8 @@ const emit = defineEmits(['delete'])
 
 <template>
   <p class="mb-8">
-    Are you sure you want to delete this Collection?
+    Are you sure you want to delete this Collection?<br>
+    <span class="text-sm text-quaternary-light">All words in it will be removed too.</span>
   </p>
 
   <Button

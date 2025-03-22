@@ -9,6 +9,7 @@ interface Props {
   required?: boolean
   disabled?: boolean
   type?: InputTypeHTMLAttribute
+  countryCode?: string
 }
 
 const props = withDefaults(defineProps<Props>(), {
@@ -17,6 +18,7 @@ const props = withDefaults(defineProps<Props>(), {
   type: 'text',
   required: false,
   disabled: false,
+  countryCode: '',
 })
 
 const emit = defineEmits(['update:modelValue'])
@@ -38,17 +40,23 @@ const cssClasses = computed(() => {
 </script>
 
 <template>
-  <div class="flex flex-col gap-2">
+  <div class="input-el flex flex-col gap-2 ">
     <Label
       v-if="name"
       :name="name"
       :label="label"
+      class="transition-colors"
     />
 
     <div
       :class="cssClasses"
-      class="bg-white border-2 border-grey p-2 rounded-lg transition-colors hover:border-primary invalid:text-quaternary form-shadow-top"
+      class="input-wrapper flex gap-2 bg-white border-2 border-grey p-2 rounded-lg transition-colors hover:border-primary invalid:text-quaternary form-shadow-top"
     >
+      <Flag
+        v-if="countryCode"
+        :country-code="countryCode"
+      />
+
       <input
         :id="name"
         v-model="inputModel"
@@ -57,9 +65,16 @@ const cssClasses = computed(() => {
         :placeholder="placeholder"
         :required="required"
         :disabled="disabled"
-        class="bg-transparent outline-none text-black disabled:text-grey invalid:text-quaternary"
+        class="bg-transparent outline-none text-black disabled:text-grey invalid:text-quaternary transition-colors"
         @input="emit('update:modelValue', ($event.target as HTMLInputElement).value)"
       >
     </div>
   </div>
 </template>
+
+<style scoped>
+.input-el:has(input:invalid) label,
+.input-wrapper:has(input:invalid) {
+  @apply border-quaternary-light text-quaternary-light;
+}
+</style>

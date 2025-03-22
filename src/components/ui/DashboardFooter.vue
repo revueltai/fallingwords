@@ -21,7 +21,7 @@ const emit = defineEmits([
     <div class="max-w-96 bg-secondary border border-b-0 border-secondary-light w-full flex items-center justify-center rounded-t-3xl px-8 py-4 gap-4 shadow-md transition-all">
       <ul
         v-if="!isLobby"
-        class="flex items-center justify-between gap-4"
+        class="flex items-center justify-between gap-8"
       >
         <li
           v-for="item, index in menuItems"
@@ -70,6 +70,7 @@ const emit = defineEmits([
         border-color="tertiary-light"
         size="md"
         :disabled="!hasSelectedCollections"
+        class="min-w-48"
         @click="emit('startGame')"
       >
         <template v-if="hasSelectedCollections">

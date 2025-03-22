@@ -45,15 +45,16 @@ const emit = defineEmits([
 
     <Button
       v-if="isLobby"
-      background-color="quaternary"
-      border-color="quaternary-light"
+      background-color="senary"
+      border-color="senary-light"
       icon-only
+      :has-shadow="false"
       :class="isLobby ? 'anim-scale-in-timed' : 'anim-scale-out-timed'"
       class="absolute top-3 right-3"
       @click="emit('showDashboard')"
     >
       <Icon
-        name="cross"
+        name="cornerDownLeft"
         size="sm"
         stroke-width="4"
       />

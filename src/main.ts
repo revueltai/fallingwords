@@ -1,9 +1,11 @@
 import Badge from '@/components/shared/Badge.vue'
+import Breadcrumbs from '@/components/shared/Breadcrumbs.vue'
 import Button from '@/components/shared/Button.vue'
 import Flag from '@/components/shared/Flag.vue'
 import Icon from '@/components/shared/Icon.vue'
 import Input from '@/components/shared/Input.vue'
 import Label from '@/components/shared/Label.vue'
+import Modal from '@/components/shared/Modal.vue'
 import Select from '@/components/shared/Select.vue'
 import Toast from '@/components/shared/Toast.vue'
 
@@ -19,6 +21,8 @@ const app = createApp(App)
 app.use(createPinia())
 app.use(router)
 
+app.component('Breadcrumbs', Breadcrumbs)
+app.component('Modal', Modal)
 app.component('Flag', Flag)
 app.component('Toast', Toast)
 app.component('Label', Label)

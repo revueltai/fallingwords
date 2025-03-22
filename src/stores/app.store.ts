@@ -37,8 +37,18 @@ export const useAppStore = defineStore('app', () => {
     }
   }
 
-  async function getCollectionById(uid: string) {
+  async function getCollectionById(uid: string): Promise<GameCollection | undefined> {
     return collections.value.find(collection => collection.uid === uid)
+  }
+
+  async function getWordById(collectionUid: string, wordUid: string): Promise<GameWord | undefined> {
+    const collection = collections.value.find(item => item.uid === collectionUid)
+
+    if (collection) {
+      return collection.words.find(item => item.uid === wordUid)
+    }
+
+    return undefined
   }
 
   async function createCollection(payload: CollectionUpdate) {
@@ -53,6 +63,24 @@ export const useAppStore = defineStore('app', () => {
       },
       words: [],
     })
+  }
+
+  async function createWord(collectionUid: string, payload: GameWord) {
+    if (!collectionUid) {
+      throw new Error('No uid provided')
+    }
+
+    const collection = collections.value.find(item => item.uid === collectionUid)
+
+    if (collection) {
+      const uid = createUID()
+      collection.words.push({ ...payload, uid })
+
+      // TODO send API Req.
+      return true
+    }
+
+    return false
   }
 
   async function updateCollection(payload: CollectionUpdate) {
@@ -71,6 +99,32 @@ export const useAppStore = defineStore('app', () => {
         },
       })
 
+      // TODO send API Req.
+      return true
+    }
+
+    return false
+  }
+
+  async function updateWord(collectionUid: string, payload: GameWord) {
+    if (!collectionUid || !payload.uid) {
+      throw new Error('No uid provided')
+    }
+
+    const collection = collections.value.find(item => item.uid === collectionUid)
+
+    if (collection) {
+      const wordToUpdate = collection.words.find(item => item.uid === payload.uid)
+
+      if (wordToUpdate) {
+        Object.assign(wordToUpdate, {
+          ...wordToUpdate,
+          original: payload.original,
+          learn: payload.learn,
+        })
+      }
+
+      // TODO send API Req.
       return true
     }
 
@@ -86,7 +140,30 @@ export const useAppStore = defineStore('app', () => {
 
     if (deleteIndex !== -1) {
       collections.value.splice(deleteIndex, 1)
+
+      // TODO send API Req.
       return true
+    }
+
+    return false
+  }
+
+  async function deleteWord(collectionUid: string, wordUid: string): Promise<boolean> {
+    if (!wordUid || !collectionUid) {
+      throw new Error('No uid provided')
+    }
+
+    const collection = collections.value.find(item => item.uid === collectionUid)
+
+    if (collection) {
+      const wordIndex = collection.words.findIndex(item => item.uid === wordUid)
+
+      if (wordIndex !== -1) {
+        collection.words.splice(wordIndex, 1)
+
+        // TODO send API Req.
+        return true
+      }
     }
 
     return false
@@ -104,6 +181,10 @@ export const useAppStore = defineStore('app', () => {
     createCollection,
     updateCollection,
     deleteCollection,
+    createWord,
+    updateWord,
+    deleteWord,
     getCollectionById,
+    getWordById,
   }
 })

@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import CollectionItem from '@/components/ui/CollectionItem.vue'
+import { useRouter } from 'vue-router'
 
 interface Props {
   isLobby: boolean
@@ -13,8 +14,14 @@ const emit = defineEmits([
   'forwardCollection',
 ])
 
+const router = useRouter()
+
 function isSelectedCollection(collection: GameCollection) {
   return props.selectedCollections.some(item => item.uid === collection.uid)
+}
+
+function handleShowCollection(uid: string) {
+  router.push({ name: 'Collection', params: { uid } })
 }
 </script>
 
@@ -54,6 +61,7 @@ function isSelectedCollection(collection: GameCollection) {
         :selectable="isLobby"
         :is-selected="isSelectedCollection(collection)"
         @select-collection="() => emit('forwardCollection', collection)"
+        @click-text="handleShowCollection"
       />
     </div>
 

@@ -1,15 +1,10 @@
 <script setup lang="ts">
 import type { MbCustomAnimation } from 'movinblocks'
 import { UI } from '@/configs/constants'
-import { useAppStore } from '@/stores/app.store'
 import Movinblocks from 'movinblocks'
 import { onMounted } from 'vue'
 
-const appStore = useAppStore()
-
 onMounted(async () => {
-  await appStore.setCollections()
-
   new Movinblocks()
     .setTimeline(['logo', 'gameStart', 'tutorial'])
     .setAnimation(UI.animationClasses.named.scaleIn as MbCustomAnimation)

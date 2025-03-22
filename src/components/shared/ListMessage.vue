@@ -3,10 +3,12 @@ interface Props {
   heading: string
   byline: string
   iconName?: IconName | null
+  iconType?: IconType
 }
 
 withDefaults(defineProps<Props>(), {
   iconName: null,
+  iconType: 'fill',
 })
 </script>
 
@@ -14,8 +16,8 @@ withDefaults(defineProps<Props>(), {
   <div class="flex flex-col gap-2 items-center justify-center text-center p-10 h-full">
     <Icon
       :name="iconName"
+      :type="iconType"
       size="xl"
-      type="fill"
       color="septenary"
       class="mb-1"
     />

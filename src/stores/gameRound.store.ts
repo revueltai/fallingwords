@@ -14,7 +14,7 @@ interface GameState {
   roundSpeedHelper: number
   powerups: Powerups
   roundWordsList: GameWords
-  roundWordLocales: GameLocale | null
+  roundWordLocales: GameLocale | undefined
   roundStates: RoundStates
   roundState: RoundState
   roundTotalAvailableLetters: number
@@ -37,7 +37,7 @@ export const useGameRoundStore = defineStore('gameRound', {
     roundSpeedHelper: GAME_DEFAULTS.speed,
     powerups: GAME_DEFAULTS.powerups,
     roundWordsList: [],
-    roundWordLocales: null,
+    roundWordLocales: undefined,
     roundStates,
     roundState: roundStates.loading,
     roundTotalAvailableLetters: GAME_DEFAULTS.availableLetters,
@@ -120,7 +120,7 @@ export const useGameRoundStore = defineStore('gameRound', {
       const word = this.gameStore.gameWordsList[this.gameStore.gameCurrentRound]
 
       this.roundWordOriginal = word.original
-      this.roundWordLocales = word.locales
+      this.roundWordLocales = word.locales!
       this.roundWordGuess = createWord(word.learn)
 
       const gameBoardStore = useGameBoardStore()

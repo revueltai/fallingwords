@@ -160,9 +160,9 @@ export const GAME_DEFAULTS: {
   powerups: POWERUPS,
   lives: 13,
   gamePowerups: {
-    fire: 3,
-    ice: 3,
-    wind: 33,
+    fire: 5,
+    ice: 5,
+    wind: 5,
   },
   roundStates: {
     loading: 'loading',

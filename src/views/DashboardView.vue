@@ -15,6 +15,7 @@ const router = useRouter()
 const gameStore = useGameStore()
 const appStore = useAppStore()
 
+const maxGameCollections = 4
 const lobbyMode = ref(false)
 const selectedCollections = ref<GameCollection[]>([])
 
@@ -32,7 +33,7 @@ function handleCollectionToggling(collection: GameCollection) {
 
   if (index !== -1) {
     selectedCollections.value.splice(index, 1)
-  } else if (selectedCollections.value.length < 4) {
+  } else if (selectedCollections.value.length < maxGameCollections) {
     selectedCollections.value.push(collection)
   }
 }

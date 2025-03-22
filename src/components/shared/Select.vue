@@ -37,7 +37,7 @@ const cssClasses = computed(() => {
 </script>
 
 <template>
-  <div class="flex flex-col gap-2">
+  <div class="select-el flex flex-col gap-2">
     <Label
       v-if="name"
       :name="name"
@@ -46,7 +46,7 @@ const cssClasses = computed(() => {
 
     <div
       :class="cssClasses"
-      class="bg-white border-2 border-grey p-2 rounded-lg form-shadow-top transition-colors hover:border-primary flex gap-2"
+      class="bg-white border-2 border-grey p-2 rounded-lg form-shadow-top transition-colors hover:border-primary flex gap-2 select-wrapper"
     >
       <select
         :id="name"
@@ -82,3 +82,10 @@ const cssClasses = computed(() => {
     </div>
   </div>
 </template>
+
+<style scoped>
+.select-el:has(select:invalid) label,
+.select-wrapper:has(select:invalid) {
+  @apply border-quaternary-light text-quaternary-light;
+}
+</style>

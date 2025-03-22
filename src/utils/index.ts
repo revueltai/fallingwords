@@ -31,20 +31,54 @@ export function setCssVar(el: HTMLElement, varName: string, varValue: any) {
   el.style.setProperty(`--${varName}`, String(varValue))
 }
 
+/**
+ * Removes a CSS variable from an element's inline styles.
+ *
+ * @param {HTMLElement} el - The element to remove the CSS variable from.
+ * @param {string} varName - The name of the CSS variable (without the "--" prefix).
+ */
 export function removeCssVar(el: HTMLElement, varName: string) {
   el.style.removeProperty(`--${varName}`)
 }
 
-export function isMobile() {
+/**
+ * Checks if the current device is a mobile device.
+ *
+ * @returns {boolean} True if the device is mobile, otherwise false.
+ */
+export function isMobile(): boolean {
   return /Mobi/.test(navigator.userAgent)
 }
 
+/**
+ * Converts a number to its negative form.
+ *
+ * @param {number} num - The number to make negative.
+ * @returns {number} The negative value of the number.
+ */
 export function makeNegative(num: number): number {
   return -Math.abs(num)
 }
 
-export function createUID(value: string): string {
-  return `${Date.now()}-${value}`
+/**
+ * Creates a random string of lowercase letters.
+ *
+ * @param {number} [length] - The length of the random string.
+ * @returns {string} A random string of the specified length.
+ */
+export function createRandomString(length: number = 4): string {
+  const chars = 'abcdefghijklmnopqrstuvwxyz'
+  return Array.from({ length }, () => chars[Math.floor(Math.random() * chars.length)]).join('')
+}
+
+/**
+ * Creates a unique identifier (UID).
+ *
+ * @param {string} [value] - An optional value to append to the UID.
+ * @returns {string} A unique identifier string.
+ */
+export function createUID(value: string = ''): string {
+  return `${Date.now()}-${value || createRandomString()}`
 }
 
 /**

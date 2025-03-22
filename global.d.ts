@@ -1,6 +1,8 @@
 declare global {
   type ValueOf<T> = T[keyof T]
   type ElementRef = ref<ElementRef>
+  type CrudActions = 'create' | 'update' | 'delete'
+  type ModalProps = Record<string, any>
 
   interface FormSelectOption {
     value: string
@@ -16,7 +18,9 @@ declare global {
   type ColorWeights = 'light' | 'dark'
   type ColorBase = 'black' | 'white' | 'grey'
   type Color = ColorBase | ColorScale | `${ColorScale}-${ColorWeights}` | 'none'
-  type IconName = 'chevronDown' | 'chevronLeft' | 'chevronLeftDouble' | 'chevronRight' | 'chevronRightDouble' | 'chevronUp' | 'cross' | 'effects' | 'heart-empty' | 'heart-full' | 'home' | 'info' | 'list' | 'menu' | 'play' | 'pause' | 'plus' | 'powerup-fire' | 'powerup-ice' | 'powerup-wind' | 'skip' | 'sound' | 'check' | 'gear' | 'collection' | 'question' | 'trashbin'
+  type IconName = 'cornerDownLeft' | 'chevronDown' | 'chevronLeft' | 'chevronLeftDouble' | 'chevronRight' | 'chevronRightDouble' | 'chevronUp' | 'cross' | 'effects' | 'heart-empty' | 'heart-full' | 'home' | 'info' | 'list' | 'menu' | 'play' | 'pause' | 'plus' | 'powerup-fire' | 'powerup-ice' | 'powerup-wind' | 'skip' | 'sound' | 'check' | 'gear' | 'collection' | 'question' | 'trashbin' | 'word' | 'eye'
+  type IconType = 'fill' | 'stroke'
+  type IconSizeName = 'xs' | 'sm' | 'md' | 'lg' | 'xl' | '2xl' | '3xl'
 
   type OverlayState = 'fadeIn' | 'visible' | 'fadeOut' | 'hidden'
 
@@ -99,9 +103,10 @@ declare global {
   }
 
   interface GameWord {
+    uid: string
     original: string
     learn: string
-    locales: GameLocale
+    locales?: GameLocale
   }
 
   type GameWords = GameWord[]

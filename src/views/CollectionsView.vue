@@ -1,60 +1,81 @@
 <script setup lang="ts">
 import CollectionOverlayCreate from '@/components/collections/overlays/CollectionOverlayCreate.vue'
-import CollectionOverlayDelete from '@/components/collections/overlays/CollectionOverlayDelete.vue'
 import CollectionOverlayUpdate from '@/components/collections/overlays/CollectionOverlayUpdate.vue'
 import ListMessage from '@/components/shared/ListMessage.vue'
-import Modal from '@/components/shared/Modal.vue'
+import ModalConfirm from '@/components/shared/modals/ModalConfirm.vue'
 import CollectionItem from '@/components/ui/CollectionItem.vue'
 import Footer from '@/components/ui/Footer.vue'
 import Header from '@/components/ui/Header.vue'
 import { useAppStore } from '@/stores/app.store'
+import { useModalStore } from '@/stores/modal.store'
 import { isEmptyArray } from '@/utils'
 import { toastEmitter } from '@/utils/ToastEmitter'
-import { computed, onMounted, ref } from 'vue'
+import { computed, ref } from 'vue'
+import { useRouter } from 'vue-router'
 
-type CollectionActions = 'create' | 'update' | 'delete'
-
-interface OverlayListeners {
-  onDelete?: (uid: string) => void
-  onCreate?: (payload: CollectionUpdate) => void
-  onUpdate?: (payload: CollectionUpdate) => void
-}
+const router = useRouter()
 
 const appStore = useAppStore()
+const modalStore = useModalStore()
 
 const ModalComponentMap = {
   create: CollectionOverlayCreate,
   update: CollectionOverlayUpdate,
-  delete: CollectionOverlayDelete,
+  delete: ModalConfirm,
 }
 
-const isModalOpen = ref(false)
-const selectedUid = ref<string | null>(null)
+const selectedCollectionUid = ref<string | null>(null)
 
-const actions = ref<CollectionActions>('create')
+const actions = ref<CrudActions>('create')
 
-const overlayComponent = computed(() => (ModalComponentMap as any)[actions.value] || null)
+const modalComponent = computed(() => (ModalComponentMap as any)[actions.value] || null)
 
 function resetModal() {
-  isModalOpen.value = false
-  selectedUid.value = null
+  modalStore.closeModal()
+  selectedCollectionUid.value = null
+}
+
+function getModalProps(): ModalProps {
+  const actionProps = {
+    delete: {
+      onDelete: handleDelete,
+      heading: 'Are you sure you want to delete this Collection?',
+      byline: 'All words in it will be removed too',
+      iconName: 'trashbin',
+      ctaText: 'Delete',
+      eventName: 'delete',
+      eventCallbackParams: selectedCollectionUid.value,
+    },
+    create: {
+      onCreate: handleCreate,
+    },
+    update: {
+      onUpdate: handleUpdate,
+    },
+  }
+
+  return actionProps[actions.value] || {}
+}
+
+function handleShowViewCollection(uid: string) {
+  router.push({ name: 'Collection', params: { uid } })
 }
 
 function handleShowCreateCollection() {
   actions.value = 'create'
-  isModalOpen.value = true
+  modalStore.openModal()
 }
 
 function handleShowUpdateCollection(uid: string) {
   actions.value = 'update'
-  isModalOpen.value = true
-  selectedUid.value = uid
+  selectedCollectionUid.value = uid
+  modalStore.openModal()
 }
 
 function handleShowDeleteCollection(uid: string) {
   actions.value = 'delete'
-  isModalOpen.value = true
-  selectedUid.value = uid
+  selectedCollectionUid.value = uid
+  modalStore.openModal()
 }
 
 function handleDelete(uid: string) {
@@ -91,32 +112,15 @@ async function handleUpdate(payload: CollectionUpdate) {
     toastEmitter.emit('toast', { message: 'Failed to update Collection', type: 'error' })
   }
 }
-
-function getOverlayListeners(): OverlayListeners {
-  const listeners: OverlayListeners = {}
-
-  if (actions.value === 'delete') {
-    listeners.onDelete = handleDelete
-  }
-
-  if (actions.value === 'create') {
-    listeners.onCreate = handleCreate
-  }
-
-  if (actions.value === 'update') {
-    listeners.onUpdate = handleUpdate
-  }
-
-  return listeners
-}
-
-onMounted(async () => await appStore.setCollections())
 </script>
 
 <template>
-  <div class="relative h-full overflow-y-auto pt-16 pb-28">
-    <Header />
+  <Header
+    :heading="['Collections']"
+    return-path="dashboard"
+  />
 
+  <div class="relative h-full overflow-y-auto pt-16 pb-28">
     <div class="grid gap-6 items-start auto-rows-min px-4 h-full anim-fade-in-timed">
       <ListMessage
         v-if="isEmptyArray(appStore.collections)"
@@ -134,34 +138,31 @@ onMounted(async () => await appStore.setCollections())
           :locales="collection.locales"
           :word-count="collection.words.length"
           :has-buttons="true"
+          @click-text="handleShowViewCollection"
           @update="handleShowUpdateCollection"
           @delete="handleShowDeleteCollection"
         />
       </template>
     </div>
-
-    <Footer>
-      <Button
-        background-color="tertiary"
-        border-color="tertiary-light"
-        size="md"
-        @click="handleShowCreateCollection"
-      >
-        Add a Collection
-      </Button>
-    </Footer>
   </div>
 
-  <Modal
-    container-el="modal"
-    :is-open="isModalOpen"
-    :has-close-button="true"
-    @on-close="isModalOpen = false"
-  >
+  <Footer>
+    <Button
+      background-color="tertiary"
+      border-color="tertiary-light"
+      size="md"
+      class="min-w-48"
+      @click="handleShowCreateCollection"
+    >
+      Add a Collection
+    </Button>
+  </Footer>
+
+  <Modal>
     <Component
-      :is="overlayComponent"
-      :uid="selectedUid"
-      v-bind="getOverlayListeners()"
+      :is="modalComponent"
+      :uid="selectedCollectionUid"
+      v-bind="getModalProps()"
     />
   </Modal>
 </template>

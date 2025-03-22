@@ -1,4 +1,6 @@
 <script setup lang="ts">
+import { computed } from 'vue'
+
 interface Props {
   uid: string
   name: string
@@ -17,12 +19,31 @@ const props = withDefaults(defineProps<Props>(), {
 
 const emit = defineEmits([
   'selectCollection',
+  'clickText',
   'update',
   'delete',
 ])
 
-function handleSelectCollection() {
-  if (props.selectable) {
+const hasWords = computed(() => props.wordCount > 0)
+const isDisabled = computed(() => hasWords.value && props.selectable && props.isSelected)
+const cssClasses = computed(() => {
+  const output = []
+
+  if (props.selectable && !hasWords.value) {
+    output.push('opacity-20 cursor-default')
+  } else {
+    output.push(!props.isSelected && 'hover:border-secondary-light hover:bg-secondary')
+  }
+
+  return output.join(' ')
+})
+
+function handleTextClick() {
+  emit('clickText', props.uid)
+}
+
+function handleCardClick() {
+  if (props.selectable && hasWords.value) {
     emit('selectCollection', props.uid)
   }
 }
@@ -30,12 +51,12 @@ function handleSelectCollection() {
 
 <template>
   <div
-    :class="!isSelected && 'hover:border-secondary-light hover:bg-secondary'"
+    :class="cssClasses"
     class="relative overflow-hidden cursor-pointer rounded-2xl p-4 border border-secondary transition-colors flex items-center w-full"
-    @click="handleSelectCollection"
+    @click="handleCardClick"
   >
     <div
-      v-if="selectable && isSelected"
+      v-if="isDisabled"
       class="absolute left-0 top-0 z-10 w-full h-full transition-colors flex items-center justify-center"
     >
       <div
@@ -51,10 +72,13 @@ function handleSelectCollection() {
     </div>
 
     <div
-      :class="isSelected && 'opacity-25'"
+      :class="isSelected && 'opacity-60'"
       class="flex justify-between items-center gap-4 overflow-hidden transition-opacity w-full"
     >
-      <div class="flex justify-between items-center gap-4">
+      <div
+        class="flex justify-between items-center gap-4"
+        @click="handleTextClick"
+      >
         <div class="relative w-11 h-13 flex-shrink-0">
           <Flag
             :country-code="locales.original"
@@ -101,6 +125,17 @@ function handleSelectCollection() {
         v-if="hasButtons"
         class="flex items-center gap-4 h-full"
       >
+        <Button
+          icon-only
+          size="md"
+          @click="handleTextClick"
+        >
+          <Icon
+            name="eye"
+            size="sm"
+          />
+        </Button>
+
         <Button
           icon-only
           background-color="tertiary"

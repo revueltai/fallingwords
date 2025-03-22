@@ -20,8 +20,10 @@ function setCanvasSize() {
   }
 }
 
-onMounted(() => {
+onMounted(async () => {
   if (appWrapperRef.value) {
+    await appStore.setCollections()
+
     setCanvasSize()
     appStore.setCanvasElement(appWrapperRef.value)
     isLoaded.value = true

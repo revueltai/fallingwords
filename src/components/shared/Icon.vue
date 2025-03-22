@@ -1,9 +1,6 @@
 <script setup lang="ts">
 import { computed } from 'vue'
 
-type IconType = 'fill' | 'stroke'
-type IconSizeName = 'xs' | 'sm' | 'md' | 'lg' | 'xl' | '2xl' | '3xl'
-
 interface Props {
   name: IconName
   type?: IconType

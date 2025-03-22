@@ -63,7 +63,7 @@ onUnmounted(() => {
     class="absolute top-0 left-0 w-full z-50 px-4 overflow-hidden"
   >
     <div
-      class="min-w-40 border-2 border-t-0 text-center shadow-lg top-0 px-4 py-6 rounded-b-2xl text-white text-lg"
+      class="min-w-40 border-2 border-t-0 text-center shadow-lg top-0 p-4 rounded-b-2xl text-white text-lg"
       :class="cssClasses"
     >
       {{ message }}

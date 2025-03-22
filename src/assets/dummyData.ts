@@ -10,18 +10,22 @@ export const dummyCollection: GameCollection[] = [
     },
     words: [
       {
+        uid: 'w1',
         original: 'Dog',
         learn: 'Hund',
       },
       {
+        uid: 'w2',
         original: 'Bird',
         learn: 'Vogel',
       },
       {
+        uid: 'w3',
         original: 'Cat',
         learn: 'Katze',
       },
       {
+        uid: 'w4',
         original: 'Cow',
         learn: 'Kuh',
       },
@@ -36,18 +40,22 @@ export const dummyCollection: GameCollection[] = [
     },
     words: [
       {
+        uid: 'w21',
         original: 'House',
         learn: 'Haus',
       },
       {
+        uid: 'w22',
         original: 'Park',
         learn: 'Park',
       },
       {
+        uid: 'w23',
         original: 'Plaza',
         learn: 'Platz',
       },
       {
+        uid: 'w24',
         original: 'Neighbourhood',
         learn: 'Nachbarschaft',
       },
@@ -62,18 +70,22 @@ export const dummyCollection: GameCollection[] = [
     },
     words: [
       {
+        uid: 'w31',
         original: 'Love',
         learn: 'Liebe',
       },
       {
+        uid: 'w32',
         original: 'Hate',
         learn: 'Hass',
       },
       {
+        uid: 'w33',
         original: 'Sadness',
         learn: 'Trauigkeit',
       },
       {
+        uid: 'w34',
         original: 'Hunger',
         learn: 'Hunger',
       },
@@ -88,10 +100,12 @@ export const dummyCollection: GameCollection[] = [
     },
     words: [
       {
+        uid: 'w41',
         original: 'Monday',
         learn: 'Montag',
       },
       {
+        uid: 'w42',
         original: 'Tuesday',
         learn: 'Dienstag',
       },
@@ -106,26 +120,40 @@ export const dummyCollection: GameCollection[] = [
     },
     words: [
       {
+        uid: 'w51',
         original: 'Hello',
         learn: 'Hallo',
       },
       {
+        uid: 'w52',
         original: 'House',
         learn: 'Haus',
       },
       {
+        uid: 'w53',
         original: 'Book',
         learn: 'Buch',
       },
       {
+        uid: 'w54',
         original: 'Friend',
         learn: 'Freund',
       },
       {
+        uid: 'w55',
         original: 'Speed',
         learn: 'Geschwindigkeit',
       },
     ],
+  },
+  {
+    uid: 'c6', // timestamp + userName
+    name: 'Empty',
+    locales: {
+      original: 'en',
+      learn: 'de',
+    },
+    words: [],
   },
 ]
 
