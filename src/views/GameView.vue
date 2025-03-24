@@ -7,6 +7,7 @@ import GamePowerupGlow from '@/components/game/ui/GamePowerupGlow.vue'
 import GameTop from '@/components/game/ui/GameTop.vue'
 import { useGameStore } from '@/stores/game.store'
 import { useGameRoundStore } from '@/stores/gameRound.store'
+import { useSoundStore } from '@/stores/sounds.store'
 import { isEmptyArray } from '@/utils'
 import Movinblocks from 'movinblocks'
 import { onMounted } from 'vue'
@@ -14,6 +15,7 @@ import { useRouter } from 'vue-router'
 
 const router = useRouter()
 
+const soundStore = useSoundStore()
 const gameStore = useGameStore()
 const gameRoundStore = useGameRoundStore()
 
@@ -35,6 +37,8 @@ onMounted(() => {
     return
   }
 
+  soundStore.stopLoopSound()
+  soundStore.playLoopSound('gameBg')
   gameRoundStore.prepareRound()
 })
 </script>

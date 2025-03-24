@@ -3,66 +3,131 @@ import { defineStore } from 'pinia'
 interface SoundState {
   soundsOn: boolean
   soundEffectsOn: boolean
-  sounds: SoundsMap
-  soundsEffects: SoundsEffectsMap
+  soundActive: GameSoundName | ''
+  soundEffectActive: GameSoundEffectName | ''
+  sounds: GameSoundsMap
+  soundsEffects: GameSoundsEffectsMap
 }
 
 export const useSoundStore = defineStore('sound', {
   state: (): SoundState => ({
     soundsOn: true,
     soundEffectsOn: true,
+    soundActive: '',
+    soundEffectActive: '',
     soundsEffects: {
-      buttonClick: new Audio('/sounds/uiButtonClick.wav'),
-      fire: new Audio('/sounds/powerupFire.wav'),
-      ice: new Audio('/sounds/powerupIce.wav'),
-      wind: new Audio('/sounds/powerupWind.mp3'),
-      characterMove: new Audio('/sounds/characterMove.wav'),
-      characterChew: new Audio('/sounds/characterChew.wav'),
-      characterLike: new Audio('/sounds/characterLike.wav'),
-      characterDislike: new Audio('/sounds/characterDislike.wav'),
-      characterLove: new Audio('/sounds/characterLove.wav'),
-      gameTick: new Audio('/sounds/gameTick.wav'),
-      gameTilePop: new Audio('/sounds/gameTilePop.wav'),
+      buttonClick: {
+        audio: new Audio('/sounds/uiButtonClick.wav'),
+        volume: 0.5,
+      },
+      fire: {
+        audio: new Audio('/sounds/powerupFire.mp3'),
+        volume: 0.5,
+      },
+      ice: {
+        audio: new Audio('/sounds/powerupIce.wav'),
+        volume: 0.5,
+      },
+      wind: {
+        audio: new Audio('/sounds/powerupWind.mp3'),
+        volume: 0.5,
+      },
+      characterMove: {
+        audio: new Audio('/sounds/characterMove.wav'),
+        volume: 0.5,
+      },
+      characterChew: {
+        audio: new Audio('/sounds/characterChew.wav'),
+        volume: 0.5,
+      },
+      characterLike: {
+        audio: new Audio('/sounds/characterLike.wav'),
+        volume: 0.5,
+      },
+      characterDislike: {
+        audio: new Audio('/sounds/characterDislike.wav'),
+        volume: 0.5,
+      },
+      characterLove: {
+        audio: new Audio('/sounds/characterLove.wav'),
+        volume: 0.5,
+      },
+      gameTick: {
+        audio: new Audio('/sounds/gameTick.wav'),
+        volume: 0.5,
+      },
+      gameTilePop: {
+        audio: new Audio('/sounds/gameTilePop.mp3'),
+        volume: 0.5,
+      },
     },
     sounds: {
-      // dashboardBgm: new Audio('/sounds/dashboard-bgm.mp3'),
-      // gameBgm: new Audio('/sounds/game-bgm.mp3'),
+      dashboardBg: {
+        audio: new Audio('/sounds/dashboardBg.mp3'),
+        volume: 0.5,
+      },
+      gameBg: {
+        audio: new Audio('/sounds/gameBg.mp3'),
+        volume: 0.2,
+      },
     },
   }),
 
   actions: {
-    playSoundEffect(key: SoundName) {
+    playSoundEffect(key: GameSoundEffectName) {
       if (!this.soundEffectsOn) {
         return
       }
 
-      const sound = this.soundsEffects[key]
-      if (sound) {
-        sound.currentTime = 0
-        sound.play()
+      const audio = this.soundsEffects[key].audio
+      if (audio) {
+        this.soundEffectActive = key as GameSoundEffectName
+        audio.volume = this.soundsEffects[key].volume
+        audio.currentTime = 0
+        audio.play()
       }
     },
 
-    playSound(key: SoundName) {
-      if (!this.soundEffectsOn) {
+    playLoopSound(key: GameSoundName | '') {
+      if (!key) {
         return
       }
 
-      const sound = this.soundsEffects[key]
-      if (sound) {
-        sound.loop = true
-        sound.play()
+      if (!this.soundsOn) {
+        this.stopLoopSound()
+        return
+      }
+
+      const audio = this.sounds[key].audio
+      if (audio) {
+        this.soundActive = key as GameSoundName
+        audio.volume = this.sounds[key].volume
+        audio.loop = true
+        audio.play()
       }
     },
 
-    // stopSound(key: SoundName) {
-    //   const sound = this.sounds[key]
+    stopLoopSound() {
+      if (this.soundActive) {
+        const audio = this.sounds[this.soundActive as GameSoundName].audio
 
-    //   if (sound) {
-    //     sound.pause()
-    //     sound.currentTime = 0
-    //   }
-    // },
+        if (audio) {
+          audio.pause()
+          audio.currentTime = 0
+        }
+      }
+    },
+
+    stopSoundEffect() {
+      if (this.soundEffectActive) {
+        const audio = this.soundsEffects[this.soundEffectActive as GameSoundEffectName].audio
+
+        if (audio) {
+          audio.pause()
+          audio.currentTime = 0
+        }
+      }
+    },
 
     // toggleSound() {
     //   this.soundEffectsOn = !this.soundEffectsOn

@@ -141,26 +141,32 @@ declare global {
     message: string
   }
 
-  interface SoundsMap {
-    dashboardBgm: HTMLAudioElement
-    gameBgm: HTMLAudioElement
+  interface GameSound {
+    audio: HTMLAudioElement
+    volume: number
   }
 
-  interface SoundsEffectsMap {
-    fire: HTMLAudioElement
-    ice: HTMLAudioElement
-    wind: HTMLAudioElement
-    characterChew: HTMLAudioElement
-    characterMove: HTMLAudioElement
-    characterLike: HTMLAudioElement
-    characterDislike: HTMLAudioElement
-    characterLove: HTMLAudioElement
-    buttonClick: HTMLAudioElement
-    gameTick: HTMLAudioElement
-    gameTilePop: HTMLAudioElement
+  interface GameSoundsMap {
+    dashboardBg: GameSound
+    gameBg: GameSound
   }
 
-  type SoundName = keyof SoundsEffectsMap
+  interface GameSoundsEffectsMap {
+    fire: GameSound
+    ice: GameSound
+    wind: GameSound
+    characterChew: GameSound
+    characterMove: GameSound
+    characterLike: GameSound
+    characterDislike: GameSound
+    characterLove: GameSound
+    buttonClick: GameSound
+    gameTick: GameSound
+    gameTilePop: GameSound
+  }
+
+  type GameSoundName = keyof GameSoundsMap
+  type GameSoundEffectName = keyof GameSoundsEffectsMap
 }
 
 export { }

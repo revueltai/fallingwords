@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import Settings from '@/components/ui/Settings.vue'
 import { useGameStore } from '@/stores/game.store'
 import { useGameRoundStore } from '@/stores/gameRound.store'
 import { useGameUIStore } from '@/stores/gameUI.store'
@@ -35,6 +36,8 @@ onMounted(() => gameUIStore.fadeInOverlay())
     heading="Game Paused"
     @close="handleGameResume"
   >
+    <Settings />
+
     <template #footerCenter>
       <Button
         background-color="quaternary"

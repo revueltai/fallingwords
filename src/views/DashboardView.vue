@@ -8,11 +8,13 @@ import { DASHBOARD_MENU, UI } from '@/configs/constants'
 import { useAppStore } from '@/stores/app.store'
 import { useGameStore } from '@/stores/game.store'
 import { useModalStore } from '@/stores/modal.store'
+import { useSoundStore } from '@/stores/sounds.store'
 import { toastEmitter } from '@/utils/ToastEmitter'
 import Movinblocks from 'movinblocks'
 import { onMounted, ref } from 'vue'
 import { useRouter } from 'vue-router'
 
+const soundStore = useSoundStore()
 const router = useRouter()
 const gameStore = useGameStore()
 const appStore = useAppStore()
@@ -57,6 +59,9 @@ function handleGameStart() {
 }
 
 onMounted(() => {
+  soundStore.stopLoopSound()
+  soundStore.playLoopSound('dashboardBg')
+
   const streakAnim = new Movinblocks()
     .setTimeline(Array.from({ length: 7 }, (_, i) => `streakDay${i}`))
     .setAnimation(UI.animationClasses.named.scaleIn as MbCustomAnimation)

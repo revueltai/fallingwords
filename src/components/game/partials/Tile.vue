@@ -4,6 +4,7 @@ import { useGameStore } from '@/stores/game.store'
 import { useGameBoardStore } from '@/stores/gameBoard.store'
 import { useGameCharacterStore } from '@/stores/gameCharacter.store'
 import { useGameRoundStore } from '@/stores/gameRound.store'
+import { useSoundStore } from '@/stores/sounds.store'
 import { isLetterInWord } from '@/stores/utils.store'
 import { makeNegative } from '@/utils'
 import { computed, nextTick, onBeforeUnmount, onMounted, ref, watch } from 'vue'
@@ -18,6 +19,7 @@ const tileSpeedMultiplier = {
   max: 2,
 }
 
+const soundStore = useSoundStore()
 const appStore = useAppStore()
 const gameStore = useGameStore()
 const gameRoundStore = useGameRoundStore()
@@ -205,6 +207,7 @@ function updateTileAnimation() {
 
     if (tileCollidesWithCharacter || tileOutOfBounds) {
       if (tileCollidesWithCharacter) {
+        soundStore.playSoundEffect('gameTilePop')
         gameBoardStore.checkTile(props.tile)
       }
 
