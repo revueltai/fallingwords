@@ -1,8 +1,11 @@
+import { API_KEYS } from '@/configs/constants'
+import APIService from '@/utils/apiService'
 import { defineStore } from 'pinia'
 
 interface SoundState {
-  soundsOn: boolean
-  soundEffectsOn: boolean
+  initialized: boolean
+  soundsOn: boolean | undefined
+  soundEffectsOn: boolean | undefined
   soundActive: GameSoundName | ''
   soundEffectActive: GameSoundEffectName | ''
   sounds: GameSoundsMap
@@ -11,8 +14,9 @@ interface SoundState {
 
 export const useSoundStore = defineStore('sound', {
   state: (): SoundState => ({
-    soundsOn: true,
-    soundEffectsOn: true,
+    initialized: false,
+    soundsOn: undefined,
+    soundEffectsOn: undefined,
     soundActive: '',
     soundEffectActive: '',
     soundsEffects: {
@@ -60,11 +64,31 @@ export const useSoundStore = defineStore('sound', {
         audio: new Audio('/sounds/gameTilePop.mp3'),
         volume: 0.5,
       },
+      gameTilePowerup: {
+        audio: new Audio('/sounds/gameTilePowerup.mp3'),
+        volume: 0.5,
+      },
+      gameRoundOver: {
+        audio: new Audio('/sounds/gameRoundOver.wav'),
+        volume: 0.5,
+      },
+      gameRoundLost: {
+        audio: new Audio('/sounds/gameRoundLost.mp3'),
+        volume: 0.5,
+      },
+      gameWon: {
+        audio: new Audio('/sounds/gameWon.mp3'),
+        volume: 0.5,
+      },
+      gameLost: {
+        audio: new Audio('/sounds/gameLost.mp3'),
+        volume: 0.5,
+      },
     },
     sounds: {
       dashboardBg: {
         audio: new Audio('/sounds/dashboardBg.mp3'),
-        volume: 0.5,
+        volume: 0.2,
       },
       gameBg: {
         audio: new Audio('/sounds/gameBg.mp3'),
@@ -74,6 +98,14 @@ export const useSoundStore = defineStore('sound', {
   }),
 
   actions: {
+    playAudio(audio: HTMLAudioElement) {
+      // if (document.hasFocus()) {
+      audio.play().catch((err: any) => {
+        console.error('Audio Play failed:', err)
+      })
+      // }
+    },
+
     playSoundEffect(key: GameSoundEffectName) {
       if (!this.soundEffectsOn) {
         return
@@ -84,7 +116,7 @@ export const useSoundStore = defineStore('sound', {
         this.soundEffectActive = key as GameSoundEffectName
         audio.volume = this.soundsEffects[key].volume
         audio.currentTime = 0
-        audio.play()
+        this.playAudio(audio)
       }
     },
 
@@ -103,7 +135,7 @@ export const useSoundStore = defineStore('sound', {
         this.soundActive = key as GameSoundName
         audio.volume = this.sounds[key].volume
         audio.loop = true
-        audio.play()
+        this.playAudio(audio)
       }
     },
 
@@ -129,14 +161,46 @@ export const useSoundStore = defineStore('sound', {
       }
     },
 
-    // toggleSound() {
-    //   this.soundEffectsOn = !this.soundEffectsOn
+    updateSoundSetting(value: boolean) {
+      this.soundsOn = value
+      APIService.saveStoreData(API_KEYS.settings, {
+        sound: this.soundsOn,
+        soundEffects: this.soundEffectsOn,
+      })
+    },
 
-    //   if (!this.soundEffectsOn) {
-    //     for (const sound of Object.values(this.sounds)) {
-    //       sound.pause()
-    //     }
-    //   }
-    // },
+    updateSoundEffectsSetting(value: boolean) {
+      this.soundEffectsOn = value
+      APIService.saveStoreData(API_KEYS.settings, {
+        sound: this.soundsOn,
+        soundEffects: this.soundEffectsOn,
+      })
+    },
+
+    initializeSounds() {
+      if (!this.initialized) {
+        const settingsData = APIService.loadStoreData(API_KEYS.settings)
+
+        if (settingsData) {
+          if (settingsData.sound) {
+            this.soundsOn = settingsData.sound
+          }
+
+          if (settingsData.soundEffects) {
+            this.soundEffectsOn = settingsData.soundEffects
+          }
+        } else {
+          this.soundsOn = true
+          this.soundEffectsOn = true
+
+          APIService.saveStoreData(API_KEYS.settings, {
+            sound: this.soundsOn,
+            soundEffects: this.soundEffectsOn,
+          })
+        }
+
+        this.initialized = true
+      }
+    },
   },
 })

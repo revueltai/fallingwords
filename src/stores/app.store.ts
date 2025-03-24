@@ -1,8 +1,11 @@
+import { API_KEYS, LOCALES } from '@/configs/constants'
 import { createUID, isEmptyArray } from '@/utils'
+import APIService from '@/utils/apiService'
 import { defineStore } from 'pinia'
 import { ref, shallowRef } from 'vue'
 
 export const useAppStore = defineStore('app', () => {
+  const apiKeyUserData = API_KEYS.userData
   const canvasMaxWidth = 600
   const canvasMaxHeight = 800
   const canvasEl = shallowRef<ElementRef>(null)
@@ -19,19 +22,22 @@ export const useAppStore = defineStore('app', () => {
     }
 
     try {
-      // TODO: replace with API call
-      const { dummyLocales } = await import('@/assets/dummyData.ts')
-      formLocales.value = dummyLocales
+      formLocales.value = LOCALES
     } catch (error: any) {
       throw new Error(error)
     }
   }
 
-  async function setCollections() {
+  async function loadCollections() {
     try {
-      // TODO: replace with API call
-      const { dummyCollection } = await import('@/assets/dummyData.ts')
-      collections.value = dummyCollection
+      const userData = APIService.loadStoreData(apiKeyUserData)
+
+      if (isEmptyArray(userData)) {
+        const { exampleCollection } = await import('@/assets/exampleCollection.ts')
+        collections.value = exampleCollection
+      } else {
+        collections.value = userData as GameCollection[]
+      }
     } catch (error: any) {
       throw new Error(error)
     }
@@ -63,6 +69,8 @@ export const useAppStore = defineStore('app', () => {
       },
       words: [],
     })
+
+    return APIService.saveStoreData(apiKeyUserData, collections.value)
   }
 
   async function createWord(collectionUid: string, payload: GameWord) {
@@ -76,8 +84,7 @@ export const useAppStore = defineStore('app', () => {
       const uid = createUID()
       collection.words.push({ ...payload, uid })
 
-      // TODO send API Req.
-      return true
+      return APIService.saveStoreData(apiKeyUserData, collections.value)
     }
 
     return false
@@ -99,8 +106,7 @@ export const useAppStore = defineStore('app', () => {
         },
       })
 
-      // TODO send API Req.
-      return true
+      return APIService.saveStoreData(apiKeyUserData, collections.value)
     }
 
     return false
@@ -124,8 +130,7 @@ export const useAppStore = defineStore('app', () => {
         })
       }
 
-      // TODO send API Req.
-      return true
+      return APIService.saveStoreData(apiKeyUserData, collections.value)
     }
 
     return false
@@ -141,8 +146,7 @@ export const useAppStore = defineStore('app', () => {
     if (deleteIndex !== -1) {
       collections.value.splice(deleteIndex, 1)
 
-      // TODO send API Req.
-      return true
+      return APIService.saveStoreData(apiKeyUserData, collections.value)
     }
 
     return false
@@ -161,8 +165,7 @@ export const useAppStore = defineStore('app', () => {
       if (wordIndex !== -1) {
         collection.words.splice(wordIndex, 1)
 
-        // TODO send API Req.
-        return true
+        return APIService.saveStoreData(apiKeyUserData, collections.value)
       }
     }
 
@@ -177,7 +180,7 @@ export const useAppStore = defineStore('app', () => {
     formLocales,
     setCanvasElement,
     setFormLocales,
-    setCollections,
+    loadCollections,
     createCollection,
     updateCollection,
     deleteCollection,

@@ -155,22 +155,19 @@ export const dummyCollection: GameCollection[] = [
     },
     words: [],
   },
-]
-
-export const dummyLocales: FormSelectOption[] = [
   {
-    label: 'English',
-    value: 'en',
-    image: 'en',
-  },
-  {
-    label: 'German',
-    value: 'de',
-    image: 'de',
-  },
-  {
-    label: 'Spanish',
-    value: 'es',
-    image: 'es',
+    uid: 'c7', // timestamp + userName
+    name: 'Single letters',
+    locales: {
+      original: 'en',
+      learn: 'de',
+    },
+    words: [
+      {
+        uid: 'w71',
+        original: 'a',
+        learn: 'a',
+      },
+    ],
   },
 ]

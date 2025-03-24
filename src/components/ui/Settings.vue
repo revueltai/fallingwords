@@ -1,14 +1,14 @@
 <script setup lang="ts">
 import { useSoundStore } from '@/stores/sounds.store'
-import { onMounted, ref } from 'vue'
+import { ref } from 'vue'
 
 const soundStore = useSoundStore()
 
-const sounds = ref<boolean | undefined>(undefined)
-const soundEffects = ref<boolean | undefined>(undefined)
+const sounds = ref<boolean | undefined>(soundStore.soundsOn)
+const soundEffects = ref<boolean | undefined>(soundStore.soundEffectsOn)
 
 function handleSoundsChange() {
-  soundStore.soundsOn = sounds.value as boolean
+  soundStore.updateSoundSetting(sounds.value as boolean)
 
   if (soundStore.soundsOn) {
     soundStore.playLoopSound(soundStore.soundActive)
@@ -18,20 +18,15 @@ function handleSoundsChange() {
 }
 
 function handleSoundEffectsChange() {
-  soundStore.soundEffectsOn = soundEffects.value as boolean
+  soundStore.updateSoundEffectsSetting(soundEffects.value as boolean)
 }
-
-onMounted(() => {
-  sounds.value = soundStore.soundsOn
-  soundEffects.value = soundStore.soundEffectsOn
-})
 </script>
 
 <template>
   <div class="flex flex-col gap-4 rounded-xl bg-secondary border border-secondary-light p-4 w-full">
     <Switch
       v-model="sounds"
-      label="Sounds"
+      label="Music"
       @change="handleSoundsChange"
     />
 

@@ -4,6 +4,7 @@ import gameRoundOverLost from '@/assets/images/game/gameRoundOverLost.svg'
 import gameRoundOverWon from '@/assets/images/game/gameRoundOverWon.svg'
 import GameOverlayContent from '@/components/ui/modals/ModalGameContent.vue'
 import { onMounted, ref, useSlots } from 'vue'
+import { useSoundStore } from '@/stores/sounds.store'
 
 interface Props {
   result?: 'won' | 'lost'
@@ -25,16 +26,30 @@ const slots = useSlots() as {
   footerRight?: Slot
 }
 
+const soundStore = useSoundStore()
+
 const animRef = ref<HTMLElement | null>(null)
 const assetSrc = ref('')
 const animIsVisible = ref(true)
 
 onMounted(() => {
-  assetSrc.value = props.result === 'lost'
-    ? gameRoundOverLost
-    : gameRoundOverWon
+  if (props.result === 'lost') {
+    assetSrc.value = gameRoundOverLost
+    soundStore.playSoundEffect('gameRoundLost')
+  } else {
+    assetSrc.value = gameRoundOverWon
+    soundStore.playSoundEffect('gameRoundOver')
+  }
 
-  setTimeout(() => animIsVisible.value = false, 1500)
+  setTimeout(() => {
+    if (props.result === 'lost') {
+      soundStore.playSoundEffect('gameLost')
+    } else {
+      soundStore.playSoundEffect('gameWon')
+    }
+
+    animIsVisible.value = false
+  }, 1500)
 })
 </script>
 

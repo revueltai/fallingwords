@@ -4,7 +4,7 @@ import { useSoundStore } from '@/stores/sounds.store'
 import { createCssVar } from '@/utils'
 import { computed } from 'vue'
 
-type ButtonSize = 'xs' | 'sm' | 'md' | 'lg'
+type ButtonSize = 'xs' | 'sm' | 'md' | 'lg' | 'xl'
 
 interface Props {
   size?: ButtonSize
@@ -105,6 +105,10 @@ const cssClasses = computed(() => {
 
       case 'lg':
         payload.push('text-h5 py-2 px-4')
+        break
+
+      case 'xl':
+        payload.push('text-h5 py-4 px-6')
         break
     }
   }

@@ -163,6 +163,11 @@ declare global {
     buttonClick: GameSound
     gameTick: GameSound
     gameTilePop: GameSound
+    gameTilePowerup: GameSound
+    gameRoundOver: GameSound
+    gameRoundLost: GameSound
+    gameWon: GameSound
+    gameLost: GameSound
   }
 
   type GameSoundName = keyof GameSoundsMap

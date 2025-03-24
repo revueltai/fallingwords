@@ -34,7 +34,8 @@ onMounted(async () => {
               to="dashboard"
               background-color="tertiary"
               border-color="tertiary-light"
-              class="w-[200px]"
+              class="w-60"
+              size="xl"
             >
               Get Started!
             </Button>
@@ -43,10 +44,10 @@ onMounted(async () => {
           <div id="tutorial">
             <Button
               to="tutorial"
-              size="md"
-              class="w-auto self-center"
+              size="sm"
+              class="w-24 self-center"
             >
-              Tutorial
+              Credits
             </Button>
           </div>
         </div>

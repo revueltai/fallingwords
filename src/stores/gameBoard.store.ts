@@ -9,11 +9,14 @@ import {
   getLetterIndexInWord,
   isLetterInWord,
 } from './utils.store'
+import { useSoundStore } from './sounds.store'
 
 interface GameBoardState {
   boardEl: HTMLElement | null
   roundBoardTiles: (BoardLetter | null)[]
 }
+
+const soundStore = useSoundStore()
 
 export const useGameBoardStore = defineStore('gameBoard', {
   state: (): GameBoardState => ({
@@ -78,6 +81,7 @@ export const useGameBoardStore = defineStore('gameBoard', {
       } else {
         newExpressionType = 'love'
         const id = tile.powerup?.id
+        soundStore.playSoundEffect('gameTilePowerup')
 
         if (id) {
           message.type = newExpressionType

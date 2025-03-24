@@ -1,14 +1,17 @@
 <script setup lang="ts">
-import { computed, onMounted, ref } from 'vue'
+import { computed, onMounted, onUnmounted, ref, watch, watchEffect } from 'vue'
 import { RouterView } from 'vue-router'
 import Toast from './components/shared/Toast.vue'
 import { useAppStore } from './stores/app.store'
+import { useSoundStore } from './stores/sounds.store'
 import 'movinblocks/styles'
 
+const soundStore = useSoundStore()
 const appStore = useAppStore()
 
 const appWrapperRef = ref<ElementRef>(null)
 const isLoaded = ref(false)
+const isFocused = ref(false)
 
 const canvasMaxWidth = computed(() => appStore.canvasMaxWidth)
 const canvasMaxHeight = computed(() => appStore.canvasMaxHeight)
@@ -20,15 +23,33 @@ function setCanvasSize() {
   }
 }
 
-onMounted(async () => {
-  if (appWrapperRef.value) {
-    await appStore.setCollections()
+function handleWindowFocus() {
+  isFocused.value = true
+}
 
+function handleSoundLoading() {
+  soundStore.initializeSounds()
+}
+
+watch(isFocused, (newFocusState: boolean) => {
+  if (newFocusState) {
+    handleSoundLoading()
+  }
+})
+
+onMounted(async () => {
+  window.addEventListener('focus', () => handleWindowFocus)
+  handleSoundLoading()
+
+  if (appWrapperRef.value) {
+    await appStore.loadCollections()
     setCanvasSize()
     appStore.setCanvasElement(appWrapperRef.value)
     isLoaded.value = true
   }
 })
+
+onUnmounted(() => window.removeEventListener('focus', handleWindowFocus))
 </script>
 
 <template>

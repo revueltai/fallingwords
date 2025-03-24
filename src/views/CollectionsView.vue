@@ -30,6 +30,10 @@ const selectedCollectionUid = ref<string | null>(null)
 const actions = ref<CrudActions>('create')
 
 const filteredCollections = computed(() => {
+  if (!appStore.collections) {
+    return []
+  }
+
   return appStore.collections.filter((collection: GameCollection) =>
     collection.name.toLowerCase().includes(searchQuery.value.toLowerCase()),
   )
@@ -130,7 +134,7 @@ async function handleUpdate(payload: CollectionUpdate) {
   <div class="relative h-full overflow-y-auto pt-16">
     <div class="grid gap-6 items-start auto-rows-min px-4 pb-28 h-max anim-fade-in-timed">
       <ListMessage
-        v-if="isEmptyArray(appStore.collections)"
+        v-if="isEmptyArray(filteredCollections)"
         icon-name="collection"
         heading="No Collections yet"
         byline="Add your first collection"

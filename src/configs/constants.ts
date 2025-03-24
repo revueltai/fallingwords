@@ -1,3 +1,8 @@
+export const API_KEYS = {
+  settings: 'fwSettings',
+  userData: 'fwStore',
+}
+
 export const DASHBOARD_MENU: DashboardMenuItem[] = [
   {
     id: 'collections',
@@ -24,6 +29,24 @@ export const ALPHABETS: GameAlphabet = {
   es: 'abcdefghijklmnopqrstuvwxyzñàèìòùü',
   de: 'abcdefghijklmnopqrstuvwxyzäüöß',
 }
+
+export const LOCALES: FormSelectOption[] = [
+  {
+    label: 'English',
+    value: 'en',
+    image: 'en',
+  },
+  {
+    label: 'German',
+    value: 'de',
+    image: 'de',
+  },
+  {
+    label: 'Spanish',
+    value: 'es',
+    image: 'es',
+  },
+]
 
 export const POWERUPS: Powerups = {
   life: {
@@ -158,7 +181,7 @@ export const GAME_DEFAULTS: {
   powerupSpawnChance: 10, // 1/10 chance
   powerupDuration: 1000,
   powerups: POWERUPS,
-  lives: 13,
+  lives: 1,
   gamePowerups: {
     fire: 5,
     ice: 5,
