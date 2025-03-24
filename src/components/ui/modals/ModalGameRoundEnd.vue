@@ -2,7 +2,7 @@
 import type { Slot } from 'vue'
 import gameRoundOverLost from '@/assets/images/game/gameRoundOverLost.svg'
 import gameRoundOverWon from '@/assets/images/game/gameRoundOverWon.svg'
-import GameOverlayContent from '@/components/game/overlays/GameOverlayContent.vue'
+import GameOverlayContent from '@/components/ui/modals/ModalGameContent.vue'
 import { onMounted, ref, useSlots } from 'vue'
 
 interface Props {

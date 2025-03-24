@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import GameOverlayRoundEnd from '@/components/game/overlays/GameOverlayRoundEnd.vue'
+import ModalGameRoundEnd from '@/components/ui/modals/ModalGameRoundEnd.vue'
 import { UI } from '@/configs/constants'
 import { useGameStore } from '@/stores/game.store'
 import { useGameRoundStore } from '@/stores/gameRound.store'
@@ -86,7 +86,7 @@ onMounted(() => gameUIStore.fadeInOverlay())
 </script>
 
 <template>
-  <GameOverlayRoundEnd
+  <ModalGameRoundEnd
     :has-close-button="false"
     heading="Round Complete!"
   >
@@ -137,7 +137,7 @@ onMounted(() => gameUIStore.fadeInOverlay())
         {{ btnText }}
       </Button>
     </template>
-  </GameOverlayRoundEnd>
+  </ModalGameRoundEnd>
 </template>
 
 <style scoped>

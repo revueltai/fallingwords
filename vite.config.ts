@@ -13,7 +13,6 @@ export default defineConfig({
   resolve: {
     alias: {
       '@': fileURLToPath(new URL('./src', import.meta.url)),
-      '@gameOverlayComponents': fileURLToPath(new URL('./src/components/game/overlays', import.meta.url)),
     },
   },
 })

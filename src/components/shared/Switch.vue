@@ -73,7 +73,7 @@ const cssClassesKnob = computed(() => {
         >
 
         <span
-          class="w-12 p-1 rounded-full relative transition-colors"
+          class="w-14 p-1 rounded-full relative transition-colors"
           :class="cssClasses"
         >
           <span

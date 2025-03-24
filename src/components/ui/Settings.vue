@@ -28,7 +28,7 @@ onMounted(() => {
 </script>
 
 <template>
-  <div class="flex flex-col gap-4 rounded-xl bg-secondary border border-secondary-light p-4">
+  <div class="flex flex-col gap-4 rounded-xl bg-secondary border border-secondary-light p-4 w-full">
     <Switch
       v-model="sounds"
       label="Sounds"

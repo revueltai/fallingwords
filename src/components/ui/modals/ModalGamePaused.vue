@@ -1,14 +1,17 @@
 <script setup lang="ts">
-import GameOverlayRoundEnd from '@/components/game/overlays/GameOverlayRoundEnd.vue'
+import ModalGameContent from '@/components/ui/modals/ModalGameContent.vue'
+import Settings from '@/components/ui/Settings.vue'
 import { useGameStore } from '@/stores/game.store'
+import { useGameRoundStore } from '@/stores/gameRound.store'
 import { useGameUIStore } from '@/stores/gameUI.store'
 import { onMounted } from 'vue'
 import { useRouter } from 'vue-router'
 
 const router = useRouter()
 
-const gameUIStore = useGameUIStore()
 const gameStore = useGameStore()
+const gameRoundStore = useGameRoundStore()
+const gameUIStore = useGameUIStore()
 
 function hideOverlay() {
   gameUIStore.fadeOutOverlay()
@@ -20,29 +23,22 @@ function handleGameCancelation() {
   router.push('/')
 }
 
-function handleGameRetry() {
-  const words = gameStore.gameWordsList
-  const locales = gameStore.gameLocales
-
-  gameStore.setGameReset()
-  // gameStore.prepareGame({ words, locales })
+function handleGameResume() {
+  gameRoundStore.resumeRound()
+  hideOverlay()
 }
 
 onMounted(() => gameUIStore.fadeInOverlay())
 </script>
 
 <template>
-  <GameOverlayRoundEnd
-    heading="Out of Lives!"
-    result="lost"
-    :has-close-button="false"
+  <ModalGameContent
+    heading="Game Paused"
+    @close="handleGameResume"
   >
-    <img
-      src="/images/game/gameLost.svg"
-      class="w-40 h-40"
-    >
+    <Settings />
 
-    <template #footerLeft>
+    <template #footerCenter>
       <Button
         background-color="quaternary"
         border-color="quaternary-light"
@@ -54,12 +50,10 @@ onMounted(() => gameUIStore.fadeInOverlay())
           size="lg"
         />
       </Button>
-    </template>
 
-    <template #footerCenter>
-      <Button @click="handleGameRetry">
-        Restart
+      <Button @click="handleGameResume">
+        Resume
       </Button>
     </template>
-  </GameOverlayRoundEnd>
+  </ModalGameContent>
 </template>

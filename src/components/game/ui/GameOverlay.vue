@@ -1,8 +1,8 @@
 <script setup lang="ts">
-import GameOverlayPaused from '@/components/game/overlays/GameOverlayPaused.vue'
-import GameOverlayRoundLost from '@/components/game/overlays/GameOverlayRoundLost.vue'
-import GameOverlayRoundWon from '@/components/game/overlays/GameOverlayRoundWon.vue'
 import ModalGameInitCountdown from '@/components/ui/modals/ModalGameInitCountdown.vue'
+import GameOverlayPaused from '@/components/ui/modals/ModalGamePaused.vue'
+import GameOverlayRoundLost from '@/components/ui/modals/ModalGameRoundLost.vue'
+import GameOverlayRoundWon from '@/components/ui/modals/ModalGameRoundWon.vue'
 import { UI } from '@/configs/constants'
 import { useGameUIStore } from '@/stores/gameUI.store'
 import { computed, onBeforeUnmount, onMounted, ref, watch } from 'vue'

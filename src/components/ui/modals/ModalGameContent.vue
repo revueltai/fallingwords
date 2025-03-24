@@ -31,8 +31,8 @@ function handleClose() {
 
 onMounted(() => {
   const timelineElements = [
-    'overlayContent',
-    'overlayContentHeading',
+    'modalContent',
+    'modalContentHeading',
   ]
 
   const animations: MbAnimation[] = [
@@ -46,15 +46,15 @@ onMounted(() => {
   }
 
   if (slots.header) {
-    timelineElements.push('overlayContentContent')
+    timelineElements.push('modalContentContent')
     animations.push('fadeIn')
   }
 
-  timelineElements.push('overlayContentFooter')
+  timelineElements.push('modalContentFooter')
   animations.push('slideInBottom')
 
   if (props.hasCloseButton) {
-    timelineElements.push('overlayContentClose')
+    timelineElements.push('modalContentClose')
     animations.push(UI.animationClasses.named.scaleIn as MbCustomAnimation)
   }
 
@@ -80,7 +80,7 @@ onMounted(() => {
 
       <Button
         v-if="hasCloseButton"
-        id="overlayContentClose"
+        id="modalContentClose"
         background-color="quaternary"
         border-color="quaternary-light"
         icon-only
@@ -96,12 +96,12 @@ onMounted(() => {
     </div>
 
     <div
-      id="overlayContent"
+      id="modalContent"
       class="z-10 rounded-2xl shadow-2xl border border-secondary-light bg-secondary p-8 text-center overflow-hidden"
     >
       <div>
         <h2
-          id="overlayContentHeading"
+          id="modalContentHeading"
           class="text-h5 mb-6 content__heading pointer-events-none"
         >
           {{ heading }}
@@ -110,14 +110,14 @@ onMounted(() => {
 
       <div class="flex flex-col gap-8">
         <div
-          id="overlayContentContent"
-          class="place-items-center pointer-events-none"
+          id="modalContentContent"
+          class="place-items-center"
         >
           <slot />
         </div>
 
         <div
-          id="overlayContentFooter"
+          id="modalContentFooter"
           class="flex items-center justify-between w-full gap-4"
         >
           <slot name="footerLeft" />
