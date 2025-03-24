@@ -66,7 +66,7 @@ export const useGameCharacterStore = defineStore('character', {
 
       await nextTick()
 
-      soundStore.playSoundEffect(`character${capitalize(expressionType)}` as GameSoundName)
+      soundStore.playSoundEffect(`character${capitalize(expressionType)}` as GameSoundEffectName)
       this.setExpression(expressionType)
       await delay(500)
 
