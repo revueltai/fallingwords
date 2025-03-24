@@ -2,6 +2,7 @@
 import { UI } from '@/configs/constants'
 import { useGameStore } from '@/stores/game.store'
 import { useGameRoundStore } from '@/stores/gameRound.store'
+import { useSoundStore } from '@/stores/sounds.store'
 import { isMobile } from '@/utils'
 import { computed, onBeforeUnmount, onMounted } from 'vue'
 
@@ -12,6 +13,7 @@ interface PowerupButton {
   keyboardKey: string
 }
 
+const soundStore = useSoundStore()
 const gameStore = useGameStore()
 const gameRoundstore = useGameRoundStore()
 
@@ -65,6 +67,7 @@ function activatePowerup(powerupButton: PowerupButton) {
     && gameRoundstore.roundIsPlaying
     && powerupButton.count
   ) {
+    soundStore.playSound(powerupButton.id as SoundName)
     gameRoundstore.activatePowerup(powerupButton.id)
   }
 }

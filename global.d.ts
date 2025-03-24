@@ -140,6 +140,22 @@ declare global {
     type: CharacterMessageType | ''
     message: string
   }
+
+  interface SoundsMap {
+    fire: HTMLAudioElement
+    ice: HTMLAudioElement
+    wind: HTMLAudioElement
+    characterEat: HTMLAudioElement
+    characterMove: HTMLAudioElement
+    characterLike: HTMLAudioElement
+    characterDislike: HTMLAudioElement
+    characterSuperLike: HTMLAudioElement
+    buttonClick: HTMLAudioElement
+    dashboardBgm: HTMLAudioElement
+    gameBgm: HTMLAudioElement
+  }
+
+  type SoundName = keyof SoundsMap
 }
 
 export { }

@@ -3,9 +3,11 @@ import CharacterMessage from '@/components/game/partials/CharacterMessage.vue'
 import { useGameBoardStore } from '@/stores/gameBoard.store'
 import { useGameCharacterStore } from '@/stores/gameCharacter.store'
 import { useGameRoundStore } from '@/stores/gameRound.store'
+import { useSoundStore } from '@/stores/sounds.store'
 import { isMobile } from '@/utils'
 import { nextTick, onBeforeUnmount, onMounted, ref, watch } from 'vue'
 
+const soundStore = useSoundStore()
 const gameRoundStore = useGameRoundStore()
 const gameBoardStore = useGameBoardStore()
 const gameCharacterStore = useGameCharacterStore()
@@ -70,6 +72,7 @@ function getPositionXFromArrowKeys(event: KeyboardEvent, character: Character) {
 
   if (isValidKeyboardKey(event.key)) {
     setExpression('open')
+    soundStore.playSound('characterMove')
   }
 
   switch (event.key) {

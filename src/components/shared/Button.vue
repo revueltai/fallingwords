@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import type { RouteLocationRaw } from 'vue-router'
+import { useSoundStore } from '@/stores/sounds.store'
 import { createCssVar } from '@/utils'
 import { computed } from 'vue'
 
@@ -47,6 +48,8 @@ const props = withDefaults(defineProps<Props>(), {
 })
 
 const emit = defineEmits(['click'])
+
+const soundStore = useSoundStore()
 
 const isRouterLink = computed(() => props.to)
 
@@ -114,7 +117,11 @@ const cssStyles = computed(() => [
   createCssVar('color-shadow', `var(--color-${props.backgroundColor})`),
 ])
 
-function onClick(event: Event) {
+function handleSound() {
+  soundStore.playSound('buttonClick')
+}
+
+function handleClick(event: Event) {
   emit('click', event)
 }
 </script>
@@ -125,6 +132,7 @@ function onClick(event: Event) {
     :class="cssClasses"
     :style="cssStyles"
     :to="to ?? ''"
+    @click="handleSound"
   >
     <slot />
   </RouterLink>
@@ -136,7 +144,7 @@ function onClick(event: Event) {
     :class="cssClasses"
     :disabled="disabled"
     :style="cssStyles"
-    @click="onClick"
+    @click="handleClick"
   >
     <slot />
   </button>
