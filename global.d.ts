@@ -35,7 +35,7 @@ declare global {
   type OverlayComponent = ValueOf<OverlayComponentMap> | ''
 
   // Dashboard
-  interface DashboardMenu {
+  interface DashboardMenuItem {
     id: string
     heading: string
     url: string
@@ -142,20 +142,25 @@ declare global {
   }
 
   interface SoundsMap {
-    fire: HTMLAudioElement
-    ice: HTMLAudioElement
-    wind: HTMLAudioElement
-    characterEat: HTMLAudioElement
-    characterMove: HTMLAudioElement
-    characterLike: HTMLAudioElement
-    characterDislike: HTMLAudioElement
-    characterSuperLike: HTMLAudioElement
-    buttonClick: HTMLAudioElement
     dashboardBgm: HTMLAudioElement
     gameBgm: HTMLAudioElement
   }
 
-  type SoundName = keyof SoundsMap
+  interface SoundsEffectsMap {
+    fire: HTMLAudioElement
+    ice: HTMLAudioElement
+    wind: HTMLAudioElement
+    characterChew: HTMLAudioElement
+    characterMove: HTMLAudioElement
+    characterLike: HTMLAudioElement
+    characterDislike: HTMLAudioElement
+    characterLove: HTMLAudioElement
+    buttonClick: HTMLAudioElement
+    gameTick: HTMLAudioElement
+    gameTilePop: HTMLAudioElement
+  }
+
+  type SoundName = keyof SoundsEffectsMap
 }
 
 export { }

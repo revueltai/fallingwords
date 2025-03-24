@@ -1,12 +1,12 @@
 <script setup lang="ts">
-import CollectionOverlayCreate from '@/components/collections/overlays/CollectionOverlayCreate.vue'
-import CollectionOverlayUpdate from '@/components/collections/overlays/CollectionOverlayUpdate.vue'
 import ListMessage from '@/components/shared/ListMessage.vue'
-import ModalConfirm from '@/components/shared/modals/ModalConfirm.vue'
 import SearchBar from '@/components/shared/SearchBar.vue'
 import CollectionItem from '@/components/ui/CollectionItem.vue'
 import Footer from '@/components/ui/Footer.vue'
 import Header from '@/components/ui/Header.vue'
+import ModalCollectionCreate from '@/components/ui/modals/ModalCollectionCreate.vue'
+import ModalCollectionUpdate from '@/components/ui/modals/ModalCollectionUpdate.vue'
+import ModalConfirm from '@/components/ui/modals/ModalConfirm.vue'
 import { useAppStore } from '@/stores/app.store'
 import { useModalStore } from '@/stores/modal.store'
 import { isEmptyArray } from '@/utils'
@@ -20,8 +20,8 @@ const appStore = useAppStore()
 const modalStore = useModalStore()
 
 const ModalComponentMap = {
-  create: CollectionOverlayCreate,
-  update: CollectionOverlayUpdate,
+  create: ModalCollectionCreate,
+  update: ModalCollectionUpdate,
   delete: ModalConfirm,
 }
 

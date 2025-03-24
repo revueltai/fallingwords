@@ -1,6 +1,8 @@
 <script setup lang="ts">
+import { useRouter } from 'vue-router'
+
 interface Props {
-  menuItems: DashboardMenu[]
+  menuItems: DashboardMenuItem[]
   isLobby: boolean
   hasSelectedCollections: boolean
 }
@@ -9,8 +11,20 @@ defineProps<Props>()
 
 const emit = defineEmits([
   'showLobby',
+  'showSettings',
   'startGame',
 ])
+
+const router = useRouter()
+
+function handleClick(item: DashboardMenuItem) {
+  if (item.id === 'settings') {
+    emit('showSettings')
+    return
+  }
+
+  router.push(item.url)
+}
 </script>
 
 <template>
@@ -46,9 +60,9 @@ const emit = defineEmits([
 
           <Button
             v-else
-            :to="item.url"
             is-link
             class="flex flex-col gap-1 items-center"
+            @click="() => handleClick(item)"
           >
             <Icon
               :name="item.iconName"

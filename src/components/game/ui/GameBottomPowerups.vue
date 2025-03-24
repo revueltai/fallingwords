@@ -67,7 +67,7 @@ function activatePowerup(powerupButton: PowerupButton) {
     && gameRoundstore.roundIsPlaying
     && powerupButton.count
   ) {
-    soundStore.playSound(powerupButton.id as SoundName)
+    soundStore.playSoundEffect(powerupButton.id as SoundName)
     gameRoundstore.activatePowerup(powerupButton.id)
   }
 }

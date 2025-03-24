@@ -13,6 +13,7 @@ import { createPinia } from 'pinia'
 import { createApp } from 'vue'
 import App from './App.vue'
 
+import Switch from './components/shared/Switch.vue'
 import router from './router'
 import './assets/main.css'
 
@@ -26,6 +27,7 @@ app.component('Modal', Modal)
 app.component('Flag', Flag)
 app.component('Toast', Toast)
 app.component('Label', Label)
+app.component('Switch', Switch)
 app.component('Input', Input)
 app.component('Select', Select)
 app.component('Icon', Icon)

@@ -4,6 +4,7 @@ import { defineEmits, defineProps } from 'vue'
 
 interface Props {
   containerEl?: string
+  heading?: string
   hasCloseButton?: boolean
 }
 
@@ -47,13 +48,22 @@ function handleClose() {
         </Button>
 
         <div
-          v-if="$slots.header"
-          class="flex justify-between items-center mb-4"
+          v-if="$slots.header || heading"
+          class="flex justify-between items-center mb-4 text-center"
         >
-          <slot name="header" />
+          <h3
+            v-if="heading"
+            class="text-center w-full"
+          >
+            {{ heading }}
+          </h3>
+
+          <template v-else-if="$slots.header">
+            <slot name="header" />
+          </template>
         </div>
 
-        <div class="mb-4">
+        <div>
           <slot />
         </div>
 

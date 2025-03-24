@@ -1,4 +1,4 @@
-export const DASHBOARD_MENU: DashboardMenu[] = [
+export const DASHBOARD_MENU: DashboardMenuItem[] = [
   {
     id: 'collections',
     heading: 'Collections',

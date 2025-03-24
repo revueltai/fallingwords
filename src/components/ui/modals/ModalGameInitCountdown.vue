@@ -2,8 +2,10 @@
 import { UI } from '@/configs/constants'
 import { useGameRoundStore } from '@/stores/gameRound.store'
 import { useGameUIStore } from '@/stores/gameUI.store'
+import { useSoundStore } from '@/stores/sounds.store'
 import { onBeforeUnmount, onMounted, ref } from 'vue'
 
+const soundStore = useSoundStore()
 const gameRoundStore = useGameRoundStore()
 const gameUIStore = useGameUIStore()
 
@@ -26,16 +28,21 @@ function handleAnimationEnd(event: AnimationEvent) {
 
 onMounted(() => {
   gameUIStore.fadeInOverlay()
+  soundStore.playSoundEffect('gameTick')
 
   const intervalId = setInterval(() => {
     if (countdown.value <= 1) {
       countdown.value = 0
+
+      soundStore.playSoundEffect('gameTick')
       clearInterval(intervalId)
       hideOverlay()
       return
     }
 
     countdown.value--
+    soundStore.playSoundEffect('gameTick')
+
     counterRef.value?.classList.add(UI.animationClasses.timed.scaleIn)
     counterRef.value?.addEventListener('animationend', handleAnimationEnd)
   }, countdownInterval)

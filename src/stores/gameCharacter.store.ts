@@ -1,13 +1,15 @@
 import MouthChew from '@/assets/images/character/MouthChew.svg'
 import MouthDislike from '@/assets/images/character/MouthDislike.svg'
-
 import MouthIdle from '@/assets/images/character/MouthIdle.svg'
 import MouthLike from '@/assets/images/character/MouthLike.svg'
 import MouthLove from '@/assets/images/character/MouthLove.svg'
 import MouthOpen from '@/assets/images/character/MouthOpen.svg'
-import { delay } from '@/utils'
+import { capitalize, delay } from '@/utils'
 import { defineStore } from 'pinia'
 import { nextTick } from 'vue'
+import { useSoundStore } from './sounds.store'
+
+const soundStore = useSoundStore()
 
 export const useGameCharacterStore = defineStore('character', {
   state: (): {
@@ -59,10 +61,12 @@ export const useGameCharacterStore = defineStore('character', {
       this.isEating = true
 
       this.setExpression('chew')
+      soundStore.playSoundEffect('characterChew')
       await delay(500)
 
       await nextTick()
 
+      soundStore.playSoundEffect(`character${capitalize(expressionType)}` as SoundName)
       this.setExpression(expressionType)
       await delay(500)
 

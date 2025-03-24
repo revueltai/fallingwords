@@ -1,9 +1,9 @@
 <script setup lang="ts">
 import ListMessage from '@/components/shared/ListMessage.vue'
-import ModalConfirm from '@/components/shared/modals/ModalConfirm.vue'
 import SearchBar from '@/components/shared/SearchBar.vue'
 import Footer from '@/components/ui/Footer.vue'
 import Header from '@/components/ui/Header.vue'
+import ModalConfirm from '@/components/ui/modals/ModalConfirm.vue'
 import WordItem from '@/components/ui/WordItem.vue'
 import ModalWordCreate from '@/components/words/ModalWordCreate.vue'
 import ModalWordUpdate from '@/components/words/ModalWordUpdate.vue'

@@ -3,7 +3,7 @@ import { defineProps } from 'vue'
 
 interface Props {
   label?: string
-  name: string
+  name?: string
 }
 
 withDefaults(defineProps<Props>(), {

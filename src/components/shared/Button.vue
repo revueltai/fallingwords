@@ -55,7 +55,7 @@ const isRouterLink = computed(() => props.to)
 
 const cssClasses = computed(() => {
   const payload = [
-    `transition-all duration-500 inline-flex justify-center items-center hover:scale-105 disabled:grayscale disabled:opacity-50 focus:outline-none text-${props.textAlignment} ${props.cssClasses}`,
+    `transition-transform duration-500 inline-flex justify-center items-center hover:scale-105 disabled:grayscale disabled:opacity-50 focus:outline-none focus:ring-0 text-${props.textAlignment} ${props.cssClasses}`,
   ]
 
   if (props.hasBackground && !props.isLink) {
@@ -118,10 +118,11 @@ const cssStyles = computed(() => [
 ])
 
 function handleSound() {
-  soundStore.playSound('buttonClick')
+  soundStore.playSoundEffect('buttonClick')
 }
 
 function handleClick(event: Event) {
+  handleSound()
   emit('click', event)
 }
 </script>

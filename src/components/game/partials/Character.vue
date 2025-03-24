@@ -72,7 +72,7 @@ function getPositionXFromArrowKeys(event: KeyboardEvent, character: Character) {
 
   if (isValidKeyboardKey(event.key)) {
     setExpression('open')
-    soundStore.playSound('characterMove')
+    soundStore.playSoundEffect('characterMove')
   }
 
   switch (event.key) {

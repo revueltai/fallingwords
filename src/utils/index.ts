@@ -160,3 +160,17 @@ export function createCssVar(
     ? `var(${varName})`
     : varName
 }
+
+/**
+ * Capitalizes a string.
+ *
+ * @param {string} str - String to capitalize
+ * @returns {string} - Capitalized String
+ */
+export function capitalize(str: string): string {
+  if (!str) {
+    return str
+  }
+
+  return str.charAt(0).toUpperCase() + str.slice(1).toLowerCase()
+}
