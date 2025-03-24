@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import ListMessage from '@/components/shared/ListMessage.vue'
 import ModalConfirm from '@/components/shared/modals/ModalConfirm.vue'
+import SearchBar from '@/components/shared/SearchBar.vue'
 import Footer from '@/components/ui/Footer.vue'
 import Header from '@/components/ui/Header.vue'
 import WordItem from '@/components/ui/WordItem.vue'
@@ -29,10 +30,21 @@ const ModalComponentMap = {
   delete: ModalConfirm,
 }
 
+const searchQuery = ref('')
 const selectedCollection = ref<GameCollection | null>(null)
 const selectedWordUid = ref<string | null>(null)
-
 const actions = ref<CrudActions>('create')
+
+const filteredWords = computed(() => {
+  if (!selectedCollection.value) {
+    return []
+  }
+
+  return selectedCollection.value.words.filter(word =>
+    word.original.toLowerCase().includes(searchQuery.value.toLowerCase())
+    || word.learn.toLowerCase().includes(searchQuery.value.toLowerCase()),
+  )
+})
 
 const modalComponent = computed(() => (ModalComponentMap as any)[actions.value] || null)
 
@@ -140,8 +152,8 @@ onMounted(async () => {
     return-path="collections"
   />
 
-  <div class="relative h-full overflow-y-auto pt-16 pb-28">
-    <div class="grid gap-6 items-start auto-rows-min px-4 h-full anim-fade-in-timed">
+  <div class="relative h-full overflow-y-auto pt-16">
+    <div class="grid gap-6 items-start auto-rows-min px-4 h-max pb-28 anim-fade-in-timed">
       <ListMessage
         v-if="!selectedCollection || isEmptyArray(selectedCollection.words)"
         icon-name="word"
@@ -151,8 +163,10 @@ onMounted(async () => {
       />
 
       <template v-else>
+        <SearchBar v-model="searchQuery" />
+
         <WordItem
-          v-for="(word, index) in selectedCollection.words"
+          v-for="(word, index) in filteredWords"
           :key="index"
           :uid="word.uid"
           :original="word.original"

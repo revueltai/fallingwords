@@ -16,7 +16,7 @@ const sanitizedReturnPath = computed(() => props.returnPath.startsWith('/')
 
 <template>
   <header class="absolute z-10 top-0 w-full flex items-center justify-center px-4 bg-gradient-to-b from-secondary-dark to-transparent">
-    <div class="flex items-center gap-2 justify-between rounded-b-3xl w-full pl-5 pr-2 py-2 bg-secondary border border-t-0 border-secondary-light">
+    <div class="flex items-center gap-2 justify-between rounded-b-3xl w-full pl-5 pr-2 py-2 bg-secondary border border-t-0 border-secondary-light shadow-sm">
       <Breadcrumbs :breadcrumbs="heading" />
 
       <Button

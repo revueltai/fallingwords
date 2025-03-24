@@ -21,6 +21,7 @@ const sizes = {
 
 <template>
   <img
+    v-if="countryCode"
     :src="`/images/flags/flag${countryCode?.toUpperCase()}.svg`"
     :width="sizes[size]"
     :height="sizes[size]"

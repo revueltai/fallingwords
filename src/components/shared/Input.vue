@@ -5,11 +5,13 @@ import { computed, defineProps } from 'vue'
 interface Props {
   label?: string
   placeholder?: string
-  name: string
+  name?: string
   required?: boolean
   disabled?: boolean
   type?: InputTypeHTMLAttribute
   countryCode?: string
+  iconName?: IconName
+  iconType?: IconType
 }
 
 const props = withDefaults(defineProps<Props>(), {
@@ -40,7 +42,7 @@ const cssClasses = computed(() => {
 </script>
 
 <template>
-  <div class="input-el flex flex-col gap-2 ">
+  <div class="input-el flex flex-col gap-2">
     <Label
       v-if="name"
       :name="name"
@@ -50,11 +52,20 @@ const cssClasses = computed(() => {
 
     <div
       :class="cssClasses"
-      class="input-wrapper flex gap-2 bg-white border-2 border-grey p-2 rounded-lg transition-colors hover:border-primary invalid:text-quaternary form-shadow-top"
+      class="input-wrapper flex items-center gap-2 bg-white border-2 border-grey p-2 rounded-lg transition-colors hover:border-primary invalid:text-quaternary form-shadow-top"
     >
       <Flag
         v-if="countryCode"
         :country-code="countryCode"
+      />
+
+      <Icon
+        v-else-if="iconName"
+        :name="iconName"
+        :type="iconType"
+        color="senary-light"
+        size="md"
+        stroke-width="3"
       />
 
       <input
@@ -65,7 +76,7 @@ const cssClasses = computed(() => {
         :placeholder="placeholder"
         :required="required"
         :disabled="disabled"
-        class="bg-transparent outline-none text-black disabled:text-grey invalid:text-quaternary transition-colors"
+        class="w-full bg-transparent outline-none text-black disabled:text-grey invalid:text-quaternary transition-colors"
         @input="emit('update:modelValue', ($event.target as HTMLInputElement).value)"
       >
     </div>

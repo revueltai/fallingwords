@@ -336,8 +336,8 @@ onBeforeUnmount (() => cancelAnimationFrame(raf))
 /* ICE Powerup */
 .type__powerup-ice .tile__wrapper {
   @apply border-primary text-primary-light bg-secondary-dark;
-  background-image: url('/images/game/powerupIceDeco1.svg'), url('/images/game/powerupIceDeco2.svg');
-  background-position: center top, center bottom;
+  background-image: url('/images/game/powerupIceDeco1.svg');
+  background-position: center top;
 }
 
 /* FIRE Powerup */

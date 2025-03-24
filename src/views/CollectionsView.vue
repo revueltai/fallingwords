@@ -3,6 +3,7 @@ import CollectionOverlayCreate from '@/components/collections/overlays/Collectio
 import CollectionOverlayUpdate from '@/components/collections/overlays/CollectionOverlayUpdate.vue'
 import ListMessage from '@/components/shared/ListMessage.vue'
 import ModalConfirm from '@/components/shared/modals/ModalConfirm.vue'
+import SearchBar from '@/components/shared/SearchBar.vue'
 import CollectionItem from '@/components/ui/CollectionItem.vue'
 import Footer from '@/components/ui/Footer.vue'
 import Header from '@/components/ui/Header.vue'
@@ -24,9 +25,15 @@ const ModalComponentMap = {
   delete: ModalConfirm,
 }
 
+const searchQuery = ref('')
 const selectedCollectionUid = ref<string | null>(null)
-
 const actions = ref<CrudActions>('create')
+
+const filteredCollections = computed(() => {
+  return appStore.collections.filter((collection: GameCollection) =>
+    collection.name.toLowerCase().includes(searchQuery.value.toLowerCase()),
+  )
+})
 
 const modalComponent = computed(() => (ModalComponentMap as any)[actions.value] || null)
 
@@ -120,8 +127,8 @@ async function handleUpdate(payload: CollectionUpdate) {
     return-path="dashboard"
   />
 
-  <div class="relative h-full overflow-y-auto pt-16 pb-28">
-    <div class="grid gap-6 items-start auto-rows-min px-4 h-full anim-fade-in-timed">
+  <div class="relative h-full overflow-y-auto pt-16">
+    <div class="grid gap-6 items-start auto-rows-min px-4 pb-28 h-max anim-fade-in-timed">
       <ListMessage
         v-if="isEmptyArray(appStore.collections)"
         icon-name="collection"
@@ -130,8 +137,10 @@ async function handleUpdate(payload: CollectionUpdate) {
       />
 
       <template v-else>
+        <SearchBar v-model="searchQuery" />
+
         <CollectionItem
-          v-for="(collection, index) in appStore.collections"
+          v-for="(collection, index) in filteredCollections"
           :key="index"
           :uid="collection.uid"
           :name="collection.name"

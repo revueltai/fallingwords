@@ -81,7 +81,7 @@ onMounted (() => {
 
       <div class="flex items-center justify-between bg-secondary border-t border-l border-r border-secondary-light rounded-tl-2xl rounded-tr-2xl h-10 pl-14 overflow-hidden">
         <span class="flex justify-center gap-2">
-          <Flag :country-code="gameRoundStore.roundWordLocales?.original" />
+          <Flag :country-code="gameRoundStore.roundWordLocales?.original || ''" />
 
           {{ gameRoundStore.roundWordOriginal }}
         </span>
@@ -93,7 +93,7 @@ onMounted (() => {
     </div>
 
     <div class="border-secondary-light border-t border-b py-2 text-center uppercase flex items-center justify-center gap-4">
-      <Flag :country-code="gameRoundStore.roundWordLocales?.learn" />
+      <Flag :country-code="gameRoundStore.roundWordLocales?.learn || ''" />
 
       <div>
         <span

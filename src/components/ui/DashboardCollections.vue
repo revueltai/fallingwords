@@ -21,7 +21,9 @@ function isSelectedCollection(collection: GameCollection) {
 }
 
 function handleShowCollection(uid: string) {
-  router.push({ name: 'Collection', params: { uid } })
+  if (!props.isLobby) {
+    router.push({ name: 'Collection', params: { uid } })
+  }
 }
 </script>
 
