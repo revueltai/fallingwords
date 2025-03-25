@@ -31,7 +31,7 @@ function setLetterCharacter(letter: Letter): string {
 function handlePause() {
   // if (!isRoundOver.value) {
   if (!isRoundOver) {
-    gameUIStore.fadeInOverlay()
+    gameUIStore.fadeInGameModal()
     gameRoundStore.pauseRound()
   }
 }

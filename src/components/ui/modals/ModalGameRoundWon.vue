@@ -13,12 +13,6 @@ const gameUIStore = useGameUIStore()
 const gameRoundStore = useGameRoundStore()
 const gameStore = useGameStore()
 
-const btnText = computed(() => {
-  return gameStore.isGameOver
-    ? 'Continue'
-    : 'Next Round'
-})
-
 const roundTimeLabel = computed(() => {
   const { minutes, seconds } = gameRoundStore.roundTotalTime
   const output = [String(minutes), String(seconds)]
@@ -73,16 +67,16 @@ function handleGameIncreaseRound() {
 }
 
 watch(
-  () => gameUIStore.overlayState,
+  () => gameUIStore.modalState,
   (newState) => {
-    if (newState === UI.overlayStates.hidden) {
+    if (newState === UI.modalStates.hidden) {
       gameStore.increaseGameRound()
       gameRoundStore.prepareRound()
     }
   },
 )
 
-onMounted(() => gameUIStore.fadeInOverlay())
+onMounted(() => gameUIStore.fadeInGameModal())
 </script>
 
 <template>
@@ -105,7 +99,7 @@ onMounted(() => gameUIStore.fadeInOverlay())
       </div>
     </template>
 
-    <div class="">
+    <div>
       <img
         src="/images/game/gameWon.svg"
         width="160"
@@ -134,7 +128,7 @@ onMounted(() => gameUIStore.fadeInOverlay())
 
     <template #footerCenter>
       <Button @click="handleGameIncreaseRound">
-        {{ btnText }}
+        Next Round
       </Button>
     </template>
   </ModalGameRoundEnd>

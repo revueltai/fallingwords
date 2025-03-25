@@ -41,8 +41,8 @@ onMounted(async () => {
       name="collectionLocaleOriginal"
       type="text"
       :required="true"
-      label="Original Language"
-      select-label="Original Language"
+      label="Native Language"
+      select-label="Native Language"
     />
 
     <Select

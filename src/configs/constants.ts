@@ -119,8 +119,8 @@ export const UI: {
     named: Record<string, string>
     timed: Record<string, string>
   }
-  overlayStates: Record<OverlayState, OverlayState>
-  overlayComponents: OverlayComponentMap
+  modalStates: Record<OverlayState, OverlayState>
+  modalComponents: OverlayComponentMap
 } = {
   animationClasses: {
     named: {
@@ -145,13 +145,13 @@ export const UI: {
       highlight: 'anim-highlight-timed',
     },
   },
-  overlayStates: {
+  modalStates: {
     fadeIn: 'fadeIn',
     fadeOut: 'fadeOut',
     visible: 'visible',
     hidden: 'hidden',
   },
-  overlayComponents: {
+  modalComponents: {
     countdown: 'ModalGameInitCountdown',
     paused: 'ModalGamePaused',
     roundwon: 'ModalGameRoundWon',

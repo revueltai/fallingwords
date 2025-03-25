@@ -53,7 +53,7 @@ onMounted(async () => await appStore.setFormLocales())
         :options="appStore.formLocales"
         name="collectionLocaleOriginal"
         type="text"
-        label="Original Language"
+        label="Native Language"
         select-label="Select a Language"
         required
         :error="formErrors.collectionLocaleOriginal"

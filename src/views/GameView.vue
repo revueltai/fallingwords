@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import GameBoard from '@/components/game/ui/GameBoard.vue'
 import GameBottom from '@/components/game/ui/GameBottom.vue'
-import GameOverlay from '@/components/game/ui/GameOverlay.vue'
+import GameModal from '@/components/game/ui/GameModal.vue'
 import GamePowerupBar from '@/components/game/ui/GamePowerupBar.vue'
 import GamePowerupGlow from '@/components/game/ui/GamePowerupGlow.vue'
 import GameTop from '@/components/game/ui/GameTop.vue'
@@ -35,20 +35,7 @@ onMounted(() => {
   setUIAnimation()
 
   if (isEmptyArray(gameStore.gameWordsList)) {
-    // TODO Remove dummy
-    // const dummy =
-    gameStore.prepareGame([{
-      locales: { original: 'de', learn: 'en' },
-      name: 'short',
-      uid: '1742903330973-short',
-      words: [{
-        original: 'a',
-        learn: 'a',
-        uid: '1742903342126-kvoe',
-      }],
-    }])
-
-    // router.push('/')
+    router.push('/')
     return
   }
 
@@ -65,6 +52,6 @@ onMounted(() => {
     <GameBottom />
     <GamePowerupBar />
     <GamePowerupGlow />
-    <GameOverlay />
+    <GameModal />
   </section>
 </template>

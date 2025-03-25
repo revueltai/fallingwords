@@ -28,7 +28,7 @@ function handleGameRetry() {
   // gameStore.prepareGame({ words, locales })
 }
 
-onMounted(() => gameUIStore.fadeInOverlay())
+onMounted(() => gameUIStore.fadeInGameModal())
 </script>
 
 <template>

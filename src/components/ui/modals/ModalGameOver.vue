@@ -1,10 +1,10 @@
 <script setup lang="ts">
+import GameResultsItem from '@/components/game/ui/GameResultsItem.vue'
 import ModalGameRoundEnd from '@/components/ui/modals/ModalGameRoundEnd.vue'
-import { UI } from '@/configs/constants'
 import { useGameStore } from '@/stores/game.store'
 import { useGameRoundStore } from '@/stores/gameRound.store'
 import { useGameUIStore } from '@/stores/gameUI.store'
-import { computed, onMounted, watch } from 'vue'
+import { onMounted } from 'vue'
 import { useRouter } from 'vue-router'
 
 const router = useRouter()
@@ -13,84 +13,68 @@ const gameUIStore = useGameUIStore()
 const gameRoundStore = useGameRoundStore()
 const gameStore = useGameStore()
 
-const btnText = computed(() => {
-  return gameStore.isGameOver
-    ? 'Continue'
-    : 'Next Round'
-})
-
-const roundTimeLabel = computed(() => {
-  const { minutes, seconds } = gameRoundStore.roundTotalTime
-  const output = [String(minutes), String(seconds)]
-
-  if (minutes < 10) {
-    output[0] = `0${minutes}`
-  }
-
-  if (seconds < 10) {
-    output[1] = `0${seconds}`
-  }
-
-  return `${output[0]}:${output[1]}`
-})
-
-const roundStars = computed(() => {
-  const roundPercentage = getRoundPercentage()
-  return [
-    'StarFull',
-    roundPercentage > 50 ? 'StarFull' : 'StarEmpty',
-    roundPercentage > 80 ? 'StarFull' : 'StarEmpty',
-  ]
-})
-
-function getRoundPercentage() {
-  const roundWordGuess = gameRoundStore.roundWordGuess
-  const secondsMultiplier = 4
-  const rank = roundWordGuess.length * secondsMultiplier
-
-  const { seconds, minutes } = gameRoundStore.roundTotalTime
-  const totalTime = seconds + (minutes * 60)
-
-  return (rank / totalTime) * 100
+function handlePlayAgain() {
+  router.push('/gameResults')
 }
 
-function getStarSize(index: number) {
-  return index === 2 ? 64 : 48
-}
-
-function hideOverlay() {
-  gameUIStore.fadeOutOverlay()
-}
-
-function handleGameCancelation() {
+function handleShowDashboard() {
   gameStore.setGameReset()
-  hideOverlay()
+  gameUIStore.fadeOutOverlay()
   router.push('/')
 }
 
-function handleGameIncreaseRound() {
-  hideOverlay()
-}
-
-watch(
-  () => gameUIStore.overlayState,
-  (newState) => {
-    if (newState === UI.overlayStates.hidden) {
-      gameStore.increaseGameRound()
-      gameRoundStore.prepareRound()
-    }
-  },
-)
-
-onMounted(() => gameUIStore.fadeInOverlay())
+onMounted(() => gameUIStore.fadeInGameModal())
 </script>
 
 <template>
   <ModalGameRoundEnd
     :has-close-button="false"
-    heading="Game Over!"
+    heading="Game Over"
+    class="w-80"
   >
-    asdasd
+    <div class="flex flex-col gap-5 w-full">
+      <p>
+        <span class="block text-md">Good Job!</span>
+        <span class="text-sm text-primary-light">You Mastered</span>
+      </p>
+
+      <div class="relative max-h-80 overflow-y-auto">
+        <div class="grid gap-3 items-start auto-rows-min h-max anim-fade-in-timed">
+          {{ gameRoundStore.roundWordsList }}
+          <GameResultsItem
+            v-for="(word, index) in gameRoundStore.roundWordsList"
+            :key="index"
+            :word="word"
+          />
+        </div>
+      </div>
+    </div>
+
+    <template #footerLeft>
+      <Button
+        background-color="quaternary"
+        border-color="quaternary-light"
+        icon-only
+        @click="handleShowDashboard"
+      >
+        <Icon
+          name="home"
+          size="lg"
+        />
+      </Button>
+    </template>
+
+    <template #footerCenter>
+      <div class="flex flex-col gap-2">
+        <Button
+          background-color="tertiary"
+          border-color="tertiary-light"
+          @click="handlePlayAgain"
+        >
+          Play Again
+        </Button>
+      </div>
+    </template>
   </ModalGameRoundEnd>
 </template>
 

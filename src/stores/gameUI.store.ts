@@ -4,18 +4,18 @@ import { defineStore } from 'pinia'
 interface State {
   elements: BoardElements | null
   modalComponent: GameModalComponentMapKey | ''
-  overlayStates: typeof UI.overlayStates
-  overlayState: OverlayState
+  modalStates: typeof UI.modalStates
+  modalState: OverlayState
 }
 
-const overlayStates = UI.overlayStates as Record<OverlayState, OverlayState>
+const modalStates = UI.modalStates as Record<OverlayState, OverlayState>
 
 export const useGameUIStore = defineStore('gameUI', {
   state: (): State => ({
     elements: null,
     modalComponent: '',
-    overlayStates,
-    overlayState: overlayStates.hidden,
+    modalStates,
+    modalState: modalStates.hidden,
   }),
 
   getters: {
@@ -44,16 +44,16 @@ export const useGameUIStore = defineStore('gameUI', {
       this.modalComponent = key
     },
 
-    fadeInOverlay() {
-      this.overlayState = overlayStates.fadeIn
+    fadeInGameModal() {
+      this.modalState = modalStates.fadeIn
     },
 
     fadeOutOverlay() {
-      this.overlayState = overlayStates.fadeOut
+      this.modalState = modalStates.fadeOut
     },
 
     hideOverlay() {
-      this.overlayState = overlayStates.hidden
+      this.modalState = modalStates.hidden
     },
   },
 })

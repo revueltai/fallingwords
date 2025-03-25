@@ -2,9 +2,9 @@
 import type { Slot } from 'vue'
 import gameRoundOverLost from '@/assets/images/game/gameRoundOverLost.svg'
 import gameRoundOverWon from '@/assets/images/game/gameRoundOverWon.svg'
-import GameOverlayContent from '@/components/ui/modals/ModalGameContent.vue'
-import { onMounted, ref, useSlots } from 'vue'
+import ModalGameContent from '@/components/ui/modals/ModalGameContent.vue'
 import { useSoundStore } from '@/stores/sounds.store'
+import { onMounted, ref, useSlots } from 'vue'
 
 interface Props {
   result?: 'won' | 'lost'
@@ -63,7 +63,7 @@ onMounted(() => {
     class="w-64 h-64"
   >
 
-  <GameOverlayContent
+  <ModalGameContent
     v-else
     :heading="heading"
     :has-close-button="hasCloseButton"
@@ -99,5 +99,5 @@ onMounted(() => {
     >
       <slot name="footerRight" />
     </template>
-  </GameOverlayContent>
+  </ModalGameContent>
 </template>

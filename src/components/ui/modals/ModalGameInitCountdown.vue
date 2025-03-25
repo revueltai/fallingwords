@@ -27,7 +27,7 @@ function handleAnimationEnd(event: AnimationEvent) {
 }
 
 onMounted(() => {
-  gameUIStore.fadeInOverlay()
+  gameUIStore.fadeInGameModal()
   soundStore.playSoundEffect('gameTick')
 
   const intervalId = setInterval(() => {

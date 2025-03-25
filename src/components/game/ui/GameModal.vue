@@ -10,7 +10,7 @@ import { computed, onBeforeUnmount, onMounted, ref, watch } from 'vue'
 
 const gameUIStore = useGameUIStore()
 
-const overlayComponentMap = {
+const modalComponentMap = {
   countdown: ModalGameInitCountdown,
   paused: ModalGamePaused,
   roundwon: ModalGameRoundWon,
@@ -29,12 +29,14 @@ const animationClasses = {
   out: UI.animationClasses.timed.fadeOut,
 }
 
-const overlayComponent = computed(() => (overlayComponentMap as any)[gameUIStore.modalComponent as GameModalComponentMapKey] || null)
+const modalComponent = computed(() => {
+  return (modalComponentMap as any)[gameUIStore.modalComponent as GameModalComponentMapKey] || null
+})
 
 watch(
-  () => gameUIStore.overlayState,
+  () => gameUIStore.modalState,
   (newState) => {
-    const { fadeIn, fadeOut } = UI.overlayStates
+    const { fadeIn, fadeOut } = UI.modalStates
 
     switch (newState) {
       case fadeIn:
@@ -77,7 +79,7 @@ onBeforeUnmount(() => {
     <div class="relative w-full h-full">
       <div class="z-0 absolute w-full h-full bg-secondary-dark opacity-70 left-0 top-0" />
       <div class="z-30 flex items-center justify-center relative w-full h-full">
-        <Component :is="overlayComponent" />
+        <Component :is="modalComponent" />
       </div>
     </div>
   </section>

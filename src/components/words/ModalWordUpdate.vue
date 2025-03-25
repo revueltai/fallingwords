@@ -58,8 +58,8 @@ onMounted(async () => {
         v-model="original"
         name="original"
         type="text"
-        label="Original Word"
-        placeholder="Enter original word"
+        label="Native Word"
+        placeholder="Enter Native Word"
         required
         :country-code="locales?.original"
         :error="formErrors.original"

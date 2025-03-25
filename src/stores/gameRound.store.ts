@@ -194,8 +194,6 @@ export const useGameRoundStore = defineStore('gameRound', {
     },
 
     handleRoundState() {
-      console.log(111)
-
       if (this.isRoundWon()) {
         this.setRoundWon()
       } else if (this.isRoundLost()) {

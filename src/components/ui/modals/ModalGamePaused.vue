@@ -28,7 +28,7 @@ function handleGameResume() {
   hideOverlay()
 }
 
-onMounted(() => gameUIStore.fadeInOverlay())
+onMounted(() => gameUIStore.fadeInGameModal())
 </script>
 
 <template>

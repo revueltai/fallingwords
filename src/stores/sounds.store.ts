@@ -107,11 +107,11 @@ export const useSoundStore = defineStore('sound', {
 
   actions: {
     playAudio(audio: HTMLAudioElement) {
-      // if (document.hasFocus()) {
-      audio.play().catch((err: any) => {
-        console.error('Audio Play failed:', err)
-      })
-      // }
+      if (document.hasFocus()) {
+        audio.play().catch((err: any) => {
+          console.error('Audio Play failed:', err)
+        })
+      }
     },
 
     playSoundEffect(key: GameSoundEffectName) {
