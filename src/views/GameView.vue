@@ -36,8 +36,18 @@ onMounted(() => {
 
   if (isEmptyArray(gameStore.gameWordsList)) {
     // TODO Remove dummy
-    const dummy = [appStore.collections[1]]
-    gameStore.setGameWords(dummy)
+    // const dummy =
+    gameStore.prepareGame([{
+      locales: { original: 'de', learn: 'en' },
+      name: 'short',
+      uid: '1742903330973-short',
+      words: [{
+        original: 'a',
+        learn: 'a',
+        uid: '1742903342126-kvoe',
+      }],
+    }])
+
     // router.push('/')
     return
   }

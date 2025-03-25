@@ -86,6 +86,8 @@ export const useGameStore = defineStore('game', {
 
     prepareGame(collections: GameCollection[]) {
       try {
+        console.log(2222, collections)
+
         const mergedWords = collections.flatMap(({ words, locales }) =>
           words.map(word => ({
             ...word,
