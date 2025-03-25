@@ -38,11 +38,13 @@ watch(isFocused, (newFocusState: boolean) => {
 })
 
 onMounted(async () => {
+  await appStore.loadStreak()
+  await appStore.loadCollections()
+
   window.addEventListener('focus', () => handleWindowFocus)
   handleSoundLoading()
 
   if (appWrapperRef.value) {
-    await appStore.loadCollections()
     setCanvasSize()
     appStore.setCanvasElement(appWrapperRef.value)
     isLoaded.value = true

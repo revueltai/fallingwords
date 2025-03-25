@@ -5,12 +5,20 @@ import { defineStore } from 'pinia'
 import { ref, shallowRef } from 'vue'
 
 export const useAppStore = defineStore('app', () => {
-  const apiKeyUserData = API_KEYS.userData
   const canvasMaxWidth = 600
   const canvasMaxHeight = 800
   const canvasEl = shallowRef<ElementRef>(null)
   const collections = ref<GameCollection[]>([])
   const formLocales = ref<FormSelectOption[]>([])
+  const streak = ref<UserStreak[]>([
+    { day: 'M', state: 'unknown' },
+    { day: 'T', state: 'unknown' },
+    { day: 'W', state: 'unknown' },
+    { day: 'T', state: 'unknown' },
+    { day: 'F', state: 'unknown' },
+    { day: 'S', state: 'unknown' },
+    { day: 'S', state: 'unknown' },
+  ])
 
   function setCanvasElement(el: HTMLElement) {
     canvasEl.value = el
@@ -28,15 +36,29 @@ export const useAppStore = defineStore('app', () => {
     }
   }
 
+  async function loadStreak() {
+    try {
+      const userStreak = APIService.loadStoreData(API_KEYS.userStreak)
+
+      if (userStreak) {
+        streak.value = userStreak as UserStreak[]
+      } else {
+        APIService.saveStoreData(API_KEYS.userStreak, streak.value)
+      }
+    } catch (error: any) {
+      throw new Error(error)
+    }
+  }
+
   async function loadCollections() {
     try {
-      const userData = APIService.loadStoreData(apiKeyUserData)
+      const userData = APIService.loadStoreData(API_KEYS.userData)
 
-      if (isEmptyArray(userData)) {
+      if (userData) {
+        collections.value = userData as GameCollection[]
+      } else {
         const { exampleCollection } = await import('@/assets/exampleCollection.ts')
         collections.value = exampleCollection
-      } else {
-        collections.value = userData as GameCollection[]
       }
     } catch (error: any) {
       throw new Error(error)
@@ -70,7 +92,7 @@ export const useAppStore = defineStore('app', () => {
       words: [],
     })
 
-    return APIService.saveStoreData(apiKeyUserData, collections.value)
+    return APIService.saveStoreData(API_KEYS.userData, collections.value)
   }
 
   async function createWord(collectionUid: string, payload: GameWord) {
@@ -84,7 +106,7 @@ export const useAppStore = defineStore('app', () => {
       const uid = createUID()
       collection.words.push({ ...payload, uid })
 
-      return APIService.saveStoreData(apiKeyUserData, collections.value)
+      return APIService.saveStoreData(API_KEYS.userData, collections.value)
     }
 
     return false
@@ -106,7 +128,7 @@ export const useAppStore = defineStore('app', () => {
         },
       })
 
-      return APIService.saveStoreData(apiKeyUserData, collections.value)
+      return APIService.saveStoreData(API_KEYS.userData, collections.value)
     }
 
     return false
@@ -130,7 +152,7 @@ export const useAppStore = defineStore('app', () => {
         })
       }
 
-      return APIService.saveStoreData(apiKeyUserData, collections.value)
+      return APIService.saveStoreData(API_KEYS.userData, collections.value)
     }
 
     return false
@@ -146,7 +168,7 @@ export const useAppStore = defineStore('app', () => {
     if (deleteIndex !== -1) {
       collections.value.splice(deleteIndex, 1)
 
-      return APIService.saveStoreData(apiKeyUserData, collections.value)
+      return APIService.saveStoreData(API_KEYS.userData, collections.value)
     }
 
     return false
@@ -165,7 +187,7 @@ export const useAppStore = defineStore('app', () => {
       if (wordIndex !== -1) {
         collection.words.splice(wordIndex, 1)
 
-        return APIService.saveStoreData(apiKeyUserData, collections.value)
+        return APIService.saveStoreData(API_KEYS.userData, collections.value)
       }
     }
 
@@ -178,8 +200,10 @@ export const useAppStore = defineStore('app', () => {
     canvasMaxHeight,
     canvasEl,
     formLocales,
+    streak,
     setCanvasElement,
     setFormLocales,
+    loadStreak,
     loadCollections,
     createCollection,
     updateCollection,

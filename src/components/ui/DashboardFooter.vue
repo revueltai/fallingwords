@@ -60,7 +60,7 @@ function handleClick(item: DashboardMenuItem) {
 
           <Button
             v-else
-            is-link
+            :has-background="false"
             class="flex flex-col gap-1 items-center"
             @click="() => handleClick(item)"
           >

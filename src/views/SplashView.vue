@@ -1,8 +1,16 @@
 <script setup lang="ts">
 import type { MbCustomAnimation } from 'movinblocks'
+import ModalCredits from '@/components/ui/modals/ModalCredits.vue'
 import { UI } from '@/configs/constants'
+import { useModalStore } from '@/stores/modal.store'
 import Movinblocks from 'movinblocks'
 import { onMounted } from 'vue'
+
+const modalStore = useModalStore()
+
+function handleShowCredits() {
+  modalStore.openModal()
+}
 
 onMounted(async () => {
   new Movinblocks()
@@ -43,9 +51,9 @@ onMounted(async () => {
 
           <div id="tutorial">
             <Button
-              to="tutorial"
               size="sm"
               class="w-24 self-center"
+              @click="handleShowCredits"
             >
               Credits
             </Button>
@@ -54,4 +62,8 @@ onMounted(async () => {
       </div>
     </div>
   </section>
+
+  <Modal>
+    <ModalCredits />
+  </Modal>
 </template>

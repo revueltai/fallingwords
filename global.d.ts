@@ -18,7 +18,7 @@ declare global {
   type ColorWeights = 'light' | 'dark'
   type ColorBase = 'black' | 'white' | 'grey'
   type Color = ColorBase | ColorScale | `${ColorScale}-${ColorWeights}` | 'none'
-  type IconName = 'cornerDownLeft' | 'chevronDown' | 'chevronLeft' | 'chevronLeftDouble' | 'chevronRight' | 'chevronRightDouble' | 'chevronUp' | 'cross' | 'effects' | 'heart-empty' | 'heart-full' | 'home' | 'info' | 'list' | 'menu' | 'play' | 'pause' | 'plus' | 'powerup-fire' | 'powerup-ice' | 'powerup-wind' | 'skip' | 'sound' | 'check' | 'gear' | 'collection' | 'question' | 'trashbin' | 'word' | 'eye' | 'magnifier'
+  type IconName = 'cornerDownLeft' | 'chevronDown' | 'chevronLeft' | 'chevronLeftDouble' | 'chevronRight' | 'chevronRightDouble' | 'chevronUp' | 'cross' | 'effects' | 'heart-empty' | 'heart-full' | 'home' | 'info' | 'list' | 'menu' | 'play' | 'pause' | 'plus' | 'powerup-fire' | 'powerup-ice' | 'powerup-wind' | 'skip' | 'sound' | 'check' | 'gear' | 'collection' | 'question' | 'trashbin' | 'word' | 'eye' | 'magnifier' | 'github'
   type IconType = 'fill' | 'stroke'
   type IconSizeName = 'xs' | 'sm' | 'md' | 'lg' | 'xl' | '2xl' | '3xl'
 
@@ -172,6 +172,13 @@ declare global {
 
   type GameSoundName = keyof GameSoundsMap
   type GameSoundEffectName = keyof GameSoundsEffectsMap
+
+  type UserStreakState = 'done' | 'missing' | 'unknown'
+
+  interface UserStreak {
+    day: string
+    state: UserStreakState
+  }
 }
 
 export { }

@@ -1,6 +1,7 @@
 export const API_KEYS = {
   settings: 'fwSettings',
   userData: 'fwStore',
+  userStreak: 'fwStreak',
 }
 
 export const DASHBOARD_MENU: DashboardMenuItem[] = [

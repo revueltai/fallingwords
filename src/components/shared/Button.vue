@@ -5,17 +5,19 @@ import { createCssVar } from '@/utils'
 import { computed } from 'vue'
 
 type ButtonSize = 'xs' | 'sm' | 'md' | 'lg' | 'xl'
+type ButtonType = 'submit' | 'button' | 'link'
+type ButtonFormTypes = 'submit' | 'button' | 'reset' | undefined
 
 interface Props {
   size?: ButtonSize
-  type?: 'submit' | 'button'
+  type?: ButtonType
   backgroundColor?: Color
   borderColor?: Color
   borderStrokeWidth?: 0 | 1 | 2 | '0' | '1' | '2'
   textColor?: Color
   cssClasses?: string
   textAlignment?: 'center'
-  to?: RouteLocationRaw | null
+  to?: RouteLocationRaw | string | null
   disabled?: boolean
   iconOnly?: boolean
   hasIcon?: boolean
@@ -23,7 +25,6 @@ interface Props {
   hasBackground?: boolean
   isRounded?: boolean
   isSquared?: boolean
-  isLink?: boolean
 }
 
 const props = withDefaults(defineProps<Props>(), {
@@ -44,21 +45,23 @@ const props = withDefaults(defineProps<Props>(), {
   hasBackground: true,
   isRounded: false,
   isSquared: false,
-  isLink: false,
 })
 
 const emit = defineEmits(['click'])
 
 const soundStore = useSoundStore()
 
-const isRouterLink = computed(() => props.to)
+const isButton = computed(() => (props.type === 'button' || props.type === 'submit') && !props.to)
+const isLink = computed(() => props.type === 'link')
+const isExternalLink = computed(() => isLink.value && props.to && (props.to as string)?.startsWith('https'))
+const isRouterLink = computed(() => !(isButton.value || isExternalLink.value))
 
 const cssClasses = computed(() => {
   const payload = [
-    `transition-transform duration-500 inline-flex justify-center items-center hover:scale-105 disabled:grayscale disabled:opacity-50 focus:outline-none focus:ring-0 text-${props.textAlignment} ${props.cssClasses}`,
+    `transition-transform duration-500 inline-flex justify-center items-center hover:scale-105 disabled:grayscale disabled:opacity-50 focus:outline-none text-${props.textAlignment} ${props.cssClasses}`,
   ]
 
-  if (props.hasBackground && !props.isLink) {
+  if (props.hasBackground && !isLink.value) {
     payload.push(`bg-${props.backgroundColor} text-${props.textColor}`)
 
     if (props.borderColor !== 'none') {
@@ -89,7 +92,29 @@ const cssClasses = computed(() => {
 
   if (props.iconOnly) {
     payload.push('p-2')
-  } else if (!props.isLink) {
+  } else if (isExternalLink.value) {
+    switch (props.size) {
+      case 'xs':
+        payload.push('text-xs')
+        break
+
+      case 'sm':
+        payload.push('text-sm')
+        break
+
+      case 'md':
+        payload.push('text-p')
+        break
+
+      case 'lg':
+        payload.push('text-h5')
+        break
+
+      case 'xl':
+        payload.push('text-h5')
+        break
+    }
+  } else if (!isLink.value) {
     switch (props.size) {
       case 'xs':
         payload.push('text-xs py-1 px-2')
@@ -142,10 +167,21 @@ function handleClick(event: Event) {
     <slot />
   </RouterLink>
 
+  <a
+    v-else-if="isExternalLink"
+    :href="String(to)"
+    :class="cssClasses"
+    :style="cssStyles"
+    target="_blank"
+    rel="noopener noreferrer"
+  >
+    <slot />
+  </a>
+
   <button
     v-else
     role="button"
-    :type="type"
+    :type="(type as ButtonFormTypes)"
     :class="cssClasses"
     :disabled="disabled"
     :style="cssStyles"
