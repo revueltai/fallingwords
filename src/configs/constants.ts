@@ -174,6 +174,7 @@ export const GAME_DEFAULTS: {
     ice: number
     wind: number
   }
+  gameSummary: GameSummary
   roundStates: RoundStates
 } = {
   speedIncreasement: 1,
@@ -189,6 +190,7 @@ export const GAME_DEFAULTS: {
     ice: 5,
     wind: 5,
   },
+  gameSummary: [],
   roundStates: {
     loading: 'loading',
     ready: 'ready',
@@ -196,5 +198,6 @@ export const GAME_DEFAULTS: {
     playing: 'playing',
     roundwon: 'roundwon',
     roundlost: 'roundlost',
+    gameover: 'gameover',
   },
 }

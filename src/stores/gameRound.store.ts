@@ -2,10 +2,7 @@ import { GAME_DEFAULTS } from '@/configs/constants'
 import { useGameStore } from '@/stores/game.store'
 import { useGameBoardStore } from '@/stores/gameBoard.store'
 import { useGameUIStore } from '@/stores/gameUI.store'
-import {
-  createWord,
-  getLetters,
-} from '@/stores/utils.store'
+import { createWord, formatRoundDuration, getLetters, getRoundPercentage } from '@/stores/utils.store'
 import { getTimestamp, isEmptyArray, logTimeDifference } from '@/utils'
 import { defineStore } from 'pinia'
 
@@ -13,14 +10,13 @@ interface GameState {
   roundSpeed: number
   roundSpeedHelper: number
   powerups: Powerups
-  roundWordsList: GameWords
   roundWordLocales: GameLocale | undefined
   roundStates: RoundStates
   roundState: RoundState
   roundTotalAvailableLetters: number
   roundWordOriginal: string | null
   roundWordGuess: Word
-  roundTime: RoundTime
+  roundTime: RoundTimestamp
   roundPowerupSpawnChance: number
   roundWordLetterSpawnChance: number
   roundActivePowerup: {
@@ -36,7 +32,6 @@ export const useGameRoundStore = defineStore('gameRound', {
     roundSpeed: GAME_DEFAULTS.speed,
     roundSpeedHelper: GAME_DEFAULTS.speed,
     powerups: GAME_DEFAULTS.powerups,
-    roundWordsList: [],
     roundWordLocales: undefined,
     roundStates,
     roundState: roundStates.loading,
@@ -62,7 +57,8 @@ export const useGameRoundStore = defineStore('gameRound', {
     gameUIStore() {
       return useGameUIStore()
     },
-    roundTotalTime: state => logTimeDifference(state.roundTime.start, state.roundTime.end),
+    roundTotalTime: state => formatRoundDuration(logTimeDifference(state.roundTime.start, state.roundTime.end)),
+    roundScorePercentage: state => getRoundPercentage(state.roundWordGuess, logTimeDifference(state.roundTime.start, state.roundTime.end)),
     roundIsLoading: state => state.roundState === state.roundStates.loading,
     roundIsReady: state => state.roundState === state.roundStates.ready,
     roundIsPlaying: state => state.roundState === state.roundStates.playing,
@@ -75,6 +71,8 @@ export const useGameRoundStore = defineStore('gameRound', {
 
   actions: {
     activatePowerup(type: PowerupName) {
+      // (this.gameStore.gameSummary.roundPowerupUsed?[]![type])++
+
       this.gameStore.decreasePowerups(type)
       this.roundActivePowerup = {
         active: true,
@@ -142,7 +140,7 @@ export const useGameRoundStore = defineStore('gameRound', {
       this.roundSpeed += GAME_DEFAULTS.speedIncreasement
     },
 
-    setRoundTime(timePoint: keyof RoundTime) {
+    setRoundTime(timePoint: keyof RoundTimestamp) {
       this.roundTime[timePoint] = getTimestamp()
     },
 
@@ -179,25 +177,41 @@ export const useGameRoundStore = defineStore('gameRound', {
     },
 
     setRoundWon() {
-      if (this.gameStore.isGameOver) {
-        this.gameUIStore.setModalComponent('gameover')
-      }
-
       this.setRoundTime('end')
       this.setRoundState(roundStates.roundwon)
       this.gameUIStore.setModalComponent('roundwon')
     },
 
     setRoundLost() {
+      this.setRoundTime('end')
       this.setRoundState(roundStates.roundlost)
       this.gameUIStore.setModalComponent('roundlost')
     },
 
+    setGameOver() {
+      this.setRoundTime('end')
+      this.setRoundState(roundStates.gameover)
+      this.gameUIStore.setModalComponent('gameover')
+    },
+
+    updateRoundSummary() {
+      this.gameStore.gameSummary.push({
+        duration: this.roundTotalTime,
+        score: this.roundScorePercentage,
+      })
+    },
+
     handleRoundState() {
-      if (this.isRoundWon()) {
+      if (this.gameStore.isGameOver) {
+        this.setGameOver()
+      } else if (this.isRoundWon()) {
         this.setRoundWon()
       } else if (this.isRoundLost()) {
         this.setRoundLost()
+      }
+
+      if (this.gameStore.isGameOver || this.isRoundWon()) {
+        this.updateRoundSummary()
       }
     },
   },

@@ -48,7 +48,8 @@ function handleCollectionToggling(collection: GameCollection) {
 }
 
 function handleGameStart() {
-  const rs = gameStore.prepareGame(selectedCollections.value)
+  gameStore.setGameCollections(selectedCollections.value)
+  const rs = gameStore.prepareGame()
 
   if (rs) {
     router.push('game')

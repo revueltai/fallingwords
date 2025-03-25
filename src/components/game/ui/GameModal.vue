@@ -29,9 +29,7 @@ const animationClasses = {
   out: UI.animationClasses.timed.fadeOut,
 }
 
-const modalComponent = computed(() => {
-  return (modalComponentMap as any)[gameUIStore.modalComponent as GameModalComponentMapKey] || null
-})
+const modalComponent = computed(() => (modalComponentMap as any)[gameUIStore.modalComponent as GameModalComponentMapKey] || null)
 
 watch(
   () => gameUIStore.modalState,

@@ -105,7 +105,7 @@ export function getTimestamp(): number {
  *
  * @param {number} timestamp1 - First timestamp
  * @param {number} timestamp2 - Second timestamp
- * @returns {{ minutes: number, seconds: number }} - Time difference
+ * @returns {RoundTimeDuration} - Time difference
  */
 export function logTimeDifference(
   timestamp1: number,

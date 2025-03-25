@@ -13,40 +13,15 @@ const gameUIStore = useGameUIStore()
 const gameRoundStore = useGameRoundStore()
 const gameStore = useGameStore()
 
-const roundTimeLabel = computed(() => {
-  const { minutes, seconds } = gameRoundStore.roundTotalTime
-  const output = [String(minutes), String(seconds)]
-
-  if (minutes < 10) {
-    output[0] = `0${minutes}`
-  }
-
-  if (seconds < 10) {
-    output[1] = `0${seconds}`
-  }
-
-  return `${output[0]}:${output[1]}`
-})
-
 const roundStars = computed(() => {
-  const roundPercentage = getRoundPercentage()
+  const roundPercentage = gameRoundStore.roundScorePercentage
+
   return [
     'StarFull',
     roundPercentage > 50 ? 'StarFull' : 'StarEmpty',
     roundPercentage > 80 ? 'StarFull' : 'StarEmpty',
   ]
 })
-
-function getRoundPercentage() {
-  const roundWordGuess = gameRoundStore.roundWordGuess
-  const secondsMultiplier = 4
-  const rank = roundWordGuess.length * secondsMultiplier
-
-  const { seconds, minutes } = gameRoundStore.roundTotalTime
-  const totalTime = seconds + (minutes * 60)
-
-  return (rank / totalTime) * 100
-}
 
 function getStarSize(index: number) {
   return index === 2 ? 64 : 48
@@ -108,7 +83,7 @@ onMounted(() => gameUIStore.fadeInGameModal())
 
       <span class="relative z-30 rounded-xl border border-senary-light shadow-sm bg-secondary-light text-center text-xl pt pb-1 px-2 block mx-auto -mt-12 mb-2 w-[120px]">
         <span class="block text-sm mt-2 text-primary-light uppercase">Your time</span>
-        {{ roundTimeLabel }}
+        {{ gameRoundStore.roundTotalTime }}
       </span>
     </div>
 

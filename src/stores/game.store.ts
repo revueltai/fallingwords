@@ -2,12 +2,15 @@ import { GAME_DEFAULTS } from '@/configs/constants'
 import { isEmptyObject } from '@/utils'
 import { defineStore } from 'pinia'
 import { useAppStore } from './app.store'
+import { useGameRoundStore } from './gameRound.store'
 
 interface GameState {
   gameMaxRounds: number
   gameTotalRounds: number
   gameCurrentRound: number
+  gameCollections: GameCollection[]
   gameWordsList: GameWords
+  gameSummary: GameSummary
   gamePowerups: GamePowerups
   gamePowerupsDuration: number
   gameLocales: GameLocale
@@ -16,10 +19,12 @@ interface GameState {
 
 function initialState(): GameState {
   return {
-    gameMaxRounds: 10,
+    gameMaxRounds: 7,
     gameTotalRounds: 0,
     gameCurrentRound: 0,
+    gameCollections: [],
     gameWordsList: [],
+    gameSummary: GAME_DEFAULTS.gameSummary,
     gameLives: GAME_DEFAULTS.lives,
     gamePowerups: GAME_DEFAULTS.gamePowerups,
     gamePowerupsDuration: GAME_DEFAULTS.powerupDuration,
@@ -67,6 +72,10 @@ export const useGameStore = defineStore('game', {
       }
     },
 
+    setGameCollections(collections: GameCollection[]) {
+      this.gameCollections = collections
+    },
+
     setGameWords(wordsList: GameWords) {
       this.gameWordsList = wordsList
       this.gameTotalRounds = wordsList.length
@@ -84,9 +93,17 @@ export const useGameStore = defineStore('game', {
       Object.assign(this, initialState())
     },
 
-    prepareGame(collections: GameCollection[]) {
+    replayGame(collections: GameCollection[]) {
+      const gameRoundStore = useGameRoundStore()
+      this.setGameReset()
+      this.setGameCollections(collections)
+      this.prepareGame()
+      gameRoundStore.prepareRound()
+    },
+
+    prepareGame() {
       try {
-        const mergedWords = collections.flatMap(({ words, locales }) =>
+        const mergedWords = this.gameCollections.flatMap(({ words, locales }) =>
           words.map(word => ({
             ...word,
             locales,
@@ -97,7 +114,7 @@ export const useGameStore = defineStore('game', {
           .sort(() => Math.random() - 0.5)
           .slice(0, this.gameMaxRounds)
 
-        const gameLocales = collections[0]?.locales
+        const gameLocales = this.gameCollections[0]?.locales
 
         this.setGameLives(GAME_DEFAULTS.lives)
         this.setGameWords(shuffledWords)

@@ -21,11 +21,7 @@ function handleGameCancelation() {
 }
 
 function handleGameRetry() {
-  const words = gameStore.gameWordsList
-  const locales = gameStore.gameLocales
-
-  gameStore.setGameReset()
-  // gameStore.prepareGame({ words, locales })
+  gameStore.replayGame(gameStore.gameCollections)
 }
 
 onMounted(() => gameUIStore.fadeInGameModal())

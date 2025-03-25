@@ -41,7 +41,7 @@ onMounted(() => {
   ]
 
   if (slots.header) {
-    timelineElements.push('overlayHeader')
+    timelineElements.push('modalHeader')
     animations.push('fadeIn')
   }
 
@@ -71,7 +71,7 @@ onMounted(() => {
 <template>
   <div class="relative h-auto">
     <div
-      id="overlayHeader"
+      id="modalHeader"
       class="relative z-30"
     >
       <div class="pointer-events-none">

@@ -187,3 +187,33 @@ export function createWord(word: string): Word {
     guessed: false,
   }))
 }
+
+/**
+ * Formats a round time object into a string.
+ *
+ * @param {RoundTimeDuration} input - The round time to format.
+ * @returns {string} The formatted string.
+ */
+export function formatRoundDuration(input: RoundTimeDuration): string {
+  const { minutes, seconds } = input
+  const output = [String(minutes), String(seconds)]
+
+  if (minutes < 10) {
+    output[0] = `0${minutes}`
+  }
+
+  if (seconds < 10) {
+    output[1] = `0${seconds}`
+  }
+
+  return `${output[0]}:${output[1]}`
+}
+
+export function getRoundPercentage(word: Word, totalTime: RoundTimeDuration, secondsMultiplier: number = 4) {
+  const rank = word.length * secondsMultiplier
+
+  const { seconds, minutes } = totalTime
+  const finalTime = seconds + (minutes * 60)
+
+  return Math.round((rank / finalTime) * 100)
+}

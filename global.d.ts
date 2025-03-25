@@ -112,16 +112,29 @@ declare global {
 
   type GameWords = GameWord[]
 
-  type RoundState = 'loading' | 'ready' | 'paused' | 'playing' | 'roundwon' | 'roundlost'
+  type RoundState = 'loading' | 'ready' | 'paused' | 'playing' | 'roundwon' | 'roundlost' | 'gameover'
 
   type RoundStates = {
     [key in RoundState]: RoundState
   }
 
-  interface RoundTime {
+  interface RoundTimeDuration {
+    minutes: number
+    seconds: number
+  }
+
+  interface RoundTimestamp {
     start: number
     end: number
   }
+
+  interface GameSummaryItem {
+    duration?: string
+    score?: number
+    usedPowerups?: GamePowerups[]
+  }
+
+  type GameSummary = GameSummaryItem[]
 
   interface Character {
     el: HTMLElement
