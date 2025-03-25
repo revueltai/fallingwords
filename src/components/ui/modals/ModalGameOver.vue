@@ -27,17 +27,19 @@ onMounted(() => gameUIStore.fadeInGameModal())
 <template>
   <ModalGameRoundEnd
     :has-close-button="false"
-    heading="Game Over"
+    heading="Good Job"
     class="w-80"
   >
-    <div class="flex flex-col gap-5 w-full">
-      <p>
-        <span class="block text-xl">Good Job!</span>
-        <span class="text-sm text-primary-light">You Mastered</span>
+    <div class="flex flex-col gap-2 w-full">
+      <p class="text-md text-primary-light">
+        You Mastered These Words
       </p>
 
-      <div class="relative max-h-96 overflow-y-auto">
-        <div class="grid gap-3 items-start auto-rows-min h-max anim-fade-in-timed">
+      <div class="relative">
+        <div class="absolute z-10 bottom-0 w-full h-10 bg-gradient-to-b from-transparent to-secondary via-secondary" />
+        <div class="absolute z-10 top-0 w-full h-10 bg-gradient-to-b from-secondary to-transparent via-transparent" />
+
+        <div class="grid gap-3 items-start auto-rows-min h-max anim-fade-in-timed max-h-72 overflow-y-auto pt-6 pb-10">
           <GameSummaryItem
             v-for="(word, index) in gameStore.gameWordsList"
             :key="index"
@@ -48,7 +50,9 @@ onMounted(() => gameUIStore.fadeInGameModal())
       </div>
     </div>
 
-    <template #footerLeft>
+    <template #footerLeft />
+
+    <template #footerCenter>
       <Button
         background-color="quaternary"
         border-color="quaternary-light"
@@ -60,18 +64,14 @@ onMounted(() => gameUIStore.fadeInGameModal())
           size="lg"
         />
       </Button>
-    </template>
 
-    <template #footerCenter>
-      <div class="flex flex-col gap-2">
-        <Button
-          background-color="tertiary"
-          border-color="tertiary-light"
-          @click="handlePlayAgain"
-        >
-          Play Again
-        </Button>
-      </div>
+      <Button
+        background-color="tertiary"
+        border-color="tertiary-light"
+        @click="handlePlayAgain"
+      >
+        Play Again
+      </Button>
     </template>
   </ModalGameRoundEnd>
 </template>

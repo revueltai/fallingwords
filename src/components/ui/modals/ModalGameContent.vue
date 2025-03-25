@@ -122,7 +122,7 @@ onMounted(() => {
         >
           <slot name="footerLeft" />
 
-          <div class="flex items-center justify-between gap-4">
+          <div class="flex items-center justify-center gap-4 w-full">
             <slot name="footerCenter" />
           </div>
 
