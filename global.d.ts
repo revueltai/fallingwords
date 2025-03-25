@@ -161,6 +161,8 @@ declare global {
     characterDislike: GameSound
     characterLove: GameSound
     buttonClick: GameSound
+    notificationSuccess: GameSound
+    notificationError: GameSound
     gameTick: GameSound
     gameTilePop: GameSound
     gameTilePowerup: GameSound

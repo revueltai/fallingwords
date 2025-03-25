@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { UI } from '@/configs/constants'
+import { useSoundStore } from '@/stores/sounds.store'
 import { toastEmitter } from '@/utils/ToastEmitter'
 import { computed, onMounted, onUnmounted, ref } from 'vue'
 
@@ -9,6 +10,8 @@ interface ToastPayload {
   message: string
   type: ToastType
 }
+
+const soundStore = useSoundStore()
 
 const toastRef = ref<ElementRef>(null)
 const message = ref('')
@@ -41,6 +44,11 @@ function showToast(payload: ToastPayload) {
     if (toastRef.value) {
       toastRef.value.addEventListener('animationend', handleAnimationEnd)
       toastRef.value.classList.add(UI.animationClasses.timed.slideInOutTop)
+
+      soundStore.playSoundEffect(type.value === 'error'
+        ? 'notificationError'
+        : 'notificationSuccess',
+      )
     }
   }
 }

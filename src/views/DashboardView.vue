@@ -62,12 +62,6 @@ onMounted(() => {
   soundStore.stopLoopSound()
   soundStore.playLoopSound('dashboardBg')
 
-  // const streakAnim = new Movinblocks()
-  //   .setTimeline(Array.from({ length: 7 }, (_, i) => `streakDay${i}`))
-  //   .setAnimation(UI.animationClasses.named.scaleIn as MbCustomAnimation)
-  //   .setOverlap(200)
-  //   .setDuration(300)
-
   new Movinblocks()
     .setTimeline(['header', 'character', 'heading', 'status', 'streak', 'footer', 'list'])
     .setAnimation([
@@ -75,19 +69,12 @@ onMounted(() => {
       UI.animationClasses.named.scaleIn as MbCustomAnimation,
       'fadeIn',
       UI.animationClasses.named.scaleIn as MbCustomAnimation,
-      'fadeIn',
+      'revealInTop',
       'revealInBottom',
       'fadeIn',
     ])
     .setOverlap(200)
     .setDuration([600, 400, 400, 400, 400, 400, 600])
-    .on('animationEnd', (data) => {
-      console.log(appStore.streak)
-
-      if (data.currentElement.id === 'streak' && appStore.streak) {
-        // streakAnim.prepare().start()
-      }
-    })
     .prepare()
     .start()
 })

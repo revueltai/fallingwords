@@ -24,6 +24,14 @@ export const useSoundStore = defineStore('sound', {
         audio: new Audio('/sounds/uiButtonClick.wav'),
         volume: 0.5,
       },
+      notificationSuccess: {
+        audio: new Audio('/sounds/uiNotificationSuccess.mp3'),
+        volume: 0.5,
+      },
+      notificationError: {
+        audio: new Audio('/sounds/uiNotificationError.mp3'),
+        volume: 0.5,
+      },
       fire: {
         audio: new Audio('/sounds/powerupFire.mp3'),
         volume: 0.5,

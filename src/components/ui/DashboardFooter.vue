@@ -35,12 +35,12 @@ function handleClick(item: DashboardMenuItem) {
     <div class="max-w-96 bg-secondary border border-b-0 border-secondary-light w-full flex items-center justify-center rounded-t-3xl px-8 py-4 gap-4 shadow-md transition-all">
       <ul
         v-if="!isLobby"
-        class="flex items-center justify-between gap-8"
+        class="flex items-center justify-between gap-1"
       >
         <li
           v-for="item, index in menuItems"
           :key="index"
-          class="text-center w-16"
+          class="text-center"
         >
           <template v-if="item.id === 'play'">
             <Button
