@@ -27,8 +27,8 @@ interface GameState {
 
 const roundStates = GAME_DEFAULTS.roundStates
 
-export const useGameRoundStore = defineStore('gameRound', {
-  state: (): GameState => ({
+function initialState(): GameState {
+  return {
     roundSpeed: GAME_DEFAULTS.speed,
     roundSpeedHelper: GAME_DEFAULTS.speed,
     powerups: GAME_DEFAULTS.powerups,
@@ -48,7 +48,11 @@ export const useGameRoundStore = defineStore('gameRound', {
       active: false,
       type: null,
     },
-  }),
+  }
+}
+
+export const useGameRoundStore = defineStore('gameRound', {
+  state: initialState,
 
   getters: {
     gameStore() {
@@ -108,6 +112,10 @@ export const useGameRoundStore = defineStore('gameRound', {
 
     setLetterAsGuessed(wordIndex: number) {
       this.roundWordGuess[wordIndex].guessed = true
+    },
+
+    setRoundsReset() {
+      Object.assign(this, initialState())
     },
 
     setRoundWord() {

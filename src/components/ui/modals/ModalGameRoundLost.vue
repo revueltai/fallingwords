@@ -33,10 +33,12 @@ onMounted(() => gameUIStore.fadeInGameModal())
     result="lost"
     :has-close-button="false"
   >
-    <img
-      src="/images/game/gameLost.svg"
-      class="w-40 h-40"
-    >
+    <div>
+      <img
+        src="/images/game/gameLost.svg"
+        class="w-40 h-40"
+      >
+    </div>
 
     <template #footerLeft>
       <Button

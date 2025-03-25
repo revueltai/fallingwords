@@ -90,14 +90,18 @@ export const useGameStore = defineStore('game', {
     },
 
     setGameReset() {
+      const gameRoundStore = useGameRoundStore()
+      gameRoundStore.setRoundsReset()
+
       Object.assign(this, initialState())
     },
 
     replayGame(collections: GameCollection[]) {
-      const gameRoundStore = useGameRoundStore()
       this.setGameReset()
       this.setGameCollections(collections)
       this.prepareGame()
+
+      const gameRoundStore = useGameRoundStore()
       gameRoundStore.prepareRound()
     },
 
@@ -118,6 +122,7 @@ export const useGameStore = defineStore('game', {
 
         this.setGameLives(GAME_DEFAULTS.lives)
         this.setGameWords(shuffledWords)
+        this.setGameLocales(gameLocales)
         this.setGameLocales(gameLocales)
         return true
       } catch (error) {

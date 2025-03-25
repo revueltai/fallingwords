@@ -45,8 +45,8 @@ onMounted(() => {
     animations.push('fadeIn')
   }
 
-  if (slots.header) {
-    timelineElements.push('modalContentContent')
+  if (slots.default) {
+    timelineElements.push('modalContentData')
     animations.push('fadeIn')
   }
 
@@ -110,7 +110,7 @@ onMounted(() => {
 
       <div class="flex flex-col gap-8">
         <div
-          id="modalContentContent"
+          id="modalContentData"
           class="place-items-center"
         >
           <slot />
