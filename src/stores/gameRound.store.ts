@@ -152,7 +152,7 @@ export const useGameRoundStore = defineStore('gameRound', {
 
     prepareRound() {
       this.setRoundWord()
-      this.gameUIStore.setOverlayComponent('countdown')
+      this.gameUIStore.setModalComponent('countdown')
       this.setRoundState(roundStates.ready)
     },
 
@@ -174,22 +174,28 @@ export const useGameRoundStore = defineStore('gameRound', {
         && this.roundState !== paused
       ) {
         this.setRoundState(roundStates.paused)
-        this.gameUIStore.setOverlayComponent('paused')
+        this.gameUIStore.setModalComponent('paused')
       }
     },
 
     setRoundWon() {
+      if (this.gameStore.isGameOver) {
+        this.gameUIStore.setModalComponent('gameover')
+      }
+
       this.setRoundTime('end')
       this.setRoundState(roundStates.roundwon)
-      this.gameUIStore.setOverlayComponent('roundwon')
+      this.gameUIStore.setModalComponent('roundwon')
     },
 
     setRoundLost() {
       this.setRoundState(roundStates.roundlost)
-      this.gameUIStore.setOverlayComponent('roundlost')
+      this.gameUIStore.setModalComponent('roundlost')
     },
 
     handleRoundState() {
+      console.log(111)
+
       if (this.isRoundWon()) {
         this.setRoundWon()
       } else if (this.isRoundLost()) {

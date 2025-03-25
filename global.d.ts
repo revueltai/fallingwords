@@ -25,13 +25,14 @@ declare global {
   type OverlayState = 'fadeIn' | 'visible' | 'fadeOut' | 'hidden'
 
   interface OverlayComponentMap {
-    countdown: 'GameOverlayInitCount'
-    paused: 'GameOverlayPause'
-    roundwon: 'GameOverlayRoundWon'
-    roundlost: 'GameOverlayRoundLost'
+    countdown: 'ModalGameInitCountdown'
+    paused: 'ModalGamePaused'
+    roundwon: 'ModalGameRoundWon'
+    roundlost: 'ModalGameRoundLost'
+    gameover: 'ModalGameOver'
   }
 
-  type OverlayComponentMapKey = keyof OverlayComponentMap
+  type GameModalComponentMapKey = keyof OverlayComponentMap
   type OverlayComponent = ValueOf<OverlayComponentMap> | ''
 
   // Dashboard

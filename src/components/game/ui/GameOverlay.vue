@@ -1,8 +1,9 @@
 <script setup lang="ts">
 import ModalGameInitCountdown from '@/components/ui/modals/ModalGameInitCountdown.vue'
-import GameOverlayPaused from '@/components/ui/modals/ModalGamePaused.vue'
-import GameOverlayRoundLost from '@/components/ui/modals/ModalGameRoundLost.vue'
-import GameOverlayRoundWon from '@/components/ui/modals/ModalGameRoundWon.vue'
+import ModalGameOver from '@/components/ui/modals/ModalGameOver.vue'
+import ModalGamePaused from '@/components/ui/modals/ModalGamePaused.vue'
+import ModalGameRoundLost from '@/components/ui/modals/ModalGameRoundLost.vue'
+import ModalGameRoundWon from '@/components/ui/modals/ModalGameRoundWon.vue'
 import { UI } from '@/configs/constants'
 import { useGameUIStore } from '@/stores/gameUI.store'
 import { computed, onBeforeUnmount, onMounted, ref, watch } from 'vue'
@@ -11,9 +12,10 @@ const gameUIStore = useGameUIStore()
 
 const overlayComponentMap = {
   countdown: ModalGameInitCountdown,
-  paused: GameOverlayPaused,
-  roundwon: GameOverlayRoundWon,
-  roundlost: GameOverlayRoundLost,
+  paused: ModalGamePaused,
+  roundwon: ModalGameRoundWon,
+  roundlost: ModalGameRoundLost,
+  gameover: ModalGameOver,
 }
 
 const gameOverlayRef = ref<ElementRef>(null)
@@ -27,7 +29,7 @@ const animationClasses = {
   out: UI.animationClasses.timed.fadeOut,
 }
 
-const overlayComponent = computed(() => (overlayComponentMap as any)[gameUIStore.overlayComponent as OverlayComponentMapKey] || null)
+const overlayComponent = computed(() => (overlayComponentMap as any)[gameUIStore.modalComponent as GameModalComponentMapKey] || null)
 
 watch(
   () => gameUIStore.overlayState,

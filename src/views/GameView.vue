@@ -5,6 +5,7 @@ import GameOverlay from '@/components/game/ui/GameOverlay.vue'
 import GamePowerupBar from '@/components/game/ui/GamePowerupBar.vue'
 import GamePowerupGlow from '@/components/game/ui/GamePowerupGlow.vue'
 import GameTop from '@/components/game/ui/GameTop.vue'
+import { useAppStore } from '@/stores/app.store'
 import { useGameStore } from '@/stores/game.store'
 import { useGameRoundStore } from '@/stores/gameRound.store'
 import { useSoundStore } from '@/stores/sounds.store'
@@ -15,6 +16,7 @@ import { useRouter } from 'vue-router'
 
 const router = useRouter()
 
+const appStore = useAppStore()
 const soundStore = useSoundStore()
 const gameStore = useGameStore()
 const gameRoundStore = useGameRoundStore()
@@ -33,7 +35,10 @@ onMounted(() => {
   setUIAnimation()
 
   if (isEmptyArray(gameStore.gameWordsList)) {
-    router.push('/')
+    // TODO Remove dummy
+    const dummy = [appStore.collections[1]]
+    gameStore.setGameWords(dummy)
+    // router.push('/')
     return
   }
 

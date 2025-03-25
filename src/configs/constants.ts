@@ -152,10 +152,11 @@ export const UI: {
     hidden: 'hidden',
   },
   overlayComponents: {
-    countdown: 'GameOverlayInitCount',
-    paused: 'GameOverlayPause',
-    roundwon: 'GameOverlayRoundWon',
-    roundlost: 'GameOverlayRoundLost',
+    countdown: 'ModalGameInitCountdown',
+    paused: 'ModalGamePaused',
+    roundwon: 'ModalGameRoundWon',
+    roundlost: 'ModalGameRoundLost',
+    gameover: 'ModalGameOver',
   },
 }
 
@@ -178,7 +179,7 @@ export const GAME_DEFAULTS: {
   speedIncreasement: 1,
   speed: 1,
   availableLetters: 8,
-  wordLetterSpawnChance: 10, // 1/10 chance
+  wordLetterSpawnChance: 2, // 1/10 chance
   powerupSpawnChance: 10, // 1/10 chance
   powerupDuration: 1000,
   powerups: POWERUPS,

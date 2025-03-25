@@ -3,7 +3,7 @@ import { defineStore } from 'pinia'
 
 interface State {
   elements: BoardElements | null
-  overlayComponent: OverlayComponentMapKey | ''
+  modalComponent: GameModalComponentMapKey | ''
   overlayStates: typeof UI.overlayStates
   overlayState: OverlayState
 }
@@ -13,7 +13,7 @@ const overlayStates = UI.overlayStates as Record<OverlayState, OverlayState>
 export const useGameUIStore = defineStore('gameUI', {
   state: (): State => ({
     elements: null,
-    overlayComponent: '',
+    modalComponent: '',
     overlayStates,
     overlayState: overlayStates.hidden,
   }),
@@ -40,8 +40,8 @@ export const useGameUIStore = defineStore('gameUI', {
       }
     },
 
-    setOverlayComponent(key: OverlayComponentMapKey) {
-      this.overlayComponent = key
+    setModalComponent(key: GameModalComponentMapKey) {
+      this.modalComponent = key
     },
 
     fadeInOverlay() {
