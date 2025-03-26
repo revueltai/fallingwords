@@ -174,3 +174,20 @@ export function capitalize(str: string): string {
 
   return str.charAt(0).toUpperCase() + str.slice(1).toLowerCase()
 }
+
+/**
+ * Converts a round percentage into an array of star indicators.
+ *
+ * @param roundPercentage - The percentage score of the round (0-100)
+ * @returns An array of 3 strings, either 'StarFull' or 'StarEmpty', representing achievement levels:
+ *          - First star is always full
+ *          - Second star is full if percentage > 50
+ *          - Third star is full if percentage > 80
+ */
+export function getRoundStars(roundPercentage: number): ('StarFull' | 'StarEmpty')[] {
+  return [
+    'StarFull',
+    roundPercentage > 50 ? 'StarFull' : 'StarEmpty',
+    roundPercentage > 80 ? 'StarFull' : 'StarEmpty',
+  ]
+}

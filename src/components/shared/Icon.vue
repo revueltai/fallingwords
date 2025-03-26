@@ -28,21 +28,19 @@ const sizes: Record<IconSizeName, { w: string, h: string }> = {
   '3xl': { w: 'w-14', h: 'h-14' },
 }
 
-const types: Record<IconType, string> = {
-  fill: 'fill',
-  stroke: 'stroke',
-}
-
 const cssClasses = computed(() => {
   const { w, h } = sizes[props.size]
-  const type = types[props.type]
 
   const payload = [
-    `inline-flex ${type}-current text-${props.color} ${w} ${h}`,
+    `inline-flex text-${props.color} ${w} ${h}`,
   ]
 
-  if (props.type === 'stroke') {
-    payload.push(`stroke-${props.strokeWidth}`)
+  if (props.type === 'fill' || props.type === 'both') {
+    payload.push('fill-current')
+  }
+
+  if (props.type === 'stroke' || props.type === 'both') {
+    payload.push(`stroke-current stroke-${props.strokeWidth}`)
   }
 
   return payload

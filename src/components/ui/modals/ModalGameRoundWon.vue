@@ -4,6 +4,7 @@ import { UI } from '@/configs/constants'
 import { useGameStore } from '@/stores/game.store'
 import { useGameRoundStore } from '@/stores/gameRound.store'
 import { useGameUIStore } from '@/stores/gameUI.store'
+import { getRoundStars } from '@/utils'
 import { computed, onMounted, watch } from 'vue'
 import { useRouter } from 'vue-router'
 
@@ -13,15 +14,7 @@ const gameUIStore = useGameUIStore()
 const gameRoundStore = useGameRoundStore()
 const gameStore = useGameStore()
 
-const roundStars = computed(() => {
-  const roundPercentage = gameRoundStore.roundScorePercentage
-
-  return [
-    'StarFull',
-    roundPercentage > 50 ? 'StarFull' : 'StarEmpty',
-    roundPercentage > 80 ? 'StarFull' : 'StarEmpty',
-  ]
-})
+const roundStars = computed(() => getRoundStars(gameRoundStore.roundScorePercentage))
 
 function getStarSize(index: number) {
   return index === 2 ? 64 : 48

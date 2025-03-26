@@ -27,11 +27,27 @@ onMounted(() => gameUIStore.fadeInGameModal())
 <template>
   <ModalGameRoundEnd
     :has-close-button="false"
-    heading="Good Job"
+    heading="Game Complete"
     class="w-80"
   >
+    <template #header>
+      <div class="flex items-end justify-center w-full -mb-px">
+        <div class="mx-4 bg-secondary border-secondary-light border border-b-0 rounded-t-full w-1/2 h-8">
+          <img
+            src="/images/game/gameWon.svg"
+            width="160"
+            height="160"
+            class="block mx-auto -mt-20"
+          >
+        </div>
+      </div>
+    </template>
+
     <div class="flex flex-col gap-2 w-full">
-      <p class="text-md text-primary-light">
+      <h3 class="text-xl text-tertiary-light uppercase font-black">
+        Well Done!
+      </h3>
+      <p class="text-sm text-primary-light">
         You Mastered These Words
       </p>
 
