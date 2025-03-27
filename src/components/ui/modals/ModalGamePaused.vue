@@ -47,6 +47,7 @@ onMounted(() => gameUIStore.fadeInGameModal())
       >
         <Icon
           name="home"
+          type="both"
           size="lg"
         />
       </Button>
