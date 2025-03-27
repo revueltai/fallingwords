@@ -1,7 +1,10 @@
 <script setup lang="ts">
-import { computed, onMounted, onUnmounted, ref, watch, watchEffect } from 'vue'
+import ModalContainer from '@/components/shared/ModalContainer.vue'
+import Toast from '@/components/shared/Toast.vue'
+import AppFooter from '@/components/ui/AppFooter.vue'
+import AppHeader from '@/components/ui/AppHeader.vue'
+import { computed, onMounted, onUnmounted, ref, watch } from 'vue'
 import { RouterView } from 'vue-router'
-import Toast from './components/shared/Toast.vue'
 import { useAppStore } from './stores/app.store'
 import { useSoundStore } from './stores/sounds.store'
 import 'movinblocks/styles'
@@ -62,13 +65,18 @@ onUnmounted(() => window.removeEventListener('focus', handleWindowFocus))
         ref="appWrapperRef"
         class="relative w-full h-full overflow-hidden bg-secondary-dark border rounded-xl border-secondary"
       >
-        <component
-          :is="Component"
-          v-if="isLoaded"
-        />
+        <div>
+          <AppHeader v-if="appStore.showMenu" />
 
-        <div id="modal" />
+          <component
+            :is="Component"
+            v-if="isLoaded"
+          />
 
+          <AppFooter v-if="appStore.showMenu" />
+        </div>
+
+        <ModalContainer />
         <Toast />
       </div>
     </transition>

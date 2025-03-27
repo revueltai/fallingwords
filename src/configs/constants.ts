@@ -4,6 +4,34 @@ export const API_KEYS = {
   userStreak: 'fwStreak',
 }
 
+export const APP_MENU: AppMenuItem[] = [
+  {
+    id: 'home',
+    url: 'dashboard',
+    iconName: 'home',
+  },
+  {
+    id: 'streak',
+    url: 'streak',
+    iconName: 'streakFlat',
+  },
+  {
+    id: 'collections',
+    url: 'collections',
+    iconName: 'collection',
+  },
+  {
+    id: 'game',
+    url: 'gameLobby',
+    iconName: 'game',
+  },
+  {
+    id: 'settings',
+    url: 'settings',
+    iconName: 'gear',
+  },
+]
+
 export const DASHBOARD_MENU: DashboardMenuItem[] = [
   {
     id: 'collections',

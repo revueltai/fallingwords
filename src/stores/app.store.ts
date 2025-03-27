@@ -5,8 +5,9 @@ import { defineStore } from 'pinia'
 import { ref, shallowRef } from 'vue'
 
 export const useAppStore = defineStore('app', () => {
-  const canvasMaxWidth = 600
-  const canvasMaxHeight = 800
+  const canvasMaxWidth = 430
+  const canvasMaxHeight = 932
+  const showMenu = ref(false)
   const canvasEl = shallowRef<ElementRef>(null)
   const collections = ref<GameCollection[]>([])
   const formLocales = ref<FormSelectOption[]>([])
@@ -19,6 +20,10 @@ export const useAppStore = defineStore('app', () => {
     { day: 'S', state: 'unknown' },
     { day: 'S', state: 'unknown' },
   ])
+
+  function setAppMenu(state: boolean) {
+    showMenu.value = state
+  }
 
   function setCanvasElement(el: HTMLElement) {
     canvasEl.value = el
@@ -195,12 +200,14 @@ export const useAppStore = defineStore('app', () => {
   }
 
   return {
+    showMenu,
     collections,
     canvasMaxWidth,
     canvasMaxHeight,
     canvasEl,
     formLocales,
     streak,
+    setAppMenu,
     setCanvasElement,
     setFormLocales,
     loadStreak,

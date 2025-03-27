@@ -18,7 +18,7 @@ declare global {
   type ColorWeights = 'light' | 'dark'
   type ColorBase = 'black' | 'white' | 'grey'
   type Color = ColorBase | ColorScale | `${ColorScale}-${ColorWeights}` | 'none'
-  type IconName = 'cornerDownLeft' | 'chevronDown' | 'chevronLeft' | 'chevronLeftDouble' | 'chevronRight' | 'chevronRightDouble' | 'chevronUp' | 'cross' | 'effects' | 'heart-empty' | 'heart-full' | 'home' | 'info' | 'list' | 'menu' | 'play' | 'pause' | 'plus' | 'powerup-fire' | 'powerup-ice' | 'powerup-wind' | 'skip' | 'sound' | 'check' | 'gear' | 'collection' | 'question' | 'trashbin' | 'word' | 'eye' | 'magnifier' | 'github' | 'star'
+  type IconName = 'cornerDownLeft' | 'chevronDown' | 'chevronLeft' | 'chevronLeftDouble' | 'chevronRight' | 'chevronRightDouble' | 'chevronUp' | 'cross' | 'effects' | 'heart-empty' | 'heart-full' | 'home' | 'info' | 'list' | 'menu' | 'play' | 'pause' | 'plus' | 'powerup-fire' | 'powerup-ice' | 'powerup-wind' | 'skip' | 'sound' | 'check' | 'gear' | 'collection' | 'question' | 'trashbin' | 'word' | 'eye' | 'magnifier' | 'github' | 'star' | 'gem' | 'streak' | 'streakFlat' | 'game'
   type IconType = 'fill' | 'stroke' | 'both'
   type IconSizeName = 'xs' | 'sm' | 'md' | 'lg' | 'xl' | '2xl' | '3xl'
 
@@ -34,6 +34,12 @@ declare global {
 
   type GameModalComponentMapKey = keyof OverlayComponentMap
   type OverlayComponent = ValueOf<OverlayComponentMap> | ''
+
+  interface AppMenuItem {
+    id: string
+    url: string
+    iconName: IconName
+  }
 
   // Dashboard
   interface DashboardMenuItem {

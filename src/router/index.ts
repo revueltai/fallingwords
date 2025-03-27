@@ -1,3 +1,4 @@
+import { useAppStore } from '@/stores/app.store'
 import { createRouter, createWebHistory } from 'vue-router'
 
 const router = createRouter({
@@ -35,6 +36,13 @@ const router = createRouter({
       component: () => import('../views/TutorialView.vue'),
     },
   ],
+})
+
+router.beforeEach((to, from, next) => {
+  const appStore = useAppStore()
+  appStore.setAppMenu(to.path !== '/game' && to.path !== '/')
+
+  next()
 })
 
 export default router
