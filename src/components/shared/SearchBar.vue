@@ -2,17 +2,22 @@
 interface Props {
   modelValue: string
   placeholder?: string
+  isVisible?: boolean
 }
 
 withDefaults(defineProps<Props>(), {
   placeholder: 'Filter...',
+  isVisible: true,
 })
 
 const emit = defineEmits(['update:modelValue'])
 </script>
 
 <template>
-  <div class="rounded-xl p-4 bg-secondary border-b border-secondary-light">
+  <div
+    v-if="isVisible"
+    class="rounded-xl p-4 bg-secondary border-b border-secondary-light"
+  >
     <Input
       :model-value="modelValue"
       type="search"

@@ -16,6 +16,16 @@ const router = createRouter({
       component: () => import('../views/DashboardView.vue'),
     },
     {
+      path: '/streak',
+      name: 'Streak',
+      component: () => import('../views/StreakView.vue'),
+    },
+    {
+      path: '/game-lobby',
+      name: 'GameLobby',
+      component: () => import('../views/GameLobbyView.vue'),
+    },
+    {
       path: '/collections',
       name: 'Collections',
       component: () => import('../views/CollectionsView.vue'),

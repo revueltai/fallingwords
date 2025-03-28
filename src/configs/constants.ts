@@ -22,7 +22,7 @@ export const APP_MENU: AppMenuItem[] = [
   },
   {
     id: 'game',
-    url: 'gameLobby',
+    url: 'game-lobby',
     iconName: 'game',
   },
   {

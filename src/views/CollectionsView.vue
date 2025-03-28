@@ -1,9 +1,8 @@
 <script setup lang="ts">
-import ListMessage from '@/components/shared/ListMessage.vue'
+import PageWrapper from '@/components/shared/PageWrapper.vue'
 import SearchBar from '@/components/shared/SearchBar.vue'
+import AppList from '@/components/ui/AppList.vue'
 import CollectionItem from '@/components/ui/CollectionItem.vue'
-import Footer from '@/components/ui/Footer.vue'
-import Header from '@/components/ui/Header.vue'
 import ModalCollectionCreate from '@/components/ui/modals/ModalCollectionCreate.vue'
 import ModalCollectionUpdate from '@/components/ui/modals/ModalCollectionUpdate.vue'
 import ModalConfirm from '@/components/ui/modals/ModalConfirm.vue'
@@ -126,50 +125,45 @@ async function handleUpdate(payload: CollectionUpdate) {
 </script>
 
 <template>
-  <Header
-    :heading="['Collections']"
-    return-path="dashboard"
-  />
+  <PageWrapper>
+    <div class="flex flex-col gap-3">
+      <Breadcrumbs :breadcrumbs="['Collections']" />
+      <SearchBar v-model="searchQuery" />
+    </div>
 
-  <div class="relative h-full overflow-y-auto pt-16">
-    <div class="grid gap-6 items-start auto-rows-min px-4 pb-28 h-max anim-fade-in-timed">
-      <ListMessage
-        v-if="isEmptyArray(filteredCollections)"
-        icon-name="collection"
-        heading="No Collections yet"
-        byline="Add your first collection"
+    <AppList
+      columns="1"
+      :is-empty="isEmptyArray(appStore.collections)"
+      empty-heading="No Collections Found"
+      empty-byline="Create some collections to play with"
+      empty-icon-name="collection"
+    >
+      <CollectionItem
+        v-for="(collection, index) in filteredCollections"
+        :key="index"
+        :uid="collection.uid"
+        :name="collection.name"
+        :locales="collection.locales"
+        :word-count="collection.words.length"
+        :has-buttons="true"
+        @click-text="handleShowViewCollection"
+        @update="handleShowUpdateCollection"
+        @delete="handleShowDeleteCollection"
       />
 
-      <template v-else>
-        <SearchBar v-model="searchQuery" />
-
-        <CollectionItem
-          v-for="(collection, index) in filteredCollections"
-          :key="index"
-          :uid="collection.uid"
-          :name="collection.name"
-          :locales="collection.locales"
-          :word-count="collection.words.length"
-          :has-buttons="true"
-          @click-text="handleShowViewCollection"
-          @update="handleShowUpdateCollection"
-          @delete="handleShowDeleteCollection"
-        />
+      <template #footer>
+        <Button
+          background-color="tertiary"
+          border-color="tertiary-light"
+          size="md"
+          class="min-w-48"
+          @click="handleShowCreateCollection"
+        >
+          Add a Collection
+        </Button>
       </template>
-    </div>
-  </div>
-
-  <Footer>
-    <Button
-      background-color="tertiary"
-      border-color="tertiary-light"
-      size="md"
-      class="min-w-48"
-      @click="handleShowCreateCollection"
-    >
-      Add a Collection
-    </Button>
-  </Footer>
+    </AppList>
+  </PageWrapper>
 
   <Modal>
     <Component

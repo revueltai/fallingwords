@@ -2,6 +2,7 @@
 import ModalSettings from '@/components/ui/modals/ModalSettings.vue'
 import { APP_MENU } from '@/configs/constants'
 import { useModalStore } from '@/stores/modal.store'
+import { sanitizeRoute } from '@/stores/utils.store'
 import { ref } from 'vue'
 import { useRouter } from 'vue-router'
 
@@ -28,7 +29,7 @@ function handleClick(item: AppMenuItem) {
     return
   }
 
-  router.push(item.url)
+  router.push(sanitizeRoute(item.url))
 }
 </script>
 

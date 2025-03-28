@@ -65,7 +65,7 @@ onUnmounted(() => window.removeEventListener('focus', handleWindowFocus))
         ref="appWrapperRef"
         class="relative w-full h-full overflow-hidden bg-secondary-dark border rounded-xl border-secondary"
       >
-        <div>
+        <div class="flex flex-col gap-8 h-full">
           <AppHeader v-if="appStore.showMenu" />
 
           <component

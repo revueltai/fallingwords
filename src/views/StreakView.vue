@@ -4,6 +4,6 @@ import PageWrapper from '@/components/shared/PageWrapper.vue'
 
 <template>
   <PageWrapper>
-    dash
+    streak
   </PageWrapper>
 </template>

@@ -6,7 +6,9 @@ import Icon from '@/components/shared/Icon.vue'
 import Input from '@/components/shared/Input.vue'
 import Label from '@/components/shared/Label.vue'
 import Modal from '@/components/shared/Modal.vue'
+import PageWrapper from '@/components/shared/PageWrapper.vue'
 import Select from '@/components/shared/Select.vue'
+import TextBlock from '@/components/shared/TextBlock.vue'
 import Toast from '@/components/shared/Toast.vue'
 
 import { createPinia } from 'pinia'
@@ -22,6 +24,8 @@ const app = createApp(App)
 app.use(createPinia())
 app.use(router)
 
+app.component('PageWrapper', PageWrapper)
+app.component('TextBlock', TextBlock)
 app.component('Breadcrumbs', Breadcrumbs)
 app.component('Modal', Modal)
 app.component('Flag', Flag)

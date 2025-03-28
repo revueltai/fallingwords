@@ -18,15 +18,14 @@ withDefaults(defineProps<Props>(), {
       :name="iconName"
       :type="iconType"
       size="xl"
-      color="septenary"
       class="mb-1"
     />
 
-    <h3 class="text-septenary-dark">
+    <h3 class="text-white">
       {{ heading }}
     </h3>
 
-    <p class="text-xs text-senary mt-1">
+    <p class="text-sm text-senary-light mt-1">
       {{ byline }}
     </p>
   </div>

@@ -217,3 +217,14 @@ export function getRoundPercentage(word: Word, totalTime: RoundTimeDuration, sec
 
   return Math.round((rank / finalTime) * 100)
 }
+
+/**
+ * Ensures that the given route starts with a single leading slash (`/`).
+ * If the route is missing a leading slash, one is added.
+ *
+ * @param {string} route - The route string to sanitize.
+ * @returns {string} The sanitized route starting with `/`.
+ */
+export function sanitizeRoute(route: string): string {
+  return route.replace(/^\/?/, '/')
+}

@@ -1,8 +1,6 @@
 <script setup lang="ts">
-import ListMessage from '@/components/shared/ListMessage.vue'
 import SearchBar from '@/components/shared/SearchBar.vue'
-import Footer from '@/components/ui/Footer.vue'
-import Header from '@/components/ui/Header.vue'
+import AppList from '@/components/ui/AppList.vue'
 import ModalConfirm from '@/components/ui/modals/ModalConfirm.vue'
 import WordItem from '@/components/ui/WordItem.vue'
 import ModalWordCreate from '@/components/words/ModalWordCreate.vue'
@@ -45,6 +43,8 @@ const filteredWords = computed(() => {
     || word.learn.toLowerCase().includes(searchQuery.value.toLowerCase()),
   )
 })
+
+const hasItems = computed(() => !!(selectedCollection.value && isEmptyArray(selectedCollection.value.words)))
 
 const modalComponent = computed(() => (ModalComponentMap as any)[actions.value] || null)
 
@@ -147,49 +147,46 @@ onMounted(async () => {
 </script>
 
 <template>
-  <Header
-    :heading="['Collections', String(selectedCollection?.name)]"
-    return-path="collections"
-  />
+  <PageWrapper>
+    <div class="flex flex-col gap-3">
+      <Breadcrumbs :breadcrumbs="['Collections', String(selectedCollection?.name)]" />
+      <SearchBar
+        v-model="searchQuery"
+        :is-visible="hasItems"
+      />
+    </div>
 
-  <div class="relative h-full overflow-y-auto pt-16">
-    <div class="grid gap-6 items-start auto-rows-min px-4 h-max pb-28 anim-fade-in-timed">
-      <ListMessage
-        v-if="!selectedCollection || isEmptyArray(selectedCollection.words)"
-        icon-name="word"
-        icon-type="fill"
-        heading="No Words in this Collection yet"
-        byline="Add your first word"
+    <AppList
+      columns="1"
+      :is-empty="hasItems"
+      empty-heading="No Words in this Collection yet"
+      empty-byline="Add your first Word"
+      empty-icon-name="word"
+    >
+      <WordItem
+        v-for="(word, index) in filteredWords"
+        :key="index"
+        :uid="word.uid"
+        :original="word.original"
+        :learn="word.learn"
+        :locales="selectedCollection?.locales!"
+        @update="handleShowUpdateCollection"
+        @delete="handleShowDeleteCollection"
       />
 
-      <template v-else>
-        <SearchBar v-model="searchQuery" />
-
-        <WordItem
-          v-for="(word, index) in filteredWords"
-          :key="index"
-          :uid="word.uid"
-          :original="word.original"
-          :learn="word.learn"
-          :locales="selectedCollection.locales"
-          @update="handleShowUpdateCollection"
-          @delete="handleShowDeleteCollection"
-        />
+      <template #footer>
+        <Button
+          background-color="tertiary"
+          border-color="tertiary-light"
+          size="md"
+          class="min-w-48"
+          @click="handleShowCreateWord"
+        >
+          Add a Word
+        </Button>
       </template>
-    </div>
-  </div>
-
-  <Footer>
-    <Button
-      background-color="tertiary"
-      border-color="tertiary-light"
-      size="md"
-      class="min-w-48"
-      @click="handleShowCreateWord"
-    >
-      Add a Word
-    </Button>
-  </Footer>
+    </AppList>
+  </PageWrapper>
 
   <Modal>
     <Component
