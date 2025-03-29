@@ -4,12 +4,12 @@ import { useGameCharacterStore } from '@/stores/gameCharacter.store'
 import { useGameRoundStore } from '@/stores/gameRound.store'
 import { getRandomNum } from '@/utils'
 import { defineStore } from 'pinia'
+import { useSoundStore } from './sounds.store'
 import {
   getLetter,
   getLetterIndexInWord,
   isLetterInWord,
 } from './utils.store'
-import { useSoundStore } from './sounds.store'
 
 interface GameBoardState {
   boardEl: HTMLElement | null

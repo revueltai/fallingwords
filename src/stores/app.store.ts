@@ -57,10 +57,10 @@ export const useAppStore = defineStore('app', () => {
 
   async function loadCollections() {
     try {
-      const userData = APIService.loadStoreData(API_KEYS.userData)
+      const userAppData = APIService.loadStoreData(API_KEYS.userAppData)
 
-      if (userData) {
-        collections.value = userData as GameCollection[]
+      if (userAppData) {
+        collections.value = userAppData as GameCollection[]
       } else {
         const { exampleCollection } = await import('@/assets/exampleCollection.ts')
         collections.value = exampleCollection
@@ -97,7 +97,7 @@ export const useAppStore = defineStore('app', () => {
       words: [],
     })
 
-    return APIService.saveStoreData(API_KEYS.userData, collections.value)
+    return APIService.saveStoreData(API_KEYS.userAppData, collections.value)
   }
 
   async function createWord(collectionUid: string, payload: GameWord) {
@@ -111,7 +111,7 @@ export const useAppStore = defineStore('app', () => {
       const uid = createUID()
       collection.words.push({ ...payload, uid })
 
-      return APIService.saveStoreData(API_KEYS.userData, collections.value)
+      return APIService.saveStoreData(API_KEYS.userAppData, collections.value)
     }
 
     return false
@@ -133,7 +133,7 @@ export const useAppStore = defineStore('app', () => {
         },
       })
 
-      return APIService.saveStoreData(API_KEYS.userData, collections.value)
+      return APIService.saveStoreData(API_KEYS.userAppData, collections.value)
     }
 
     return false
@@ -157,7 +157,7 @@ export const useAppStore = defineStore('app', () => {
         })
       }
 
-      return APIService.saveStoreData(API_KEYS.userData, collections.value)
+      return APIService.saveStoreData(API_KEYS.userAppData, collections.value)
     }
 
     return false
@@ -173,7 +173,7 @@ export const useAppStore = defineStore('app', () => {
     if (deleteIndex !== -1) {
       collections.value.splice(deleteIndex, 1)
 
-      return APIService.saveStoreData(API_KEYS.userData, collections.value)
+      return APIService.saveStoreData(API_KEYS.userAppData, collections.value)
     }
 
     return false
@@ -192,7 +192,7 @@ export const useAppStore = defineStore('app', () => {
       if (wordIndex !== -1) {
         collection.words.splice(wordIndex, 1)
 
-        return APIService.saveStoreData(API_KEYS.userData, collections.value)
+        return APIService.saveStoreData(API_KEYS.userAppData, collections.value)
       }
     }
 

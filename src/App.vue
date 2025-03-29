@@ -7,10 +7,12 @@ import { computed, onMounted, onUnmounted, ref, watch } from 'vue'
 import { RouterView } from 'vue-router'
 import { useAppStore } from './stores/app.store'
 import { useSoundStore } from './stores/sounds.store'
+import { useUserStore } from './stores/user.store'
 import 'movinblocks/styles'
 
 const soundStore = useSoundStore()
 const appStore = useAppStore()
+const userStore = useUserStore()
 
 const appWrapperRef = ref<ElementRef>(null)
 const isLoaded = ref(false)

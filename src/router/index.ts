@@ -1,4 +1,5 @@
 import { useAppStore } from '@/stores/app.store'
+import { useUserStore } from '@/stores/user.store'
 import { createRouter, createWebHistory } from 'vue-router'
 
 const router = createRouter({
@@ -9,6 +10,16 @@ const router = createRouter({
       path: '/',
       name: 'Splash',
       component: () => import('../views/SplashView.vue'),
+    },
+    {
+      path: '/welcome',
+      name: 'Welcome',
+      component: () => import('../views/FirstSessionView.vue'),
+    },
+    {
+      path: '/login',
+      name: 'Login',
+      component: () => import('../views/LoginView.vue'),
     },
     {
       path: '/dashboard',
@@ -48,11 +59,39 @@ const router = createRouter({
   ],
 })
 
-router.beforeEach((to, from, next) => {
-  const appStore = useAppStore()
-  appStore.setAppMenu(to.path !== '/game' && to.path !== '/')
+async function validateUser(to: any): Promise<{ name: string } | undefined> {
+  const userAccountStore = useUserStore()
 
-  next()
+  if (userAccountStore.isFirstSession && to.name !== 'Welcome') {
+    return { name: 'Welcome' }
+  }
+
+  if (!userAccountStore.isFirstSession && !userAccountStore.isAuthenticated && to.name !== 'Login') {
+    return { name: 'Login' }
+  }
+
+  // if (userAccountStore.isAuthenticated && to.name === 'Welcome') {
+  //   return { name: 'Dashboard' }
+  // }
+
+  return undefined
+}
+
+function isAppScreen(to: any): boolean {
+  return to.path !== '/game' && to.path !== '/'
+}
+
+router.beforeEach(async (to, from, next) => {
+  const route = await validateUser(to)
+  const appStore = useAppStore()
+
+  // appStore.setAppMenu(isAppScreen(to))
+
+  if (route) {
+    next(route)
+  } else {
+    next()
+  }
 })
 
 export default router

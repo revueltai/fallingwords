@@ -31,23 +31,21 @@ function setUIAnimation() {
     .start()
 }
 
-function loadDummyData() {
-  console.warn('Using debug data. Disable after testing')
+// function loadDummyData() {
+//   console.warn('Using debug data. Disable after testing')
 
-  gameStore.setGameCollections([appStore.collections[1]])
-  gameStore.prepareGame()
-  soundStore.stopLoopSound()
-  soundStore.playLoopSound('gameBg')
-  gameRoundStore.prepareRound()
-}
+//   gameStore.setGameCollections([appStore.collections[1]])
+//   gameStore.prepareGame()
+//   soundStore.stopLoopSound()
+//   soundStore.playLoopSound('gameBg')
+//   gameRoundStore.prepareRound()
+// }
 
 onMounted(() => {
   setUIAnimation()
 
   if (isEmptyArray(gameStore.gameWordsList)) {
-    // TODO remove call
-    loadDummyData()
-    // router.push('/')
+    router.push('/')
     return
   }
 

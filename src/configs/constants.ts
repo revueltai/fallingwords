@@ -1,6 +1,7 @@
 export const API_KEYS = {
   settings: 'fwSettings',
-  userData: 'fwStore',
+  userAccountData: 'fwUserAccount',
+  userAppData: 'fwUserApp',
   userStreak: 'fwStreak',
 }
 
@@ -186,6 +187,14 @@ export const UI: {
     roundlost: 'ModalGameRoundLost',
     gameover: 'ModalGameOver',
   },
+}
+
+export const USER_ACCOUNT_DEFAULTS: {
+  lives: number
+  gems: number
+} = {
+  lives: 5,
+  gems: 30,
 }
 
 export const GAME_DEFAULTS: {

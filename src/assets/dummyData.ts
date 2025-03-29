@@ -1,4 +1,25 @@
 // TODO: all data here needs to come from the DB
+export const dummyUser = {
+  uid: 123,
+  name: 'john doe',
+  email: 'john@gmail.com',
+  username: 'johndoe',
+  streakUid: 321,
+  lives: 10,
+  gems: 10,
+  password: 1234,
+}
+
+export const dummyStreak = {
+  uid: 321,
+  streakDays: 0,
+  streakData: [
+    { date: '2023-10-01', status: 'completed' },
+    { date: '2023-10-02', status: 'completed' },
+    { date: '2023-10-03', status: 'missing' },
+    { date: '2023-10-04', status: 'completed' },
+  ],
+}
 
 export const dummyCollection: GameCollection[] = [
   {
