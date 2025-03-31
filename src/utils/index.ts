@@ -78,7 +78,13 @@ export function createRandomString(length: number = 4): string {
  * @returns {string} A unique identifier string.
  */
 export function createUID(value: string = ''): string {
-  return `${Date.now()}-${value || createRandomString()}`
+  let sanitizedValue = createRandomString()
+
+  if (value) {
+    sanitizedValue = value.split(' ').join('-')
+  }
+
+  return `${Date.now()}-${sanitizedValue}`
 }
 
 /**

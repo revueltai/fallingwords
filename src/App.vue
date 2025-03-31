@@ -3,16 +3,17 @@ import ModalContainer from '@/components/shared/ModalContainer.vue'
 import Toast from '@/components/shared/Toast.vue'
 import AppFooter from '@/components/ui/AppFooter.vue'
 import AppHeader from '@/components/ui/AppHeader.vue'
+import { useUserStore } from '@/stores/user.store'
 import { computed, onMounted, onUnmounted, ref, watch } from 'vue'
-import { RouterView } from 'vue-router'
+import { RouterView, useRouter } from 'vue-router'
 import { useAppStore } from './stores/app.store'
 import { useSoundStore } from './stores/sounds.store'
-import { useUserStore } from './stores/user.store'
 import 'movinblocks/styles'
 
+const router = useRouter()
+const userStore = useUserStore()
 const soundStore = useSoundStore()
 const appStore = useAppStore()
-const userStore = useUserStore()
 
 const appWrapperRef = ref<ElementRef>(null)
 const isLoaded = ref(false)
@@ -43,8 +44,12 @@ watch(isFocused, (newFocusState: boolean) => {
 })
 
 onMounted(async () => {
-  await appStore.loadStreak()
-  await appStore.loadCollections()
+  const rs = await appStore.loadCollections()
+
+  if (!rs) {
+    userStore.logoutUser()
+    return
+  }
 
   window.addEventListener('focus', () => handleWindowFocus)
   handleSoundLoading()
@@ -54,6 +59,8 @@ onMounted(async () => {
     appStore.setCanvasElement(appWrapperRef.value)
     isLoaded.value = true
   }
+
+  router.push({ name: 'Splash' })
 })
 
 onUnmounted(() => window.removeEventListener('focus', handleWindowFocus))

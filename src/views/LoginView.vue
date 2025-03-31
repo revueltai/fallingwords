@@ -3,7 +3,7 @@ import router from '@/router'
 import { useUserStore } from '@/stores/user.store'
 import { onMounted } from 'vue'
 
-const userAccountStore = useUserStore()
+const userStore = useUserStore()
 </script>
 
 <template>

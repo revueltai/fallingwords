@@ -62,7 +62,7 @@ declare global {
     footer?: HTMLElement
   }
 
-  type GameAlphabetLocale = 'en' | 'es' | 'de'
+  type GameAlphabetLocale = 'en' | 'es' | 'de' | 'it' | 'pt'
   type GameAlphabet = Record<GameAlphabetLocale, string>
   type GameBoardRef = HTMLElement | null
 
@@ -88,6 +88,7 @@ declare global {
     asset: string
     duration: number
     speed: number | null
+    description?: string
     // name: string
     // type: string
   }
@@ -201,6 +202,13 @@ declare global {
     day: string
     state: UserStreakState
   }
+
+  interface SuggestionsLocaleItem {
+    collectionName: string
+    wordName: string
+  }
+
+  type SuggestionsLocale = Record<GameAlphabetLocale, SuggestionsLocaleItem>
 }
 
 export { }

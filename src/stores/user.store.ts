@@ -1,30 +1,36 @@
 import { API_KEYS, USER_ACCOUNT_DEFAULTS } from '@/configs/constants'
+import { createUID } from '@/utils'
 import APIService from '@/utils/apiService'
 import { defineStore } from 'pinia'
 
-interface UserState {
-  isFirstSession: boolean
-  isAuthenticated: boolean
-  uid: number | null
+interface UserPayload {
   name: string | null
+  age: string | number | null
   email: string | null
   username: string | null
-  streakUid: number | null
-  lives: number | null
-  gems: number | null
+  password: string | null
+}
+
+interface UserState extends UserPayload {
+  uid: string | null
+  isFirstSession: boolean
+  isAuthenticated: boolean
+  lives: number
+  gems: number
 }
 
 function initialState(): UserState {
   return {
-    isFirstSession: true,
-    isAuthenticated: false,
     uid: null,
     name: null,
     email: null,
+    age: null,
     username: null,
-    streakUid: null,
-    lives: null,
-    gems: null,
+    password: null,
+    lives: USER_ACCOUNT_DEFAULTS.lives,
+    gems: USER_ACCOUNT_DEFAULTS.gems,
+    isFirstSession: true,
+    isAuthenticated: false,
   }
 }
 
@@ -32,28 +38,59 @@ export const useUserStore = defineStore('user', {
   state: initialState,
 
   actions: {
-    async loadUserAccount(uid: string = '') {
+    async createUserAccount(payload: UserPayload) {
+      try {
+        this.uid = createUID(payload.name!)
+        this.name = payload.name
+        this.email = payload.email
+        this.username = payload.username
+        this.password = payload.password
+        this.lives = USER_ACCOUNT_DEFAULTS.lives
+        this.gems = USER_ACCOUNT_DEFAULTS.gems
+        this.isAuthenticated = true
+        this.isFirstSession = false
+
+        return APIService.saveStoreData(API_KEYS.userAccountData, {
+          uid: this.uid,
+          name: this.name,
+          email: this.email,
+          username: this.username,
+          password: this.password, // TODO: Replace when server auth is set
+          lives: this.lives,
+          gems: this.gems,
+        })
+      } catch (error: any) {
+        throw new Error(error)
+      }
+    },
+
+    async logoutUser() {
+      try {
+        Object.assign(this, initialState())
+        APIService.clearAllStoresAppData()
+      } catch (error: any) {
+        throw new Error(error)
+      }
+    },
+
+    async loadUserAccount() {
       try {
         const userAccountData = APIService.loadStoreData(API_KEYS.userAccountData)
 
         if (userAccountData) {
-          if (userAccountData.uid === uid) {
-            this.uid = userAccountData.uid
-            this.name = userAccountData.name
-            this.email = userAccountData.email
-            this.username = userAccountData.username
-            this.streakUid = userAccountData.streakUid
-            this.lives = userAccountData.lives
-            this.gems = userAccountData.gems
-            this.isAuthenticated = true
-            this.isFirstSession = false
-          }
+          this.uid = userAccountData.uid
+          this.name = userAccountData.name
+          this.email = userAccountData.email
+          this.username = userAccountData.username
+          this.lives = userAccountData.lives
+          this.gems = userAccountData.gems
+          this.isAuthenticated = true
+          this.isFirstSession = false
         } else {
           this.uid = userAccountData.uid
           this.name = userAccountData.name
           this.email = userAccountData.email
           this.username = userAccountData.username
-          this.streakUid = userAccountData.streakUid
           this.lives = USER_ACCOUNT_DEFAULTS.lives
           this.gems = USER_ACCOUNT_DEFAULTS.gems
         }
@@ -62,13 +99,13 @@ export const useUserStore = defineStore('user', {
       }
     },
 
-    updateLives(amount: number) {
+    increaseLives(amount: number) {
       if (this.lives) {
         this.lives += amount
       }
     },
 
-    updateGems(amount: number) {
+    increaseGems(amount: number) {
       if (this.gems) {
         this.gems += amount
       }

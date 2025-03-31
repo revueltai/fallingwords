@@ -1,5 +1,8 @@
 <script setup lang="ts">
 import AppHeaderItem from '@/components/ui/AppHeaderItem.vue'
+import { useUserStore } from '@/stores/user.store'
+
+const userStore = useUserStore()
 </script>
 
 <template>
@@ -12,12 +15,12 @@ import AppHeaderItem from '@/components/ui/AppHeaderItem.vue'
     <div class="flex gap-4">
       <AppHeaderItem
         icon-name="gem"
-        :count="234"
+        :count="userStore.gems"
       />
 
       <AppHeaderItem
         icon-name="heart-full"
-        :count="80"
+        :count="userStore.lives"
       />
     </div>
   </header>

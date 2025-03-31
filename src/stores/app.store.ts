@@ -61,10 +61,9 @@ export const useAppStore = defineStore('app', () => {
 
       if (userAppData) {
         collections.value = userAppData as GameCollection[]
-      } else {
-        const { exampleCollection } = await import('@/assets/exampleCollection.ts')
-        collections.value = exampleCollection
       }
+
+      return true
     } catch (error: any) {
       throw new Error(error)
     }
@@ -97,7 +96,8 @@ export const useAppStore = defineStore('app', () => {
       words: [],
     })
 
-    return APIService.saveStoreData(API_KEYS.userAppData, collections.value)
+    const rs = APIService.saveStoreData(API_KEYS.userAppData, collections.value)
+    return rs ? uid : null
   }
 
   async function createWord(collectionUid: string, payload: GameWord) {

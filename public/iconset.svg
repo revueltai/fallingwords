@@ -53,8 +53,9 @@
   </symbol>
   
   <symbol xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" id="info">
-    <path d="M13.5 16.39c-.342.227-.74.347-1.15.347-.372 0-.739-.1-1.059-.288L8.48 14.795a1.704 1.704 0 01-.781 1.722 3.63 3.63 0 002.952 1.522h2.7a3.643 3.643 0 003.643-3.644v-.317L13.5 16.39z"></path>
-      <path d="M19.806 10.351l-7.63-4.302a.38.38 0 00-.378.002L4.19 10.45a.382.382 0 00-.002.66l2.152 1.266v2.15a.707.707 0 00.45 1.257.71.71 0 00.452-1.256v-1.62l4.555 2.678c.359.211.805.2 1.15-.03l6.88-4.551a.382.382 0 00-.022-.652"></path>
+    <circle cx="12" cy="12" r="10" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
+    <path d="M12 16v-4" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
+    <path d="M12 8h.01" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
   </symbol>
   
   <symbol xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" id="list">

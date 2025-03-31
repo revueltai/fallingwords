@@ -4,6 +4,7 @@ import { computed, defineProps } from 'vue'
 
 interface Props {
   label?: string
+  labelColor?: Color
   placeholder?: string
   name?: string
   required?: boolean
@@ -47,6 +48,7 @@ const cssClasses = computed(() => {
       v-if="name"
       :name="name"
       :label="label"
+      :color="labelColor"
       class="transition-colors"
     />
 

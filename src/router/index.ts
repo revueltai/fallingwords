@@ -60,17 +60,21 @@ const router = createRouter({
 })
 
 async function validateUser(to: any): Promise<{ name: string } | undefined> {
-  const userAccountStore = useUserStore()
+  const userStore = useUserStore()
 
-  if (userAccountStore.isFirstSession && to.name !== 'Welcome') {
+  if (!userStore.isAuthenticated) {
+    await userStore.loadUserAccount()
+  }
+
+  if (userStore.isFirstSession && to.name !== 'Welcome') {
     return { name: 'Welcome' }
   }
 
-  if (!userAccountStore.isFirstSession && !userAccountStore.isAuthenticated && to.name !== 'Login') {
+  if (!userStore.isFirstSession && !userStore.isAuthenticated && to.name !== 'Login') {
     return { name: 'Login' }
   }
 
-  // if (userAccountStore.isAuthenticated && to.name === 'Welcome') {
+  // if (userStore.isAuthenticated && to.name === 'Welcome') {
   //   return { name: 'Dashboard' }
   // }
 
@@ -78,14 +82,13 @@ async function validateUser(to: any): Promise<{ name: string } | undefined> {
 }
 
 function isAppScreen(to: any): boolean {
-  return to.path !== '/game' && to.path !== '/'
+  return !['/game', '/welcome', '/'].includes(to.path)
 }
 
 router.beforeEach(async (to, from, next) => {
   const route = await validateUser(to)
   const appStore = useAppStore()
-
-  // appStore.setAppMenu(isAppScreen(to))
+  appStore.setAppMenu(isAppScreen(to))
 
   if (route) {
     next(route)

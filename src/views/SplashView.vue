@@ -1,25 +1,11 @@
 <script setup lang="ts">
-import type { MbCustomAnimation } from 'movinblocks'
-import ModalCredits from '@/components/ui/modals/ModalCredits.vue'
-import { UI } from '@/configs/constants'
-import { useModalStore } from '@/stores/modal.store'
-import Movinblocks from 'movinblocks'
 import { onMounted } from 'vue'
+import { useRouter } from 'vue-router'
 
-const modalStore = useModalStore()
-
-function handleShowCredits() {
-  modalStore.openModal()
-}
+const router = useRouter()
 
 onMounted(async () => {
-  new Movinblocks()
-    .setTimeline(['logo', 'gameStart', 'tutorial'])
-    .setAnimation(UI.animationClasses.named.scaleIn as MbCustomAnimation)
-    .setOverlap(200)
-    .setDuration([1100, 600, 200])
-    .prepare()
-    .start()
+  router.push({ name: 'Dashboard' })
 })
 </script>
 
@@ -31,39 +17,15 @@ onMounted(async () => {
           id="logo"
           src="/images/shared/logo.svg"
           alt="logo"
-          class="w-80 mx-auto"
+          class="w-80 mx-auto anim-scale-in-timed"
           width="260"
           height="177"
         >
 
-        <div class="flex flex-col gap-6 text-center p-10">
-          <div id="gameStart">
-            <Button
-              to="dashboard"
-              background-color="tertiary"
-              border-color="tertiary-light"
-              class="w-60"
-              size="xl"
-            >
-              Get Started!
-            </Button>
-          </div>
-
-          <div id="tutorial">
-            <Button
-              size="sm"
-              class="w-24 self-center"
-              @click="handleShowCredits"
-            >
-              Credits
-            </Button>
-          </div>
-        </div>
+        <p class="text-sm text-white">
+          Loading...
+        </p>
       </div>
     </div>
   </section>
-
-  <Modal>
-    <ModalCredits />
-  </Modal>
 </template>
