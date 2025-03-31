@@ -4,19 +4,19 @@
   </symbol>
   
   <symbol xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" id="chevronLeft">
-    <path d="M15 19l-6-6.5L15 6" stroke-linecap="round"></path>
+    <path d="M15 19l-6-6.5L15 6" stroke-linecap="round" fill="none"></path>
   </symbol>
   
   <symbol xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" id="chevronLeftDouble">
-    <path d="M11 19l-6-6.5L11 6m7 13l-6-6.5L18 6" stroke-linecap="round"></path>
+    <path d="M11 19l-6-6.5L11 6m7 13l-6-6.5L18 6" stroke-linecap="round" fill="none"></path>
   </symbol>
   
   <symbol xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" id="chevronRight">
-    <path d="M9 19l6-6.5L9 6" stroke-linecap="round"></path>
+    <path d="M9 19l6-6.5L9 6" stroke-linecap="round" fill="none"></path>
   </symbol>
   
   <symbol xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" id="chevronRightDouble">
-    <path d="M5 19l6-6.5L5 6m7 13l6-6.5L12 6" stroke-linecap="round"></path>
+    <path d="M5 19l6-6.5L5 6m7 13l6-6.5L12 6" stroke-linecap="round" fill="none"></path>
   </symbol>
   
   <symbol xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" id="chevronUp">

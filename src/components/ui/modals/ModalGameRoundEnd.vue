@@ -1,8 +1,7 @@
 <script setup lang="ts">
 import type { Slot } from 'vue'
-import gameRoundOverLost from '@/assets/images/game/gameRoundOverLost.svg'
-import gameRoundOverWon from '@/assets/images/game/gameRoundOverWon.svg'
 import ModalGameContent from '@/components/ui/modals/ModalGameContent.vue'
+import { gameRoundOverLost, gameRoundOverWon } from '@/configs/assets.config'
 import { useSoundStore } from '@/stores/sounds.store'
 import { onMounted, ref, useSlots } from 'vue'
 

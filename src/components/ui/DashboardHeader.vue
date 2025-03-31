@@ -1,6 +1,6 @@
 <script setup lang="ts">
-import MouthHungry from '@/assets/images/character/MouthHungry.svg'
 import Streak from '@/components/ui/Streak.vue'
+import { MouthHungry } from '@/configs/assets.config'
 
 interface Props {
   isLobby: boolean

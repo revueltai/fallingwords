@@ -3,11 +3,12 @@ export const dummyUser = {
   uid: 123,
   name: 'john doe',
   email: 'john@gmail.com',
+  age: '25',
   username: 'johndoe',
+  password: 1234,
   streakUid: 321,
   lives: 10,
   gems: 10,
-  password: 1234,
 }
 
 export const dummyStreak = {
