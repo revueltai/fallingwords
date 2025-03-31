@@ -1,14 +1,32 @@
 <script setup lang="ts">
 import Word from '@/components/ui/Word.vue'
 import WordIndicator from '@/components/ui/WordIndicator.vue'
-import { onMounted, ref } from 'vue'
+import { onMounted, onUnmounted, ref } from 'vue'
 
-const learnWord = ref('????')
+const targetWord = 'Hund'
+const targetWordLenght = '?'.repeat(targetWord.length)
+const learnWord = ref(targetWordLenght)
+const currentIndex = ref(0)
+let interval: number | null | undefined = null
 
 onMounted(() => {
-  setTimeout(() => {
-    learnWord.value = 'H???'
-  }, 1500)
+  const loopTime = 1500
+
+  interval = setInterval(() => {
+    if (currentIndex.value < targetWord.length) {
+      learnWord.value = targetWord.slice(0, currentIndex.value + 1) + '?'.repeat(targetWord.length - (currentIndex.value + 1))
+      currentIndex.value++
+    } else {
+      learnWord.value = targetWordLenght
+      currentIndex.value = 0
+    }
+  }, loopTime)
+})
+
+onUnmounted(() => {
+  if (interval) {
+    clearInterval(interval)
+  }
 })
 </script>
 
@@ -25,6 +43,7 @@ onMounted(() => {
           class="border-senary bg-secondary-light"
         />
       </div>
+
       <div class="flex w-full justify-between gap-4">
         <Word
           country-code="de"
