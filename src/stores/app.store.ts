@@ -97,7 +97,8 @@ export const useAppStore = defineStore('app', () => {
       words: [],
     })
 
-    return APIService.saveStoreData(API_KEYS.userAppData, collections.value)
+    const rs = APIService.saveStoreData(API_KEYS.userAppData, collections.value)
+    return rs ? uid : null
   }
 
   async function createWord(collectionUid: string, payload: GameWord) {

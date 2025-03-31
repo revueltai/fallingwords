@@ -88,6 +88,7 @@ declare global {
     asset: string
     duration: number
     speed: number | null
+    description?: string
     // name: string
     // type: string
   }

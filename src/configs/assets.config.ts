@@ -1,6 +1,7 @@
 // Static assets
 export { default as CharacterSunray } from '@/assets/images/character/CharacterSunray.svg'
 export { default as FirstSessionMouthChew } from '@/assets/images/character/FirstSessionMouthChew.svg'
+export { default as FirstSessionMouthLove } from '@/assets/images/character/FirstSessionMouthLove.svg'
 export { default as MouthBlush } from '@/assets/images/character/MouthBlush.svg'
 export { default as MouthChew } from '@/assets/images/character/MouthChew.svg'
 export { default as MouthDislike } from '@/assets/images/character/MouthDislike.svg'

@@ -85,6 +85,7 @@ export const POWERUPS: Powerups = {
     asset: 'heart-full',
     speed: -1,
     duration: 0,
+    description: 'Adds +1 life',
   },
   fire: {
     id: 'fire',
@@ -92,6 +93,7 @@ export const POWERUPS: Powerups = {
     asset: 'powerup-fire',
     speed: null,
     duration: 3000,
+    description: 'Highlights the correct letters',
   },
   ice: {
     id: 'ice',
@@ -99,6 +101,7 @@ export const POWERUPS: Powerups = {
     asset: 'powerup-ice',
     duration: 5000,
     speed: 0.2,
+    description: 'Slows Down letters',
   },
   wind: {
     id: 'wind',
@@ -106,6 +109,7 @@ export const POWERUPS: Powerups = {
     asset: 'powerup-wind',
     duration: 500,
     speed: 0,
+    description: 'Clears the board',
   },
 }
 
