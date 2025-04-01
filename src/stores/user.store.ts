@@ -62,6 +62,10 @@ export const useUserStore = defineStore('user', {
       }
     },
 
+    async createUserAccount(payload: any) {
+
+    },
+
     updateLives(amount: number) {
       if (this.lives) {
         this.lives += amount

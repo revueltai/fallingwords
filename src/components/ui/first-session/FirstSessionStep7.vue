@@ -5,9 +5,9 @@ import { onMounted, onUnmounted, ref } from 'vue'
 
 const appStore = useAppStore()
 
-const collectionName = ref('')
-const collectionLocaleOriginal = ref('')
-const collectionLocaleLearn = ref('')
+const collectionName = ref('Animals')
+const collectionLocaleOriginal = ref('en')
+const collectionLocaleLearn = ref('de')
 
 const formErrors = ref({
   collectionName: '',
@@ -40,19 +40,16 @@ async function handleStoreData(data: { step: number }) {
   })
 
   if (rs) {
-    Bus.emit('firstSessionSetData', {
-      collectionUid: rs,
-      wordUid: '',
-    })
+    Bus.emit('firstSessionGotoNextStep', { collectionUid: rs })
   }
 }
 
 onMounted(async () => {
   await appStore.setFormLocales()
-  Bus.on('saveStepData', handleStoreData)
+  Bus.on('firstSessionSaveStepData', handleStoreData)
 })
 
-onUnmounted(() => Bus.off('saveStepData', handleStoreData))
+onUnmounted(() => Bus.off('firstSessionSaveStepData', handleStoreData))
 </script>
 
 <template>

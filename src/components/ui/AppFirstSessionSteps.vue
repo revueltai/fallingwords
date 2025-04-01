@@ -2,28 +2,27 @@
 import SpeechBubble from '@/components/ui/SpeechBubble.vue'
 import { CharacterSunray } from '@/configs/assets.config'
 import FirstSessionConfig from '@/configs/firstSession.config'
-import { useModalStore } from '@/stores/modal.store'
-import { useUserStore } from '@/stores/user.store'
 import { Bus } from '@/utils/EventBus'
 import { computed, onMounted, onUnmounted, ref, watch } from 'vue'
 
-const userStore = useUserStore()
-const modalStore = useModalStore()
-
-const activeStepIndex = ref(6)
+const collectionUid = ref('')
+const activeStepIndex = ref(9)
 const activeStep = computed(() => FirstSessionConfig[activeStepIndex.value])
 const totalSteps = FirstSessionConfig.length
 const stepReady = ref(false)
-const collectionUid = ref('')
-const wordUid = ref('')
 
 function handleEnableCta() {
   stepReady.value = true
 }
 
-function handleSetData(payload: { collectionUid: string, wordUid: string }) {
-  collectionUid.value = payload.collectionUid
-  wordUid.value = payload.wordUid
+async function handleGetData() {
+  setTimeout(() => Bus.emit('firstSessionSetStepData', collectionUid.value), 1000)
+}
+
+async function handleSetData(payload: { collectionUid: string, wordUid: string } | null = null) {
+  if (payload) {
+    collectionUid.value = payload.collectionUid
+  }
 
   activeStepIndex.value++
   stepReady.value = false
@@ -41,23 +40,22 @@ function handleClickCta() {
     }
 
     if (activeStep.value.cta.action === 'validate' && stepReady.value) {
-      Bus.emit('saveStepData', { step: activeStepIndex.value })
+      Bus.emit('firstSessionSaveStepData', { step: activeStepIndex.value })
     }
   }
 }
 
-watch(activeStep, () => {
-  stepReady.value = activeStep.value.cta.action === 'next'
-}, { immediate: true })
+watch(activeStep, () => stepReady.value = activeStep.value.cta.action === 'next', { immediate: true })
 
 onMounted(() => {
+  Bus.on('firstSessionGetData', handleGetData)
   Bus.on('firstSessionEnableCta', handleEnableCta)
-  Bus.on('firstSessionSetData', handleSetData)
+  Bus.on('firstSessionGotoNextStep', handleSetData)
 })
 
 onUnmounted(() => {
   Bus.off('firstSessionEnableCta', handleEnableCta)
-  Bus.off('firstSessionSetData', handleSetData)
+  Bus.off('firstSessionGotoNextStep', handleSetData)
 })
 </script>
 
@@ -70,7 +68,10 @@ onUnmounted(() => {
         class="anim-scale-in-timed"
       />
 
-      <div class="relative mx-auto flex justify-center items-end flex-grow anim-scale-in-timed">
+      <div
+        v-if="activeStep.asset"
+        class="relative mx-auto flex justify-center items-end flex-grow anim-scale-in-timed"
+      >
         <img
           :src="CharacterSunray"
           class="block opacity-50"
@@ -118,6 +119,8 @@ onUnmounted(() => {
       has-icon
       class="mt-auto"
       :disabled="!stepReady"
+      :border-color="`${activeStep.cta.color}-light` || 'primary-light'"
+      :background-color="activeStep.cta.color || 'primary'"
       @click="handleClickCta"
     >
       {{ activeStep.cta.text }}

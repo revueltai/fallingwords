@@ -4,7 +4,16 @@ import FirstSessionStep5 from '@/components/ui/first-session/FirstSessionStep5.v
 import FirstSessionStep6 from '@/components/ui/first-session/FirstSessionStep6.vue'
 import FirstSessionStep7 from '@/components/ui/first-session/FirstSessionStep7.vue'
 import FirstSessionStep8 from '@/components/ui/first-session/FirstSessionStep8.vue'
-import { FirstSessionMouthChew, FirstSessionMouthLove, MouthHungry, MouthIdle, MouthOpen, MouthSweat } from '@/configs/assets.config'
+import FirstSessionStep9 from '@/components/ui/first-session/FirstSessionStep9.vue'
+import {
+  FirstSessionMouthChew,
+  FirstSessionMouthLove,
+  MouthHungry,
+  MouthIdle,
+  MouthLove,
+  MouthOpen,
+  MouthSweat,
+} from '@/configs/assets.config'
 import { h } from 'vue'
 
 export default [
@@ -145,7 +154,7 @@ export default [
   },
   {
     asset: {
-      name: MouthIdle,
+      name: MouthLove,
       className: '',
     },
     icon: {
@@ -159,8 +168,26 @@ export default [
     },
     content: () => h(FirstSessionStep8),
     cta: {
-      text: 'Save Collection',
+      text: 'Save Word',
       action: 'validate',
+    },
+  },
+  {
+    asset: null,
+    icon: {
+      name: 'word',
+      color: 'white',
+      type: 'stroke',
+    },
+    text: {
+      top: 'Let’s set up your account',
+      bottom: 'so we keep feeding me!',
+    },
+    content: () => h(FirstSessionStep9),
+    cta: {
+      text: 'Create Account',
+      action: 'validate',
+      color: 'tertiary',
     },
   },
 ]

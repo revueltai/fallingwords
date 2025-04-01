@@ -5,19 +5,18 @@ import { onMounted, onUnmounted, ref } from 'vue'
 
 const appStore = useAppStore()
 
-const collectionName = ref('foo')
-const collectionLocaleOriginal = ref('')
-const collectionLocaleLearn = ref('')
+const original = ref('')
+const learn = ref('')
+const selectedCollection = ref<GameCollection | null>(null)
+const locales = ref<GameLocale | null>(null)
 
 const formErrors = ref({
-  collectionName: '',
-  collectionLocaleOriginal: '',
-  collectionLocaleLearn: '',
+  original: '',
+  learn: '',
 })
 
 function validateForm(): boolean {
-  return !!(collectionName.value && collectionLocaleOriginal.value && collectionLocaleLearn.value)
-    && (collectionLocaleOriginal.value !== collectionLocaleLearn.value)
+  return !!(original.value && learn.value)
 }
 
 async function handleValidate(event: Event) {
@@ -28,65 +27,74 @@ async function handleValidate(event: Event) {
   }
 }
 
+async function handleSetData(uid: string) {
+  selectedCollection.value = await appStore.getCollectionById(uid)
+
+  if (selectedCollection.value) {
+    locales.value = selectedCollection.value.locales
+  }
+}
+
 async function handleStoreData(data: { step: number }) {
   if (data.step !== 8) {
-
+    return
   }
 
-  //   name: collectionName.value,
-  //   localeOriginal: collectionLocaleOriginal.value,
-  //   localeLearn: collectionLocaleLearn.value,
-  // })
+  const rs = await appStore.createWord(selectedCollection.value?.uid, {
+    original: original.value,
+    learn: learn.value,
+  })
 
-  // if (rs) {
-  //   Bus.emit('gotoNextStep')
-  // }
+  if (rs) {
+    Bus.emit('firstSessionGotoNextStep')
+  }
 }
 
 onMounted(async () => {
-  await appStore.setFormLocales()
-  Bus.on('saveStepData', handleStoreData)
+  Bus.on('firstSessionSetStepData', handleSetData)
+  Bus.on('firstSessionSaveStepData', handleStoreData)
+  Bus.emit('firstSessionGetData')
 })
 
-onUnmounted(() => Bus.off('saveStepData', handleStoreData))
+onUnmounted(() => {
+  Bus.off('firstSessionSetStepData', handleSetData)
+  Bus.off('firstSessionSaveStepData', handleStoreData)
+})
 </script>
 
 <template>
-  <form class="anim-scale-in-timed">
+  <form
+    v-if="selectedCollection"
+    class="anim-scale-in-timed"
+  >
     <div class="mb-8 flex flex-col gap-4">
+      <p class="mb-4">
+        Enter a Word for
+        <span class="text-primary">{{ selectedCollection?.name }}</span>
+      </p>
+
       <Input
-        v-model="collectionName"
-        name="collectionName"
+        v-model="original"
+        name="original"
         type="text"
-        label="Collection Name"
-        placeholder="Enter a name"
+        label="Original Word"
+        placeholder="Enter original word"
         required
-        :error="formErrors.collectionName"
+        :country-code="locales?.original"
+        :error="formErrors.original"
         @input="handleValidate"
       />
 
-      <Select
-        v-model="collectionLocaleOriginal"
-        :options="appStore.formLocales"
-        name="collectionLocaleOriginal"
+      <Input
+        v-model="learn"
+        name="learn"
         type="text"
-        label="Native Language"
-        select-label="Select a Language"
+        label="Word to Learn"
+        placeholder="Enter word to learn"
         required
-        :error="formErrors.collectionLocaleOriginal"
+        :country-code="locales?.learn"
+        :error="formErrors.learn"
         @input="handleValidate"
-      />
-
-      <Select
-        v-model="collectionLocaleLearn"
-        :options="appStore.formLocales"
-        name="collectionLocaleLearn"
-        type="text"
-        label="Language to Learn"
-        select-label="Select a Language"
-        required
-        :error="formErrors.collectionLocaleLearn"
-        @change="handleValidate"
       />
     </div>
   </form>
