@@ -1,12 +1,15 @@
 <script setup lang="ts">
+import { useUserStore } from '@/stores/user.store'
 import { Bus } from '@/utils/EventBus'
 import { onMounted, onUnmounted, ref } from 'vue'
 
-const name = ref('')
-const email = ref('')
-const age = ref('')
-const username = ref('')
-const password = ref('')
+const userStore = useUserStore()
+
+const name = ref('Ignacio')
+const email = ref('foo@bar.com')
+const age = ref('30')
+const username = ref('foobar')
+const password = ref('1234')
 
 const formErrors = ref({
   name: '',
@@ -33,9 +36,12 @@ async function handleStoreData(data: { step: number }) {
     return
   }
 
-  const rs = await appStore.createWord(selectedCollection.value?.uid, {
-    original: original.value,
-    learn: learn.value,
+  const rs = await userStore.createUserAccount({
+    name: name.value,
+    age: age.value,
+    email: email.value,
+    username: username.value,
+    password: password.value,
   })
 
   if (rs) {

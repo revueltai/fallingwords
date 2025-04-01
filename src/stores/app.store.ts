@@ -61,10 +61,9 @@ export const useAppStore = defineStore('app', () => {
 
       if (userAppData) {
         collections.value = userAppData as GameCollection[]
-      } else {
-        const { exampleCollection } = await import('@/assets/exampleCollection.ts')
-        collections.value = exampleCollection
       }
+
+      return true
     } catch (error: any) {
       throw new Error(error)
     }

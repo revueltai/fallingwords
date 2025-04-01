@@ -2,13 +2,16 @@
 import SpeechBubble from '@/components/ui/SpeechBubble.vue'
 import { CharacterSunray } from '@/configs/assets.config'
 import FirstSessionConfig from '@/configs/firstSession.config'
+import APIService from '@/utils/apiService'
 import { Bus } from '@/utils/EventBus'
 import { computed, onMounted, onUnmounted, ref, watch } from 'vue'
+import { useRouter } from 'vue-router'
+
+const router = useRouter()
 
 const collectionUid = ref('')
-const activeStepIndex = ref(9)
+const activeStepIndex = ref(0)
 const activeStep = computed(() => FirstSessionConfig[activeStepIndex.value])
-const totalSteps = FirstSessionConfig.length
 const stepReady = ref(false)
 
 function handleEnableCta() {
@@ -30,10 +33,6 @@ async function handleSetData(payload: { collectionUid: string, wordUid: string }
 
 function handleClickCta() {
   if (['next', 'validate'].includes(activeStep.value.cta.action)) {
-    if (activeStepIndex.value + 1 >= totalSteps) {
-      return
-    }
-
     if (activeStep.value.cta.action === 'next') {
       activeStepIndex.value += 1
       return
@@ -42,12 +41,21 @@ function handleClickCta() {
     if (activeStep.value.cta.action === 'validate' && stepReady.value) {
       Bus.emit('firstSessionSaveStepData', { step: activeStepIndex.value })
     }
+
+    return
+  }
+
+  if (activeStep.value.cta.action === 'end') {
+    router.push({ name: 'Dashboard' })
   }
 }
 
-watch(activeStep, () => stepReady.value = activeStep.value.cta.action === 'next', { immediate: true })
+watch(activeStep, () => {
+  stepReady.value = ['next', 'end'].includes(activeStep.value.cta.action)
+}, { immediate: true })
 
 onMounted(() => {
+  APIService.clearAllStoresAppData()
   Bus.on('firstSessionGetData', handleGetData)
   Bus.on('firstSessionEnableCta', handleEnableCta)
   Bus.on('firstSessionGotoNextStep', handleSetData)
@@ -119,7 +127,7 @@ onUnmounted(() => {
       has-icon
       class="mt-auto"
       :disabled="!stepReady"
-      :border-color="`${activeStep.cta.color}-light` || 'primary-light'"
+      :border-color="activeStep.cta.color ? `${activeStep.cta.color}-light` : 'primary-light'"
       :background-color="activeStep.cta.color || 'primary'"
       @click="handleClickCta"
     >

@@ -8,6 +8,7 @@ import FirstSessionStep9 from '@/components/ui/first-session/FirstSessionStep9.v
 import {
   FirstSessionMouthChew,
   FirstSessionMouthLove,
+  MouthBlush,
   MouthHungry,
   MouthIdle,
   MouthLove,
@@ -186,8 +187,24 @@ export default [
     content: () => h(FirstSessionStep9),
     cta: {
       text: 'Create Account',
-      action: 'validate',
       color: 'tertiary',
+      action: 'validate',
+    },
+  },
+  {
+    asset: {
+      name: MouthBlush,
+      className: '',
+    },
+    icon: null,
+    text: {
+      top: 'You’re all set! Let’s start learning',
+      bottom: 'and having fun together!',
+    },
+    content: () => null,
+    cta: {
+      text: 'Let’s Start!',
+      action: 'end',
     },
   },
 ]
