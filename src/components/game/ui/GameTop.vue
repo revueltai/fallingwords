@@ -2,10 +2,12 @@
 import { useGameStore } from '@/stores/game.store'
 import { useGameRoundStore } from '@/stores/gameRound.store'
 import { useGameUIStore } from '@/stores/gameUI.store'
+import { useUserStore } from '@/stores/user.store'
 import { isMobile } from '@/utils'
 import { computed, onMounted, ref } from 'vue'
 
 const gameUIStore = useGameUIStore()
+const userStore = useUserStore()
 const gameStore = useGameStore()
 const gameRoundStore = useGameRoundStore()
 
@@ -66,14 +68,14 @@ onMounted (() => {
       <div class="w-14 h-14 absolute -top-1 -left-1 rounded-full border-secondary-light border bg-secondary-dark">
         <div class="relative w-full h-full flex items-center justify-center">
           <Icon
-            :class="gameStore.gameLives < 2 ? 'anim-beat' : ''"
+            :class="userStore.lives < 2 ? 'anim-beat' : ''"
             :size="isMobile() ? 'xl' : '2xl'"
             name="heart-full"
             type="fill"
           />
 
           <Badge
-            :value="gameStore.gameLives"
+            :value="userStore.lives"
             class="absolute z-2 bottom-0.5 right-0.5"
           />
         </div>

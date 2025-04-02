@@ -22,6 +22,11 @@ export const APP_MENU: AppMenuItem[] = [
     iconName: 'collection',
   },
   {
+    id: 'shop',
+    url: 'shop',
+    iconName: 'shop',
+  },
+  {
     id: 'game',
     url: 'game-lobby',
     iconName: 'game',

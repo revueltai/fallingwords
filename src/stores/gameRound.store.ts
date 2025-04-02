@@ -5,6 +5,7 @@ import { useGameUIStore } from '@/stores/gameUI.store'
 import { createWord, formatRoundDuration, getLetters, getRoundPercentage } from '@/stores/utils.store'
 import { getTimestamp, isEmptyArray, logTimeDifference } from '@/utils'
 import { defineStore } from 'pinia'
+import { useUserStore } from './user.store'
 
 interface GameState {
   roundSpeed: number
@@ -58,6 +59,9 @@ export const useGameRoundStore = defineStore('gameRound', {
     gameStore() {
       return useGameStore()
     },
+    userStore() {
+      return useUserStore()
+    },
     gameUIStore() {
       return useGameUIStore()
     },
@@ -107,7 +111,7 @@ export const useGameRoundStore = defineStore('gameRound', {
     },
 
     isRoundLost() {
-      return this.gameStore.gameLives <= 0
+      return this.userStore.lives <= 0
     },
 
     setLetterAsGuessed(wordIndex: number) {

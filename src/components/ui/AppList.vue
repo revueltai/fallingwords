@@ -32,7 +32,7 @@ const cssClasses = computed(() => {
     class="flex flex-col flex-grow overflow-hidden"
   >
     <div
-      class="u-gradient-mask grid gap-6 items-start auto-rows-min flex-grow overflow-y-auto"
+      class="u-gradient-mask py-2 grid gap-6 items-start auto-rows-min flex-grow overflow-y-auto"
       :class="cssClasses"
     >
       <slot />

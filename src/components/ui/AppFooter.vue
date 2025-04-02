@@ -34,7 +34,7 @@ function handleClick(item: AppMenuItem) {
 </script>
 
 <template>
-  <footer class="w-full absolute bottom-0 flex justify-center gap-6 px-4 py-3 bg-secondary border-t border-secondary-light">
+  <footer class="w-full absolute bottom-0 flex justify-center gap-5 px-4 py-3 bg-secondary border-t border-secondary-light">
     <div
       v-for="(item, index) in APP_MENU"
       :key="index"

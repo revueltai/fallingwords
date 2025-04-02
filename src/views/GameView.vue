@@ -5,7 +5,6 @@ import GameModal from '@/components/game/ui/GameModal.vue'
 import GamePowerupBar from '@/components/game/ui/GamePowerupBar.vue'
 import GamePowerupGlow from '@/components/game/ui/GamePowerupGlow.vue'
 import GameTop from '@/components/game/ui/GameTop.vue'
-import { useAppStore } from '@/stores/app.store'
 import { useGameStore } from '@/stores/game.store'
 import { useGameRoundStore } from '@/stores/gameRound.store'
 import { useSoundStore } from '@/stores/sounds.store'
@@ -16,7 +15,6 @@ import { useRouter } from 'vue-router'
 
 const router = useRouter()
 
-const appStore = useAppStore()
 const soundStore = useSoundStore()
 const gameStore = useGameStore()
 const gameRoundStore = useGameRoundStore()
@@ -31,19 +29,7 @@ function setUIAnimation() {
     .start()
 }
 
-// function loadDummyData() {
-//   console.warn('Using debug data. Disable after testing')
-
-//   gameStore.setGameCollections([appStore.collections[1]])
-//   gameStore.prepareGame()
-//   soundStore.stopLoopSound()
-//   soundStore.playLoopSound('gameBg')
-//   gameRoundStore.prepareRound()
-// }
-
 onMounted(() => {
-  setUIAnimation()
-
   if (isEmptyArray(gameStore.gameWordsList)) {
     router.push('/')
     return
@@ -52,6 +38,8 @@ onMounted(() => {
   soundStore.stopLoopSound()
   soundStore.playLoopSound('gameBg')
   gameRoundStore.prepareRound()
+
+  setUIAnimation()
 })
 </script>
 

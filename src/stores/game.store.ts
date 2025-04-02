@@ -3,6 +3,7 @@ import { isEmptyObject } from '@/utils'
 import { defineStore } from 'pinia'
 import { useAppStore } from './app.store'
 import { useGameRoundStore } from './gameRound.store'
+import { useUserStore } from './user.store'
 
 interface GameState {
   gameMaxRounds: number
@@ -14,7 +15,6 @@ interface GameState {
   gamePowerups: GamePowerups
   gamePowerupsDuration: number
   gameLocales: GameLocale
-  gameLives: number
 }
 
 function initialState(): GameState {
@@ -25,7 +25,6 @@ function initialState(): GameState {
     gameCollections: [],
     gameWordsList: [],
     gameSummary: GAME_DEFAULTS.gameSummary,
-    gameLives: GAME_DEFAULTS.lives,
     gamePowerups: GAME_DEFAULTS.gamePowerups,
     gamePowerupsDuration: GAME_DEFAULTS.powerupDuration,
     gameLocales: {
@@ -42,16 +41,22 @@ export const useGameStore = defineStore('game', {
     appStore() {
       return useAppStore()
     },
+    userStore() {
+      return useUserStore()
+    },
     isGameOver: state => state.gameCurrentRound === state.gameTotalRounds - 1,
   },
 
   actions: {
     increaseGameLives() {
-      this.gameLives++
+      this.userStore.lives++
     },
 
     decreaseGameLives() {
-      this.gameLives = Math.max(this.gameLives - 1, 0)
+      const newLivesCount = Math.max(this.userStore.lives - 1, 0)
+      if (newLivesCount > 0) {
+        this.userStore.lives = newLivesCount
+      }
     },
 
     increaseGameRound() {
@@ -85,10 +90,6 @@ export const useGameStore = defineStore('game', {
       this.gameLocales = locales
     },
 
-    setGameLives(lives: number) {
-      this.gameLives = lives
-    },
-
     setGameReset() {
       const gameRoundStore = useGameRoundStore()
       gameRoundStore.setRoundsReset()
@@ -120,7 +121,6 @@ export const useGameStore = defineStore('game', {
 
         const gameLocales = this.gameCollections[0]?.locales
 
-        this.setGameLives(GAME_DEFAULTS.lives)
         this.setGameWords(shuffledWords)
         this.setGameLocales(gameLocales)
         this.setGameLocales(gameLocales)

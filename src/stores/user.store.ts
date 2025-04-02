@@ -50,18 +50,22 @@ export const useUserStore = defineStore('user', {
         this.isAuthenticated = true
         this.isFirstSession = false
 
-        return APIService.saveStoreData(API_KEYS.userAccountData, {
-          uid: this.uid,
-          name: this.name,
-          email: this.email,
-          username: this.username,
-          password: this.password, // TODO: Replace when server auth is set
-          lives: this.lives,
-          gems: this.gems,
-        })
+        return this.updateUserData()
       } catch (error: any) {
         throw new Error(error)
       }
+    },
+
+    async updateUserData() {
+      return APIService.saveStoreData(API_KEYS.userAccountData, {
+        uid: this.uid,
+        name: this.name,
+        email: this.email,
+        username: this.username,
+        password: this.password, // TODO: Replace when server auth is set
+        lives: this.lives,
+        gems: this.gems,
+      })
     },
 
     async logoutUser() {
