@@ -9,6 +9,7 @@ import { useRouter } from 'vue-router'
 
 const router = useRouter()
 
+const userNativeLocaleCode = ref<GameAlphabetLocale | null>(null)
 const collectionUid = ref('')
 const activeStepIndex = ref(0)
 const activeStep = computed(() => FirstSessionConfig[activeStepIndex.value])
@@ -22,9 +23,13 @@ async function handleGetData() {
   setTimeout(() => Bus.emit('firstSessionSetStepData', collectionUid.value), 1000)
 }
 
-async function handleSetData(payload: { collectionUid: string, wordUid: string } | null = null) {
+async function handleSetData(payload: { collectionUid?: string, userLocaleOriginalCode?: string } | null = null) {
   if (payload) {
-    collectionUid.value = payload.collectionUid
+    if (payload.collectionUid) {
+      collectionUid.value = payload.collectionUid
+    } else if (payload.userLocaleOriginalCode) {
+      userNativeLocaleCode.value = payload.userLocaleOriginalCode as GameAlphabetLocale
+    }
   }
 
   activeStepIndex.value++
@@ -118,6 +123,7 @@ onUnmounted(() => {
         <component
           :is="activeStep.content"
           :enable-cta="handleEnableCta"
+          :user-original-locale="userNativeLocaleCode"
         />
       </div>
     </div>

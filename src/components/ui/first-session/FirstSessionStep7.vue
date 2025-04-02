@@ -1,13 +1,25 @@
 <script setup lang="ts">
 import { useAppStore } from '@/stores/app.store'
 import { Bus } from '@/utils/EventBus'
-import { onMounted, onUnmounted, ref } from 'vue'
+import { computed, onMounted, onUnmounted, ref } from 'vue'
+
+interface Props {
+  userOriginalLocale: GameAlphabetLocale | ''
+}
+
+const props = withDefaults(defineProps<Props>(), {
+  userOriginalLocale: '',
+})
 
 const appStore = useAppStore()
 
-const collectionName = ref('Animals')
-const collectionLocaleOriginal = ref('en')
-const collectionLocaleLearn = ref('de')
+const collectionName = ref('')
+const collectionLocaleOriginal = ref(props.userOriginalLocale)
+const collectionLocaleLearn = ref('')
+
+const sanitizedLearnLocales = computed(() => {
+  return appStore.formLocales.filter((option: FormSelectOption) => option.value !== props.userOriginalLocale)
+})
 
 const formErrors = ref({
   collectionName: '',
@@ -67,27 +79,15 @@ onUnmounted(() => Bus.off('firstSessionSaveStepData', handleStoreData))
       />
 
       <Select
-        v-model="collectionLocaleOriginal"
-        :options="appStore.formLocales"
-        name="collectionLocaleOriginal"
-        type="text"
-        label="Native Language"
-        select-label="Select a Language"
-        required
-        :error="formErrors.collectionLocaleOriginal"
-        @input="handleValidate"
-      />
-
-      <Select
         v-model="collectionLocaleLearn"
-        :options="appStore.formLocales"
+        :options="sanitizedLearnLocales"
         name="collectionLocaleLearn"
-        type="text"
         label="Language to Learn"
         select-label="Select a Language"
         required
         :error="formErrors.collectionLocaleLearn"
         @change="handleValidate"
+        @input="handleValidate"
       />
     </div>
   </form>

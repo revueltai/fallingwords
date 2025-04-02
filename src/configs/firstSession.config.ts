@@ -1,3 +1,4 @@
+import FirstSessionStep0 from '@/components/ui/first-session/FirstSessionStep0.vue'
 import FirstSessionStep3 from '@/components/ui/first-session/FirstSessionStep3.vue'
 import FirstSessionStep4 from '@/components/ui/first-session/FirstSessionStep4.vue'
 import FirstSessionStep5 from '@/components/ui/first-session/FirstSessionStep5.vue'
@@ -21,7 +22,7 @@ export default [
   {
     asset: {
       name: MouthOpen,
-      className: '-rotate-12',
+      className: '',
     },
     icon: null,
     text: {
@@ -32,6 +33,22 @@ export default [
     cta: {
       text: 'Continue',
       action: 'next',
+    },
+  },
+  {
+    asset: {
+      name: MouthOpen,
+      className: '-rotate-12',
+    },
+    icon: null,
+    text: {
+      top: 'Before we start,',
+      bottom: 'what’s your native language?',
+    },
+    content: FirstSessionStep0,
+    cta: {
+      text: 'Continue',
+      action: 'validate',
     },
   },
   {
@@ -79,7 +96,7 @@ export default [
       top: 'Each word has two parts:',
       bottom: 'One in [your language]%senary-light%, [one to learn]%tertiary-light%!',
     },
-    content: () => h(FirstSessionStep3),
+    content: FirstSessionStep3,
     cta: {
       text: 'Continue',
       action: 'next',
@@ -95,7 +112,7 @@ export default [
       top: 'When we play, [letters]%primary% fall down.',
       bottom: 'I must eat the right ones!',
     },
-    content: () => h(FirstSessionStep4),
+    content: FirstSessionStep4,
     cta: {
       text: 'Continue',
       action: 'next',
@@ -111,7 +128,7 @@ export default [
       top: 'Be careful! Not all letters belong.',
       bottom: 'If I eat the wrong ones… [I lose a life]%quaternary-light%!',
     },
-    content: () => h(FirstSessionStep5),
+    content: FirstSessionStep5,
     cta: {
       text: 'Continue',
       action: 'next',
@@ -127,7 +144,7 @@ export default [
       top: '[Power-ups]%quinary-light% help me munch the right',
       bottom: 'letters and make learning easier!',
     },
-    content: () => h(FirstSessionStep6),
+    content: FirstSessionStep6,
     cta: {
       text: 'Continue',
       action: 'next',
@@ -147,7 +164,7 @@ export default [
       top: 'Create [Collections]%primary% to store words,',
       bottom: 'feed me, practice and learn!',
     },
-    content: () => h(FirstSessionStep7),
+    content: FirstSessionStep7,
     cta: {
       text: 'Save Collection',
       action: 'validate',
@@ -167,7 +184,7 @@ export default [
       top: 'Great! Now let’s add your first [Word]%primary%',
       bottom: 'in your [Collection]%primary%',
     },
-    content: () => h(FirstSessionStep8),
+    content: FirstSessionStep8,
     cta: {
       text: 'Save Word',
       action: 'validate',
@@ -184,7 +201,7 @@ export default [
       top: 'Let’s set up your account',
       bottom: 'so we keep feeding me!',
     },
-    content: () => h(FirstSessionStep9),
+    content: FirstSessionStep9,
     cta: {
       text: 'Create Account',
       color: 'tertiary',
@@ -201,7 +218,7 @@ export default [
       top: 'You’re all set! Let’s start learning',
       bottom: 'and having fun together!',
     },
-    content: () => null,
+    content: null,
     cta: {
       text: 'Let’s Start!',
       action: 'end',
