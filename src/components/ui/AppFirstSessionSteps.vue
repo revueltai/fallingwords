@@ -12,8 +12,9 @@ const router = useRouter()
 const userNativeLocaleCode = ref<GameAlphabetLocale | null>(null)
 const collectionUid = ref('')
 const activeStepIndex = ref(0)
-const activeStep = computed(() => FirstSessionConfig[activeStepIndex.value])
 const stepReady = ref(false)
+
+const activeStep = computed(() => FirstSessionConfig[activeStepIndex.value])
 
 function handleEnableCta() {
   stepReady.value = true
@@ -44,7 +45,10 @@ function handleClickCta() {
     }
 
     if (activeStep.value.cta.action === 'validate' && stepReady.value) {
-      Bus.emit('firstSessionSaveStepData', { step: activeStepIndex.value })
+      Bus.emit('firstSessionSaveStepData', {
+        step: activeStepIndex.value,
+        stepId: activeStep.value.id,
+      })
     }
 
     return
@@ -124,6 +128,7 @@ onUnmounted(() => {
           :is="activeStep.content"
           :enable-cta="handleEnableCta"
           :user-original-locale="userNativeLocaleCode"
+          :step-id="activeStep.id"
         />
       </div>
     </div>

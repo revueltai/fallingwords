@@ -1,4 +1,4 @@
-import FirstSessionStep0 from '@/components/ui/first-session/FirstSessionStep0.vue'
+import FirstSessionStep1 from '@/components/ui/first-session/FirstSessionStep1.vue'
 import FirstSessionStep3 from '@/components/ui/first-session/FirstSessionStep3.vue'
 import FirstSessionStep4 from '@/components/ui/first-session/FirstSessionStep4.vue'
 import FirstSessionStep5 from '@/components/ui/first-session/FirstSessionStep5.vue'
@@ -16,10 +16,10 @@ import {
   MouthOpen,
   MouthSweat,
 } from '@/configs/assets.config'
-import { h } from 'vue'
 
 export default [
   {
+    id: 'intro',
     asset: {
       name: MouthOpen,
       className: '',
@@ -36,6 +36,7 @@ export default [
     },
   },
   {
+    id: 'nativeLocalePrompt',
     asset: {
       name: MouthOpen,
       className: '-rotate-12',
@@ -45,13 +46,14 @@ export default [
       top: 'Before we start,',
       bottom: 'what’s your native language?',
     },
-    content: FirstSessionStep0,
+    content: FirstSessionStep1,
     cta: {
       text: 'Continue',
       action: 'validate',
     },
   },
   {
+    id: 'eating',
     asset: {
       name: MouthSweat,
       className: '',
@@ -68,6 +70,7 @@ export default [
     },
   },
   {
+    id: 'createWords',
     asset: {
       name: MouthHungry,
       className: '',
@@ -84,6 +87,7 @@ export default [
     },
   },
   {
+    id: 'wordsParts',
     asset: {
       name: MouthIdle,
       className: '',
@@ -103,6 +107,7 @@ export default [
     },
   },
   {
+    id: 'eatCorrectLetters',
     asset: {
       name: FirstSessionMouthChew,
       className: '',
@@ -119,6 +124,7 @@ export default [
     },
   },
   {
+    id: 'avoidWrongLetters',
     asset: {
       name: FirstSessionMouthChew,
       className: '',
@@ -135,6 +141,7 @@ export default [
     },
   },
   {
+    id: 'powerups',
     asset: {
       name: FirstSessionMouthLove,
       className: '',
@@ -151,6 +158,7 @@ export default [
     },
   },
   {
+    id: 'collectionsPrompt',
     asset: {
       name: MouthIdle,
       className: '',
@@ -171,6 +179,7 @@ export default [
     },
   },
   {
+    id: 'wordsPrompt',
     asset: {
       name: MouthLove,
       className: '',
@@ -191,6 +200,7 @@ export default [
     },
   },
   {
+    id: 'createAccountPrompt',
     asset: null,
     icon: {
       name: 'word',
@@ -209,6 +219,7 @@ export default [
     },
   },
   {
+    id: 'end',
     asset: {
       name: MouthBlush,
       className: '',

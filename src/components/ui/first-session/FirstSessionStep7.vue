@@ -4,6 +4,7 @@ import { Bus } from '@/utils/EventBus'
 import { computed, onMounted, onUnmounted, ref } from 'vue'
 
 interface Props {
+  stepId: string
   userOriginalLocale: GameAlphabetLocale | ''
 }
 
@@ -14,22 +15,19 @@ const props = withDefaults(defineProps<Props>(), {
 const appStore = useAppStore()
 
 const collectionName = ref('')
-const collectionLocaleOriginal = ref(props.userOriginalLocale)
 const collectionLocaleLearn = ref('')
+
+const formErrors = ref({
+  collectionName: '',
+  collectionLocaleLearn: '',
+})
 
 const sanitizedLearnLocales = computed(() => {
   return appStore.formLocales.filter((option: FormSelectOption) => option.value !== props.userOriginalLocale)
 })
 
-const formErrors = ref({
-  collectionName: '',
-  collectionLocaleOriginal: '',
-  collectionLocaleLearn: '',
-})
-
 function validateForm(): boolean {
-  return !!(collectionName.value && collectionLocaleOriginal.value && collectionLocaleLearn.value)
-    && (collectionLocaleOriginal.value !== collectionLocaleLearn.value)
+  return !!(collectionName.value && collectionLocaleLearn.value)
 }
 
 async function handleValidate(event: Event) {
@@ -40,14 +38,14 @@ async function handleValidate(event: Event) {
   }
 }
 
-async function handleStoreData(data: { step: number }) {
-  if (data.step !== 7) {
+async function handleStoreData() {
+  if (props.stepId !== 'collectionsPrompt') {
     return
   }
 
   const rs = await appStore.createCollection({
     name: collectionName.value,
-    localeOriginal: collectionLocaleOriginal.value,
+    localeOriginal: props.userOriginalLocale,
     localeLearn: collectionLocaleLearn.value,
   })
 

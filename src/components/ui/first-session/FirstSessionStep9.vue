@@ -3,6 +3,12 @@ import { useUserStore } from '@/stores/user.store'
 import { Bus } from '@/utils/EventBus'
 import { onMounted, onUnmounted, ref } from 'vue'
 
+interface Props {
+  stepId: string
+}
+
+const props = defineProps<Props>()
+
 const userStore = useUserStore()
 
 const name = ref('Ignacio')
@@ -31,8 +37,8 @@ async function handleValidate(event: Event) {
   }
 }
 
-async function handleStoreData(data: { step: number }) {
-  if (data.step !== 9) {
+async function handleStoreData() {
+  if (props.stepId !== 'createAccountPrompt') {
     return
   }
 
