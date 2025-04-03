@@ -7,6 +7,8 @@ import { Bus } from '@/utils/EventBus'
 import { computed, onMounted, onUnmounted, ref, watch } from 'vue'
 import { useRouter } from 'vue-router'
 
+const emit = defineEmits(['change'])
+
 const router = useRouter()
 
 const userNativeLocaleCode = ref<GameAlphabetLocale | null>(null)
@@ -16,6 +18,10 @@ const activeStepIndex = ref(0)
 const stepReady = ref(false)
 
 const activeStep = computed(() => FirstSessionConfig[activeStepIndex.value])
+
+function updateCompletitionPercentage() {
+  emit('change', Math.floor((activeStepIndex.value * 100) / FirstSessionConfig.length))
+}
 
 function handleEnableCta() {
   stepReady.value = true
@@ -41,6 +47,7 @@ async function handleSetData(payload: {
   }
 
   activeStepIndex.value++
+  updateCompletitionPercentage()
   stepReady.value = false
 }
 
@@ -48,6 +55,7 @@ function handleClickCta() {
   if (['next', 'validate'].includes(activeStep.value.cta.action)) {
     if (activeStep.value.cta.action === 'next') {
       activeStepIndex.value += 1
+      updateCompletitionPercentage()
       return
     }
 
@@ -95,7 +103,7 @@ onUnmounted(() => {
       >
         <img
           :src="CharacterSunray"
-          class="block opacity-50"
+          class="block opacity-50 w-24 h-24 sm:w-[180px] sm:h-[180px]"
           width="180"
           height="180"
         >
@@ -106,7 +114,7 @@ onUnmounted(() => {
           :class="activeStep.bgAsset.className"
           width="200"
           height="120"
-          class="absolute opacity-40 transition-transform bottom-0 left-1/2 -translate-x-1/2 -translate-y-8"
+          class="absolute sm:w-[200px] sm:h-[120px] opacity-40 transition-transform bottom-0 left-1/2 -translate-x-1/2 sm:-translate-y-8"
         >
 
         <img
@@ -114,7 +122,7 @@ onUnmounted(() => {
           :class="activeStep.asset.className"
           width="112"
           height="112"
-          class="absolute transition-transform bottom-0 left-1/2 -translate-x-1/2 -translate-y-8"
+          class="absolute xs:w-20 xs:h-20 sm:w-28 transition-transform bottom-0 left-1/2 -translate-x-1/2 -translate-y-8"
         >
 
         <div
@@ -137,7 +145,7 @@ onUnmounted(() => {
         v-if="activeStep.content"
         class="mt-4"
       >
-        <component
+        <Component
           :is="activeStep.content"
           :enable-cta="handleEnableCta"
           :user-original-locale="userNativeLocaleCode"

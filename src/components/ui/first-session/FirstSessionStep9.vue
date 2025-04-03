@@ -11,11 +11,11 @@ const props = defineProps<Props>()
 
 const userStore = useUserStore()
 
-const name = ref('Ignacio')
-const email = ref('foo@bar.com')
-const age = ref('30')
-const username = ref('foobar')
-const password = ref('1234')
+const name = ref('')
+const email = ref('')
+const age = ref('')
+const username = ref('')
+const password = ref('')
 
 const formErrors = ref({
   name: '',

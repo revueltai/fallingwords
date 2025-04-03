@@ -47,7 +47,7 @@ export function removeCssVar(el: HTMLElement, varName: string) {
  * @returns {boolean} True if the device is mobile, otherwise false.
  */
 export function isMobile(): boolean {
-  return /Mobi/.test(navigator.userAgent)
+  return /Mobi|Android|iPhone|iPad|iPod/.test(navigator.userAgent)
 }
 
 /**

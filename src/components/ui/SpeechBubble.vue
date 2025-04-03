@@ -14,7 +14,7 @@ function highlightColors(text: string): string {
 </script>
 
 <template>
-  <div class="text-white bg-secondary-dark border border-secondary-light rounded-2xl px-4 py-2">
+  <div class="text-white bg-secondary-dark border border-secondary-light rounded-2xl px-4 py-2 text-sm sm:text-lg">
     <span v-html="highlightColors(textTop)" /><br>
     <span v-html="highlightColors(textBottom)" />
   </div>

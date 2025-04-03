@@ -8,6 +8,7 @@ import Input from '@/components/shared/Input.vue'
 import Label from '@/components/shared/Label.vue'
 import Modal from '@/components/shared/Modal.vue'
 import PageWrapper from '@/components/shared/PageWrapper.vue'
+import ProgressBar from '@/components/shared/ProgressBar.vue'
 import Select from '@/components/shared/Select.vue'
 import Switch from '@/components/shared/Switch.vue'
 
@@ -38,6 +39,7 @@ app.component('Select', Select)
 app.component('Icon', Icon)
 app.component('Button', Button)
 app.component('Badge', Badge)
+app.component('ProgressBar', ProgressBar)
 
 subscribeToUserStore()
 

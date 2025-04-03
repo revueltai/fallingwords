@@ -103,15 +103,15 @@ const cssClasses = computed(() => {
         break
 
       case 'md':
-        payload.push('text-p')
+        payload.push('text-sm sm:text-p')
         break
 
       case 'lg':
-        payload.push('text-h5')
+        payload.push('text-p sm:text-h5')
         break
 
       case 'xl':
-        payload.push('text-h5')
+        payload.push('text-p sm:text-h5')
         break
     }
   } else if (!isLink.value) {
@@ -125,15 +125,15 @@ const cssClasses = computed(() => {
         break
 
       case 'md':
-        payload.push('text-p py-2 px-4')
+        payload.push('text-sm sm:text-p py-2 px-4')
         break
 
       case 'lg':
-        payload.push('text-h5 py-2 px-4')
+        payload.push('text-p sm:text-h5 py-2 px-4')
         break
 
       case 'xl':
-        payload.push('text-h5 py-4 px-6')
+        payload.push('text-h6 sm:text-h5 py-4 px-6')
         break
     }
   }
