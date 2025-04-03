@@ -213,9 +213,19 @@ export const UI: {
 export const USER_ACCOUNT_DEFAULTS: {
   lives: number
   gems: number
+  powerups: {
+    fire: number
+    ice: number
+    wind: number
+  }
 } = {
   lives: 5,
   gems: 30,
+  powerups: {
+    fire: 5,
+    ice: 5,
+    wind: 5,
+  },
 }
 
 export const GAME_DEFAULTS: {
@@ -226,12 +236,6 @@ export const GAME_DEFAULTS: {
   powerupSpawnChance: number
   powerupDuration: number
   powerups: Powerups
-  lives: number
-  gamePowerups: {
-    fire: number
-    ice: number
-    wind: number
-  }
   gameSummary: GameSummary
   roundStates: RoundStates
 } = {
@@ -242,12 +246,6 @@ export const GAME_DEFAULTS: {
   powerupSpawnChance: 10, // 1/10 chance
   powerupDuration: 1000,
   powerups: POWERUPS,
-  lives: 1,
-  gamePowerups: {
-    fire: 5,
-    ice: 5,
-    wind: 5,
-  },
   gameSummary: [],
   roundStates: {
     loading: 'loading',

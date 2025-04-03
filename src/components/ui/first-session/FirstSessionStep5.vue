@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import Word from '@/components/ui/Word.vue'
 import WordIndicator from '@/components/ui/WordIndicator.vue'
+import { USER_ACCOUNT_DEFAULTS } from '@/configs/constants'
 import SuggestionsLocale from '@/configs/locales/firstSession.locales'
 import { onMounted, onUnmounted, ref } from 'vue'
 
@@ -67,6 +68,27 @@ onUnmounted(() => {
           class="border-tertiary-light bg-tertiary"
         />
       </div>
+    </div>
+  </div>
+
+  <p class="mt-16 mb-4">
+    I'll give you some lives to get started!
+  </p>
+
+  <div class="relative p-4 rounded-2xl border border-secondary bg-secondary-dark anim-scale-in-timed">
+    <p class="text-xs pb-2">
+      DOT gifted you
+    </p>
+
+    <div class="flex w-full justify-center items-center gap-3">
+      <Icon
+        name="heart-full"
+        size="xl"
+      />
+
+      <p class="text-2xl text-quaternary-light">
+        <span class="">{{ USER_ACCOUNT_DEFAULTS.lives }}</span> lives
+      </p>
     </div>
   </div>
 </template>

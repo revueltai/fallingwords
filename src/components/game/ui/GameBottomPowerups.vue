@@ -1,8 +1,8 @@
 <script setup lang="ts">
 import { UI } from '@/configs/constants'
-import { useGameStore } from '@/stores/game.store'
 import { useGameRoundStore } from '@/stores/gameRound.store'
 import { useSoundStore } from '@/stores/sounds.store'
+import { useUserStore } from '@/stores/user.store'
 import { isMobile } from '@/utils'
 import { computed, onBeforeUnmount, onMounted } from 'vue'
 
@@ -14,7 +14,7 @@ interface PowerupButton {
 }
 
 const soundStore = useSoundStore()
-const gameStore = useGameStore()
+const userStore = useUserStore()
 const gameRoundstore = useGameRoundStore()
 
 const keyboardKeys = ['1', '2', '3']
@@ -24,11 +24,11 @@ const isActive = computed(() => !!gameRoundstore.roundActivePowerupType)
 const powerupButtons = computed(() => {
   const output: PowerupButton[] = []
 
-  if (gameStore.gamePowerups) {
+  if (userStore.powerups) {
     const powerups = gameRoundstore.powerups
     let count: number = 0
 
-    for (const [key, value] of Object.entries(gameStore.gamePowerups)) {
+    for (const [key, value] of Object.entries(userStore.powerups)) {
       if (key !== powerups.life.id) {
         output.push({
           id: key as PowerupName,

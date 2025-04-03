@@ -7,6 +7,7 @@ import FirstSessionStep6 from '@/components/ui/first-session/FirstSessionStep6.v
 import FirstSessionStep7 from '@/components/ui/first-session/FirstSessionStep7.vue'
 import FirstSessionStep8 from '@/components/ui/first-session/FirstSessionStep8.vue'
 import FirstSessionStep9 from '@/components/ui/first-session/FirstSessionStep9.vue'
+import FirstSessionStep10 from '@/components/ui/first-session/FirstSessionStep10.vue'
 import {
   FirstSessionMouthChew,
   FirstSessionMouthChewBg,
@@ -17,6 +18,7 @@ import {
   MouthIdle,
   MouthLove,
   MouthOpen,
+  MouthSurprised,
   MouthSweat,
 } from '@/configs/assets.config'
 
@@ -186,6 +188,27 @@ export default [
       bottom: 'letters and make learning easier!',
     },
     content: FirstSessionStep6,
+    cta: {
+      text: 'Continue',
+      action: 'next',
+    },
+  },
+  {
+    id: 'gems',
+    bgAsset: null,
+    asset: {
+      name: MouthSurprised,
+      className: '',
+    },
+    icon: {
+      name: 'gem',
+      type: 'fill',
+    },
+    text: {
+      top: '[Gems]%primary% keep me going!',
+      bottom: 'Use them to get lives and powerups!',
+    },
+    content: FirstSessionStep10,
     cta: {
       text: 'Continue',
       action: 'next',

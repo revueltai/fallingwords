@@ -15,6 +15,7 @@ interface UserState extends UserPayload {
   uid: string | null
   isFirstSession: boolean
   isAuthenticated: boolean
+  powerups: GamePowerups | null
   lives: number
   gems: number
 }
@@ -27,8 +28,9 @@ function initialState(): UserState {
     age: null,
     username: null,
     password: null,
-    lives: USER_ACCOUNT_DEFAULTS.lives,
-    gems: USER_ACCOUNT_DEFAULTS.gems,
+    powerups: null,
+    lives: 0,
+    gems: 0,
     isFirstSession: true,
     isAuthenticated: false,
   }
@@ -45,6 +47,7 @@ export const useUserStore = defineStore('user', {
         this.email = payload.email
         this.username = payload.username
         this.password = payload.password
+        this.powerups = USER_ACCOUNT_DEFAULTS.powerups
         this.lives = USER_ACCOUNT_DEFAULTS.lives
         this.gems = USER_ACCOUNT_DEFAULTS.gems
         this.isAuthenticated = true
@@ -63,6 +66,7 @@ export const useUserStore = defineStore('user', {
         email: this.email,
         username: this.username,
         password: this.password, // TODO: Replace when server auth is set
+        powerups: this.powerups,
         lives: this.lives,
         gems: this.gems,
       })
@@ -86,18 +90,21 @@ export const useUserStore = defineStore('user', {
           this.name = userAccountData.name
           this.email = userAccountData.email
           this.username = userAccountData.username
+          this.powerups = userAccountData.powerups
           this.lives = userAccountData.lives
           this.gems = userAccountData.gems
           this.isAuthenticated = true
           this.isFirstSession = false
-        } else {
+        }
+        /* else {
           this.uid = userAccountData.uid
           this.name = userAccountData.name
           this.email = userAccountData.email
           this.username = userAccountData.username
+          this.powerups = USER_ACCOUNT_DEFAULTS.powerups
           this.lives = USER_ACCOUNT_DEFAULTS.lives
           this.gems = USER_ACCOUNT_DEFAULTS.gems
-        }
+        } */
       } catch (error: any) {
         throw new Error(error)
       }

@@ -12,7 +12,6 @@ interface GameState {
   gameCollections: GameCollection[]
   gameWordsList: GameWords
   gameSummary: GameSummary
-  gamePowerups: GamePowerups
   gamePowerupsDuration: number
   gameLocales: GameLocale
 }
@@ -25,7 +24,6 @@ function initialState(): GameState {
     gameCollections: [],
     gameWordsList: [],
     gameSummary: GAME_DEFAULTS.gameSummary,
-    gamePowerups: GAME_DEFAULTS.gamePowerups,
     gamePowerupsDuration: GAME_DEFAULTS.powerupDuration,
     gameLocales: {
       original: null,
@@ -66,14 +64,14 @@ export const useGameStore = defineStore('game', {
     },
 
     increasePowerups(type: PowerupName) {
-      if (type && !isEmptyObject(this.gamePowerups)) {
-        this.gamePowerups[type]!++
+      if (type && !isEmptyObject(this.userStore.powerups)) {
+        this.userStore.powerups[type]!++
       }
     },
 
     decreasePowerups(type: PowerupName) {
-      if (type && !isEmptyObject(this.gamePowerups)) {
-        this.gamePowerups[type] = Math.max((this.gamePowerups[type] ?? 0) - 1, 0)
+      if (type && !isEmptyObject(this.userStore.powerups)) {
+        this.userStore.powerups[type] = Math.max((this.userStore.powerups[type] ?? 0) - 1, 0)
       }
     },
 
@@ -109,10 +107,7 @@ export const useGameStore = defineStore('game', {
     prepareGame() {
       try {
         const mergedWords = this.gameCollections.flatMap(({ words, locales }) =>
-          words.map(word => ({
-            ...word,
-            locales,
-          })),
+          words.map(word => ({ ...word, locales })),
         )
 
         const shuffledWords = mergedWords

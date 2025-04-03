@@ -63,10 +63,13 @@ async function validateUser(to: any): Promise<{ name: string } | undefined> {
   const userStore = useUserStore()
 
   if (!userStore.isAuthenticated) {
+    console.log(111)
+
     await userStore.loadUserAccount()
   }
 
   if (userStore.isFirstSession && to.name !== 'Welcome') {
+    console.log(222)
     return { name: 'Welcome' }
   }
 
