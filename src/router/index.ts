@@ -32,6 +32,11 @@ const router = createRouter({
       component: () => import('../views/StreakView.vue'),
     },
     {
+      path: '/shop',
+      name: 'Shop',
+      component: () => import('../views/ShopView.vue'),
+    },
+    {
       path: '/game-lobby',
       name: 'GameLobby',
       component: () => import('../views/GameLobbyView.vue'),
@@ -63,13 +68,10 @@ async function validateUser(to: any): Promise<{ name: string } | undefined> {
   const userStore = useUserStore()
 
   if (!userStore.isAuthenticated) {
-    console.log(111)
-
     await userStore.loadUserAccount()
   }
 
   if (userStore.isFirstSession && to.name !== 'Welcome') {
-    console.log(222)
     return { name: 'Welcome' }
   }
 

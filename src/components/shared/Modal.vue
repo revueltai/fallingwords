@@ -3,12 +3,14 @@ import { useModalStore } from '@/stores/modal.store'
 import { defineEmits, defineProps } from 'vue'
 
 interface Props {
+  headerAsset?: string
   containerEl?: string
   heading?: string
   hasCloseButton?: boolean
 }
 
 withDefaults(defineProps<Props>(), {
+  headerAsset: '',
   containerEl: 'modal',
   hasCloseButton: true,
 })
@@ -48,15 +50,30 @@ function handleClose() {
         </Button>
 
         <div
-          v-if="$slots.header || heading"
+          v-if="$slots.header || heading || headerAsset"
           class="flex justify-between items-center mb-4 text-center"
         >
           <h3
             v-if="heading"
-            class="text-center w-full"
+            class="text-center w-full text-xl"
+            :class="headerAsset && 'mt-6'"
           >
             {{ heading }}
           </h3>
+
+          <div
+            v-if="headerAsset"
+            class="absolute left-0 top-0 flex items-end justify-center w-full -mt-8"
+          >
+            <div class="mx-4 bg-secondary border-secondary-light border border-b-0 rounded-t-full w-1/2 h-8">
+              <img
+                :src="headerAsset"
+                width="160"
+                height="160"
+                class="block mx-auto -mt-20"
+              >
+            </div>
+          </div>
 
           <template v-else-if="$slots.header">
             <slot name="header" />

@@ -38,27 +38,6 @@ export const APP_MENU: AppMenuItem[] = [
   },
 ]
 
-export const DASHBOARD_MENU: DashboardMenuItem[] = [
-  {
-    id: 'collections',
-    heading: 'Collections',
-    url: 'collections',
-    iconName: 'collection',
-  },
-  {
-    id: 'play',
-    heading: 'Play',
-    url: 'gameLobby',
-    iconName: 'play',
-  },
-  {
-    id: 'settings',
-    heading: 'Settings',
-    url: 'settings',
-    iconName: 'gear',
-  },
-]
-
 export const ALPHABETS: Record<GameAlphabetLocale, string> = {
   en: 'abcdefghijklmnopqrstuvwxyz',
   es: 'abcdefghijklmnopqrstuvwxyzñàèìòùü',

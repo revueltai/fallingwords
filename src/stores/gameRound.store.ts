@@ -81,7 +81,7 @@ export const useGameRoundStore = defineStore('gameRound', {
     activatePowerup(type: PowerupName) {
       // (this.gameStore.gameSummary.roundPowerupUsed?[]![type])++
 
-      this.gameStore.decreasePowerups(type)
+      this.userStore.decreasePowerups(type)
       this.roundActivePowerup = {
         active: true,
         type,

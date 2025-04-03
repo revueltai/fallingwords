@@ -46,32 +46,9 @@ export const useGameStore = defineStore('game', {
   },
 
   actions: {
-    increaseGameLives() {
-      this.userStore.lives++
-    },
-
-    decreaseGameLives() {
-      const newLivesCount = Math.max(this.userStore.lives - 1, 0)
-      if (newLivesCount > 0) {
-        this.userStore.lives = newLivesCount
-      }
-    },
-
     increaseGameRound() {
       if (this.gameCurrentRound <= this.gameTotalRounds - 1) {
         this.gameCurrentRound++
-      }
-    },
-
-    increasePowerups(type: PowerupName) {
-      if (type && !isEmptyObject(this.userStore.powerups)) {
-        this.userStore.powerups[type]!++
-      }
-    },
-
-    decreasePowerups(type: PowerupName) {
-      if (type && !isEmptyObject(this.userStore.powerups)) {
-        this.userStore.powerups[type] = Math.max((this.userStore.powerups[type] ?? 0) - 1, 0)
       }
     },
 

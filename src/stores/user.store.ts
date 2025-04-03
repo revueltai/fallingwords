@@ -1,5 +1,5 @@
 import { API_KEYS, USER_ACCOUNT_DEFAULTS } from '@/configs/constants'
-import { createUID } from '@/utils'
+import { createUID, isEmptyObject } from '@/utils'
 import APIService from '@/utils/apiService'
 import { defineStore } from 'pinia'
 
@@ -96,21 +96,12 @@ export const useUserStore = defineStore('user', {
           this.isAuthenticated = true
           this.isFirstSession = false
         }
-        /* else {
-          this.uid = userAccountData.uid
-          this.name = userAccountData.name
-          this.email = userAccountData.email
-          this.username = userAccountData.username
-          this.powerups = USER_ACCOUNT_DEFAULTS.powerups
-          this.lives = USER_ACCOUNT_DEFAULTS.lives
-          this.gems = USER_ACCOUNT_DEFAULTS.gems
-        } */
       } catch (error: any) {
         throw new Error(error)
       }
     },
 
-    increaseLives(amount: number) {
+    increaseLives(amount: number = 1) {
       if (this.lives) {
         this.lives += amount
       }
@@ -119,6 +110,34 @@ export const useUserStore = defineStore('user', {
     increaseGems(amount: number) {
       if (this.gems) {
         this.gems += amount
+      }
+    },
+
+    increasePowerups(type: PowerupName, amount: number = 1) {
+      if (type && this.powerups && !isEmptyObject(this.powerups)) {
+        this.powerups[type] = (this.powerups[type] ?? 0) + amount
+      }
+    },
+
+    decreasePowerups(type: PowerupName) {
+      if (type && this.powerups && !isEmptyObject(this.powerups)) {
+        this.powerups[type] = Math.max((this.powerups[type] ?? 0) - 1, 0)
+      }
+    },
+
+    decreaseLives(amount: number = 1) {
+      const newLivesCount = Math.max(this.lives - amount, 0)
+
+      if (newLivesCount > 0) {
+        this.lives = newLivesCount
+      }
+    },
+
+    decreaseGems(amount: number) {
+      const newGemsCount = Math.max(this.gems - amount, 0)
+
+      if (newGemsCount > 0) {
+        this.gems = newGemsCount
       }
     },
   },

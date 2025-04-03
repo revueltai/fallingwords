@@ -1,7 +1,7 @@
 <script setup lang="ts">
 interface Props {
   heading: string
-  subheading: string
+  subheading?: string
 }
 
 defineProps<Props>()
@@ -13,7 +13,10 @@ defineProps<Props>()
       {{ heading }}
     </h2>
 
-    <p class="text-primary text-sm">
+    <p
+      v-if="subheading"
+      class="text-primary text-sm"
+    >
       {{ subheading }}
     </p>
   </div>

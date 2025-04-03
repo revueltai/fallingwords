@@ -5,6 +5,7 @@ import { useGameRoundStore } from '@/stores/gameRound.store'
 import { getRandomNum } from '@/utils'
 import { defineStore } from 'pinia'
 import { useSoundStore } from './sounds.store'
+import { useUserStore } from './user.store'
 import {
   getLetter,
   getLetterIndexInWord,
@@ -25,6 +26,10 @@ export const useGameBoardStore = defineStore('gameBoard', {
   }),
 
   getters: {
+    userStore() {
+      return useUserStore()
+    },
+
     gameStore() {
       return useGameStore()
     },
@@ -76,7 +81,7 @@ export const useGameBoardStore = defineStore('gameBoard', {
           this.gameRoundStore.setLetterAsGuessed(getLetterIndexInWord(tile.letter, word))
         } else {
           newExpressionType = 'dislike'
-          this.gameStore.decreaseGameLives()
+          this.userStore.decreaseLives()
         }
       } else {
         newExpressionType = 'love'
@@ -88,8 +93,8 @@ export const useGameBoardStore = defineStore('gameBoard', {
           message.message = `+1 ${tile.powerup?.text}`
 
           id === this.gameRoundStore.powerups.life.id
-            ? this.gameStore.increaseGameLives()
-            : this.gameStore.increasePowerups(id)
+            ? this.userStore.increaseLives()
+            : this.userStore.increasePowerups(id)
         }
       }
 

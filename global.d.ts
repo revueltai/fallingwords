@@ -209,6 +209,18 @@ declare global {
   }
 
   type SuggestionsLocale = Record<GameAlphabetLocale, SuggestionsLocaleItem>
+
+  interface ShopItem {
+    uid: string
+    asset: string
+    price: number
+    amount: {
+      lives?: number
+      fire?: number
+      wind?: number
+      ice?: number
+    }
+  }
 }
 
 export { }
