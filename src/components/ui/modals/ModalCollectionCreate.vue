@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { useAppStore } from '@/stores/app.store'
-import { onMounted, ref } from 'vue'
+import { computed, onMounted, ref } from 'vue'
 
 const emit = defineEmits(['create'])
 
@@ -10,11 +10,19 @@ const collectionName = ref('')
 const collectionLocaleOriginal = ref('')
 const collectionLocaleLearn = ref('')
 
+const originalLocaleOptions = computed(() => getOptions(collectionLocaleLearn.value))
+
+const learnLocaleOptions = computed(() => getOptions(collectionLocaleOriginal.value))
+
 const formErrors = ref({
   collectionName: '',
   collectionLocaleOriginal: '',
   collectionLocaleLearn: '',
 })
+
+function getOptions(excludeOption: string) {
+  return appStore.formLocales?.filter((locale: FormSelectOption) => locale.value !== excludeOption)
+}
 
 function validateForm(): boolean {
   return !!(collectionName.value && collectionLocaleOriginal.value && collectionLocaleLearn.value)
@@ -50,7 +58,7 @@ onMounted(async () => await appStore.setFormLocales())
 
       <Select
         v-model="collectionLocaleOriginal"
-        :options="appStore.formLocales"
+        :options="originalLocaleOptions"
         name="collectionLocaleOriginal"
         type="text"
         :label="$t('nativeLanguage')"
@@ -61,7 +69,7 @@ onMounted(async () => await appStore.setFormLocales())
 
       <Select
         v-model="collectionLocaleLearn"
-        :options="appStore.formLocales"
+        :options="learnLocaleOptions"
         name="collectionLocaleLearn"
         type="text"
         :label="$t('learnLanguage')"

@@ -75,7 +75,7 @@ function handleCardClick() {
 
     <div
       :class="isSelected && 'opacity-60'"
-      class="flex justify-between items-center gap-4 overflow-hidden transition-opacity w-full"
+      class="flex justify-between items-center gap-4 transition-opacity w-full"
     >
       <div
         class="flex justify-between items-center gap-4"
