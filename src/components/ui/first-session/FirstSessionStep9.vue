@@ -1,0 +1,126 @@
+<script setup lang="ts">
+import { useUserStore } from '@/stores/user.store'
+import { Bus } from '@/utils/EventBus'
+import { onMounted, onUnmounted, ref } from 'vue'
+
+interface Props {
+  stepId: string
+}
+
+const props = defineProps<Props>()
+
+const userStore = useUserStore()
+
+const name = ref('')
+const email = ref('')
+const age = ref('')
+const username = ref('')
+const password = ref('')
+
+const formErrors = ref({
+  name: '',
+  email: '',
+  age: '',
+  username: '',
+  password: '',
+})
+
+function validateForm(): boolean {
+  return !!(name.value && email.value && age.value && username.value && password.value)
+}
+
+async function handleValidate(event: Event) {
+  event.preventDefault()
+
+  if (validateForm()) {
+    Bus.emit('firstSessionEnableCta')
+  }
+}
+
+async function handleStoreData() {
+  if (props.stepId !== 'createAccountPrompt') {
+    return
+  }
+
+  const rs = await userStore.createUserAccount({
+    name: name.value,
+    age: age.value,
+    email: email.value,
+    username: username.value,
+    password: password.value,
+  })
+
+  if (rs) {
+    Bus.emit('firstSessionGotoNextStep')
+  }
+}
+
+onMounted(async () => Bus.on('firstSessionSaveStepData', handleStoreData))
+
+onUnmounted(() => Bus.off('firstSessionSaveStepData', handleStoreData))
+</script>
+
+<template>
+  <form class="anim-scale-in-timed">
+    <div class="mb-8 flex flex-col gap-4">
+      <Input
+        v-model="name"
+        name="name"
+        type="text"
+        :label="$t('whatsYourName')"
+        :placeholder="$t('enterAName')"
+        required
+        :error="formErrors.name"
+        @input="handleValidate"
+      />
+
+      <Input
+        v-model="email"
+        name="email"
+        type="email"
+        :label="$t('emailLabel')"
+        :placeholder="$t('emailPlaceholder')"
+        required
+        :error="formErrors.email"
+        @input="handleValidate"
+      />
+
+      <Input
+        v-model="age"
+        name="age"
+        type="number"
+        :label="$t('ageLabel')"
+        :placeholder="$t('agePlaceholder')"
+        required
+        :error="formErrors.email"
+        @input="handleValidate"
+      />
+
+      <div class="mb-8 flex flex-col gap-4 border-t border-primary-light pt-6 mt-4">
+        <Input
+          v-model="username"
+          name="username"
+          type="text"
+          label-color="primary"
+          :label="$t('usernameLabel')"
+          :placeholder="$t('usernamePlaceholder')"
+          required
+          :error="formErrors.username"
+          @input="handleValidate"
+        />
+
+        <Input
+          v-model="password"
+          name="password"
+          type="password"
+          label-color="primary"
+          :label="$t('passwordLabel')"
+          :placeholder="$t('passwordPlaceholder')"
+          required
+          :error="formErrors.password"
+          @input="handleValidate"
+        />
+      </div>
+    </div>
+  </form>
+</template>

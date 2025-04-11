@@ -1,0 +1,183 @@
+<script setup lang="ts">
+import SearchBar from '@/components/shared/SearchBar.vue'
+import CollectionItem from '@/components/ui/CollectionItem.vue'
+import ModalCollectionCreate from '@/components/ui/modals/ModalCollectionCreate.vue'
+import ModalCollectionUpdate from '@/components/ui/modals/ModalCollectionUpdate.vue'
+import ModalConfirm from '@/components/ui/modals/ModalConfirm.vue'
+import PageContainer from '@/components/ui/PageContainer.vue'
+import PageContent from '@/components/ui/PageContent.vue'
+import { MODAL_NAMES } from '@/configs/constants'
+import { useAppStore } from '@/stores/app.store'
+import { useModalStore } from '@/stores/modal.store'
+import { isEmptyArray } from '@/utils'
+import { emitToast } from '@/utils/ToastEmitter'
+import { computed, ref } from 'vue'
+import { useI18n } from 'vue-i18n'
+import { useRouter } from 'vue-router'
+
+const router = useRouter()
+
+const { t } = useI18n()
+const appStore = useAppStore()
+const modalStore = useModalStore()
+
+const ModalComponentMap = {
+  create: ModalCollectionCreate,
+  update: ModalCollectionUpdate,
+  delete: ModalConfirm,
+}
+
+const searchQuery = ref('')
+const selectedCollectionUid = ref<string | null>(null)
+const actions = ref<CrudActions>('create')
+
+const filteredCollections = computed(() => {
+  if (!appStore.collections) {
+    return []
+  }
+
+  return appStore.collections.filter((collection: GameCollection) =>
+    collection.name.toLowerCase().includes(searchQuery.value.toLowerCase()),
+  )
+})
+
+const hasItems = computed(() => isEmptyArray(appStore.collections))
+
+const modalComponent = computed(() => (ModalComponentMap as any)[actions.value] || null)
+
+function resetModal() {
+  modalStore.closeModal()
+  selectedCollectionUid.value = null
+}
+
+function getModalProps(): ModalProps {
+  const actionProps = {
+    delete: {
+      onDelete: handleDelete,
+      heading: t('confirmDeleteCollection'),
+      byline: t('confirmDeleteCollectionInfo'),
+      ctaText: t('delete'),
+      iconName: 'trashbin',
+      eventName: 'delete',
+      eventCallbackParams: selectedCollectionUid.value,
+    },
+    create: {
+      onCreate: handleCreate,
+    },
+    update: {
+      onUpdate: handleUpdate,
+    },
+  }
+
+  return actionProps[actions.value] || {}
+}
+
+function handleShowViewCollection(uid: string) {
+  router.push({ name: 'Collection', params: { uid } })
+}
+
+function handleShowCreateCollection() {
+  actions.value = 'create'
+  modalStore.openModal(MODAL_NAMES.collections)
+}
+
+function handleShowUpdateCollection(uid: string) {
+  actions.value = 'update'
+  selectedCollectionUid.value = uid
+  modalStore.openModal(MODAL_NAMES.collections)
+}
+
+function handleShowDeleteCollection(uid: string) {
+  actions.value = 'delete'
+  selectedCollectionUid.value = uid
+  modalStore.openModal(MODAL_NAMES.collections)
+}
+
+function handleDelete(uid: string) {
+  const rs = appStore.deleteCollection(uid)
+
+  if (rs) {
+    resetModal()
+    emitToast(t('collectionDeleted'), 'success')
+  }
+}
+
+function handleCreate(payload: CollectionUpdate) {
+  const rs = appStore.createCollection(payload)
+
+  if (rs) {
+    resetModal()
+    emitToast(t('collectionCreated'), 'success')
+  } else {
+    emitToast(t('collectionCreateError'), 'error')
+  }
+}
+
+async function handleUpdate(payload: CollectionUpdate) {
+  if (payload.localeOriginal === payload.localeLearn) {
+    emitToast(t('collectionSameLanguageError'), 'error')
+    return
+  }
+
+  const rs = await appStore.updateCollection(payload)
+  if (rs) {
+    emitToast(t('collectionUpdated'), 'success')
+    resetModal()
+  } else {
+    emitToast(t('collectionUpdateError'), 'error')
+  }
+}
+</script>
+
+<template>
+  <PageContainer :heading="$t('collections')">
+    <div
+      v-if="!hasItems"
+      class="flex flex-col gap-3"
+    >
+      <Breadcrumbs :breadcrumbs="[$t('collections')]" />
+      <SearchBar v-model="searchQuery" />
+    </div>
+
+    <PageContent
+      columns="1"
+      :is-empty="hasItems"
+      :empty-heading="$t('noCollectionsFound')"
+      :empty-byline="$t('createCollectionsToPlayWith')"
+      empty-icon-name="collection"
+    >
+      <CollectionItem
+        v-for="(collection, index) in filteredCollections"
+        :key="index"
+        :uid="collection.uid"
+        :name="collection.name"
+        :locales="collection.locales"
+        :word-count="collection.words.length"
+        :has-buttons="true"
+        @click-text="handleShowViewCollection"
+        @update="handleShowUpdateCollection"
+        @delete="handleShowDeleteCollection"
+      />
+
+      <template #footer>
+        <Button
+          background-color="tertiary"
+          border-color="tertiary-light"
+          size="md"
+          class="min-w-48"
+          @click="handleShowCreateCollection"
+        >
+          {{ $t('addACollection') }}
+        </Button>
+      </template>
+    </PageContent>
+
+    <Modal :name="MODAL_NAMES.collections">
+      <Component
+        :is="modalComponent"
+        :uid="selectedCollectionUid"
+        v-bind="getModalProps()"
+      />
+    </Modal>
+  </PageContainer>
+</template>
