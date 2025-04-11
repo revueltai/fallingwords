@@ -7,10 +7,10 @@ import ModalConfirm from '@/components/ui/modals/ModalConfirm.vue'
 import PageContainer from '@/components/ui/PageContainer.vue'
 import PageContent from '@/components/ui/PageContent.vue'
 import { MODAL_NAMES } from '@/configs/constants'
+import { ToastService } from '@/services/ToastService'
 import { useAppStore } from '@/stores/app.store'
 import { useModalStore } from '@/stores/modal.store'
 import { isEmptyArray } from '@/utils'
-import { emitToast } from '@/utils/ToastEmitter'
 import { computed, ref } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { useRouter } from 'vue-router'
@@ -27,6 +27,7 @@ const ModalComponentMap = {
   delete: ModalConfirm,
 }
 
+const activeModal = ref<ModalConfig | null>(null)
 const searchQuery = ref('')
 const selectedCollectionUid = ref<string | null>(null)
 const actions = ref<CrudActions>('create')
@@ -36,14 +37,18 @@ const filteredCollections = computed(() => {
     return []
   }
 
-  return appStore.collections.filter((collection: GameCollection) =>
+  return appStore.collections.filter((collection: AppCollection) =>
     collection.name.toLowerCase().includes(searchQuery.value.toLowerCase()),
   )
 })
 
 const hasItems = computed(() => isEmptyArray(appStore.collections))
 
-const modalComponent = computed(() => (ModalComponentMap as any)[actions.value] || null)
+const modalComponent = computed(() => {
+  return activeModal.value
+    ? (ModalComponentMap as any)[actions.value]
+    : null
+})
 
 function resetModal() {
   modalStore.closeModal()
@@ -72,34 +77,54 @@ function getModalProps(): ModalProps {
   return actionProps[actions.value] || {}
 }
 
-function handleShowViewCollection(uid: string) {
-  router.push({ name: 'Collection', params: { uid } })
+function handleShowViewCollection(id: string) {
+  router.push({ name: 'Collection', params: { uid: id } })
 }
 
 function handleShowCreateCollection() {
   actions.value = 'create'
-  modalStore.openModal(MODAL_NAMES.collections)
+  activeModal.value = {
+    name: MODAL_NAMES.collections,
+    heading: 'addACollection',
+  }
+
+  modalStore.openModal(activeModal.value.name)
 }
 
-function handleShowUpdateCollection(uid: string) {
+function handleShowUpdateCollection(id: string) {
+  selectedCollectionUid.value = id
+
   actions.value = 'update'
-  selectedCollectionUid.value = uid
-  modalStore.openModal(MODAL_NAMES.collections)
+  activeModal.value = {
+    name: MODAL_NAMES.collections,
+    heading: 'updateCollection',
+  }
+
+  modalStore.openModal(activeModal.value.name)
 }
 
 function handleShowDeleteCollection(uid: string) {
-  actions.value = 'delete'
   selectedCollectionUid.value = uid
-  modalStore.openModal(MODAL_NAMES.collections)
+
+  actions.value = 'delete'
+  activeModal.value = {
+    name: MODAL_NAMES.collections,
+    heading: 'deleteCollection',
+  }
+
+  modalStore.openModal(activeModal.value.name)
 }
 
-function handleDelete(uid: string) {
-  const rs = appStore.deleteCollection(uid)
+function handleDelete(id: string) {
+  const rs = appStore.deleteCollection(id)
 
   if (rs) {
     resetModal()
-    emitToast(t('collectionDeleted'), 'success')
+    ToastService.emitToast(t('collectionDeleted'), 'success')
+    return
   }
+
+  ToastService.emitToast(t('collectionDeletedFailed'), 'error')
 }
 
 function handleCreate(payload: CollectionUpdate) {
@@ -107,24 +132,25 @@ function handleCreate(payload: CollectionUpdate) {
 
   if (rs) {
     resetModal()
-    emitToast(t('collectionCreated'), 'success')
+    ToastService.emitToast(t('collectionCreated'), 'success')
   } else {
-    emitToast(t('collectionCreateError'), 'error')
+    ToastService.emitToast(t('collectionCreateError'), 'error')
   }
 }
 
 async function handleUpdate(payload: CollectionUpdate) {
   if (payload.localeOriginal === payload.localeLearn) {
-    emitToast(t('collectionSameLanguageError'), 'error')
+    ToastService.emitToast(t('collectionSameLanguageError'), 'error')
     return
   }
 
   const rs = await appStore.updateCollection(payload)
+
   if (rs) {
-    emitToast(t('collectionUpdated'), 'success')
     resetModal()
+    ToastService.emitToast(t('collectionUpdated'), 'success')
   } else {
-    emitToast(t('collectionUpdateError'), 'error')
+    ToastService.emitToast(t('collectionUpdateError'), 'error')
   }
 }
 </script>
@@ -148,11 +174,12 @@ async function handleUpdate(payload: CollectionUpdate) {
     >
       <CollectionItem
         v-for="(collection, index) in filteredCollections"
+        :id="collection.id"
         :key="index"
-        :uid="collection.uid"
         :name="collection.name"
-        :locales="collection.locales"
-        :word-count="collection.words.length"
+        :locale-original="collection.locale_original"
+        :locale-learn="collection.locale_learn"
+        :words-count="collection.words_count"
         :has-buttons="true"
         @click-text="handleShowViewCollection"
         @update="handleShowUpdateCollection"
@@ -172,7 +199,10 @@ async function handleUpdate(payload: CollectionUpdate) {
       </template>
     </PageContent>
 
-    <Modal :name="MODAL_NAMES.collections">
+    <Modal
+      :name="activeModal ? activeModal.name : ''"
+      :heading="(activeModal && activeModal.heading) ? $t(activeModal.heading) : ''"
+    >
       <Component
         :is="modalComponent"
         :uid="selectedCollectionUid"

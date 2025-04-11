@@ -7,8 +7,8 @@ const soundStore = useSoundStore()
 const sounds = ref<boolean | undefined>(soundStore.soundsOn)
 const soundEffects = ref<boolean | undefined>(soundStore.soundEffectsOn)
 
-function handleSoundsChange() {
-  soundStore.updateSoundSetting(sounds.value as boolean)
+async function handleSoundsChange() {
+  await soundStore.updateSoundSetting(sounds.value as boolean)
 
   if (soundStore.soundsOn) {
     soundStore.playLoopSound(soundStore.soundActive)
@@ -17,8 +17,8 @@ function handleSoundsChange() {
   }
 }
 
-function handleSoundEffectsChange() {
-  soundStore.updateSoundEffectsSetting(soundEffects.value as boolean)
+async function handleSoundEffectsChange() {
+  await soundStore.updateSoundEffectsSetting(soundEffects.value as boolean)
 }
 </script>
 

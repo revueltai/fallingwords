@@ -1,12 +1,11 @@
-import { API_KEYS } from '@/configs/constants'
 import { soundsConfig, soundsEffectsConfig } from '@/configs/sounds.config'
-import APIService from '@/utils/apiService'
 import { defineStore } from 'pinia'
+import { useUserStore } from './user.store'
 
 interface SoundState {
   initialized: boolean
-  soundsOn: boolean | undefined
-  soundEffectsOn: boolean | undefined
+  soundsOn: boolean
+  soundEffectsOn: boolean
   soundActive: GameSoundName | ''
   soundEffectActive: GameSoundEffectName | ''
   sounds: GameSoundsMap
@@ -16,8 +15,8 @@ interface SoundState {
 export const useSoundStore = defineStore('sound', {
   state: (): SoundState => ({
     initialized: false,
-    soundsOn: undefined,
-    soundEffectsOn: undefined,
+    soundsOn: false,
+    soundEffectsOn: false,
     soundActive: '',
     soundEffectActive: '',
     soundsEffects: soundsEffectsConfig,
@@ -88,43 +87,18 @@ export const useSoundStore = defineStore('sound', {
       }
     },
 
-    updateSoundSetting(value: boolean) {
+    async updateSoundSetting(value: boolean) {
       this.soundsOn = value
-      APIService.saveStoreData(API_KEYS.settings, {
-        sound: this.soundsOn,
-        soundEffects: this.soundEffectsOn,
-      })
     },
 
-    updateSoundEffectsSetting(value: boolean) {
+    async updateSoundEffectsSetting(value: boolean) {
       this.soundEffectsOn = value
-      APIService.saveStoreData(API_KEYS.settings, {
-        sound: this.soundsOn,
-        soundEffects: this.soundEffectsOn,
-      })
     },
 
-    initializeSounds() {
+    async initializeSounds(hasSound: boolean, hasEffects: boolean) {
       if (!this.initialized) {
-        const settingsData = APIService.loadStoreData(API_KEYS.settings)
-
-        if (settingsData) {
-          if (settingsData.sound) {
-            this.soundsOn = settingsData.sound
-          }
-
-          if (settingsData.soundEffects) {
-            this.soundEffectsOn = settingsData.soundEffects
-          }
-        } else {
-          this.soundsOn = true
-          this.soundEffectsOn = true
-
-          APIService.saveStoreData(API_KEYS.settings, {
-            sound: this.soundsOn,
-            soundEffects: this.soundEffectsOn,
-          })
-        }
+        await this.updateSoundSetting(hasSound)
+        await this.updateSoundEffectsSetting(hasEffects)
 
         this.initialized = true
       }

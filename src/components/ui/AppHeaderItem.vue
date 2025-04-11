@@ -10,13 +10,16 @@ defineProps<Props>()
 </script>
 
 <template>
-  <div class="flex gap-1 items-center cursor-pointer anim-scale-in-timed">
+  <div class="h-auto min-h-[40px] min-w-[40px] flex gap-1 items-center cursor-pointer anim-scale-in-timed">
     <Icon
       :name="iconName"
       size="lg"
       type="fill"
     />
 
-    <AnimatedNumber :value="count" class="text-lg" />
+    <AnimatedNumber
+      :value="count"
+      class="text-lg"
+    />
   </div>
 </template>

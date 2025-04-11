@@ -1,14 +1,18 @@
 <script setup lang="ts">
+import { useErrorService } from '@/composables/useErrorService'
 import { useAppStore } from '@/stores/app.store'
+import { useUserStore } from '@/stores/user.store'
 import { computed, onMounted, ref } from 'vue'
 
 const emit = defineEmits(['create'])
 
+const { handleError } = useErrorService()
 const appStore = useAppStore()
+const userStore = useUserStore()
 
 const collectionName = ref('')
-const collectionLocaleOriginal = ref('')
-const collectionLocaleLearn = ref('')
+const collectionLocaleOriginal = ref<AppLocaleCode | ''>(userStore.originalLocale || '')
+const collectionLocaleLearn = ref<AppLocaleCode | ''>(userStore.learnLocale || '')
 
 const originalLocaleOptions = computed(() => getOptions(collectionLocaleLearn.value))
 
@@ -25,13 +29,23 @@ function getOptions(excludeOption: string) {
 }
 
 function validateForm(): boolean {
-  return !!(collectionName.value && collectionLocaleOriginal.value && collectionLocaleLearn.value)
+  if (!(collectionName.value && collectionLocaleOriginal.value && collectionLocaleLearn.value)) {
+    return handleError({ showToast: true, msg: 'authMissingFields' })
+  }
+
+  if (collectionLocaleOriginal.value === collectionLocaleLearn.value) {
+    return handleError({ showToast: true, msg: 'collectionSameLanguageError' })
+  }
+
+  return true
 }
 
 function handleSubmit(event: Event) {
   event.preventDefault()
 
-  if (validateForm()) {
+  const formIsValid = validateForm()
+
+  if (formIsValid) {
     emit('create', {
       name: collectionName.value,
       localeOriginal: collectionLocaleOriginal.value,
@@ -61,6 +75,7 @@ onMounted(async () => await appStore.setFormLocales())
         :options="originalLocaleOptions"
         name="collectionLocaleOriginal"
         type="text"
+        :asset="collectionLocaleOriginal"
         :label="$t('nativeLanguage')"
         :select-label="$t('selectLanguage')"
         required
@@ -72,6 +87,7 @@ onMounted(async () => await appStore.setFormLocales())
         :options="learnLocaleOptions"
         name="collectionLocaleLearn"
         type="text"
+        :asset="collectionLocaleLearn"
         :label="$t('learnLanguage')"
         :select-label="$t('selectLanguage')"
         required
@@ -85,7 +101,7 @@ onMounted(async () => await appStore.setFormLocales())
       type="submit"
       class="w-full"
     >
-      {{ $t('createCollection') }}
+      {{ $t('add') }}
     </Button>
   </form>
 </template>

@@ -1,24 +1,21 @@
-import { API_KEYS } from '@/configs/constants'
-import { getToday, isEmptyArray } from '@/utils'
-import APIService from '@/utils/apiService'
+import { supabase } from '@/services/SupabaseService'
+import { getToday } from '@/utils'
 import { defineStore } from 'pinia'
 import { useUserStore } from './user.store'
 
-interface UserState {
-  userUid: string | null
+interface StreakState {
   streakDates: string[]
   currentStreak: number
 }
 
-function initialState(): UserState {
+const weekDays = ['sunday', 'monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday']
+
+function initialState(): StreakState {
   return {
-    userUid: null,
     streakDates: [],
     currentStreak: 0,
   }
 }
-
-const weekDays = ['sunday', 'monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday']
 
 export const useStreakStore = defineStore('streak', {
   state: initialState,
@@ -33,42 +30,6 @@ export const useStreakStore = defineStore('streak', {
   },
 
   actions: {
-    async loadStreak() {
-      if (this.userStore.isAuthenticated) {
-        const streakData = await APIService.loadStoreData(API_KEYS.userStreakData)
-
-        if (!streakData) {
-          this.updateStreakData()
-          this.loadStreak()
-          return
-        }
-
-        this.userUid = streakData.userUid
-        this.streakDates = streakData.streakDates || []
-      }
-    },
-
-    async updateStreakData() {
-      if (this.userStore.isAuthenticated) {
-        return APIService.saveStoreData(API_KEYS.userStreakData, {
-          userUid: this.userStore.uid,
-          streakDates: this.streakDates,
-        })
-      }
-    },
-
-    isStreakOngoing(): boolean {
-      if (isEmptyArray(this.streakDates)) {
-        return false
-      }
-
-      const today = getToday()
-      const lastStreakDate = new Date(Math.max(...this.streakDates.map(date => new Date(date).getTime())))
-      const daysSinceLastStreak = Math.floor((new Date(today).getTime() - lastStreakDate.getTime()) / (1000 * 60 * 60 * 24))
-
-      return daysSinceLastStreak <= 1
-    },
-
     setStreakLength() {
       const sortedDates = [...this.streakDates].sort()
 
@@ -126,13 +87,41 @@ export const useStreakStore = defineStore('streak', {
       return results
     },
 
+    async loadStreak() {
+      if (!this.userStore.isAuthenticated) {
+        return
+      }
+
+      const streak = await supabase.fetchStreak()
+
+      if (!streak) {
+        await supabase.initializeStreak()
+        return
+      }
+
+      this.streakDates = streak.streak_dates || []
+      this.currentStreak = streak.current_streak
+    },
+
+    async updateStreakData() {
+      if (!this.userStore.isAuthenticated) {
+        return false
+      }
+
+      return supabase.updateStreak({
+        streak_dates: this.streakDates,
+        current_streak: this.currentStreak,
+      })
+    },
+
     async addStreakDate() {
       const today = getToday()
 
       if (!this.streakDates.includes(today)) {
         this.streakDates.push(today)
-        await this.updateStreakData()
         this.setStreakLength()
+
+        await this.updateStreakData()
       }
     },
   },

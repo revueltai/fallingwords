@@ -52,7 +52,7 @@ function getPendingLettersInWord(word: Word): string {
 function createPowerup(powerups: Powerups): Powerup {
   const types = Object.keys(powerups) as PowerupName[]
   const index = getRandomNum(types.length)
-  return powerups[types[index]]
+  return powerups[types[index]] as Powerup
 }
 
 /**

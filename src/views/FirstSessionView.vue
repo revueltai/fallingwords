@@ -3,13 +3,18 @@ import AppFirstSessionSteps from '@/components/ui/AppFirstSessionSteps.vue'
 import ModalCredits from '@/components/ui/modals/ModalCredits.vue'
 import ModalLogin from '@/components/ui/modals/ModalLogin.vue'
 import PageContainer from '@/components/ui/PageContainer.vue'
+import { useErrorService } from '@/composables/useErrorService'
 import { MODAL_NAMES } from '@/configs/constants'
+import { supabase } from '@/services/SupabaseService'
 import { useAppStore } from '@/stores/app.store'
 import { useModalStore } from '@/stores/modal.store'
 import { ref } from 'vue'
+import { useRouter } from 'vue-router'
 
 const appStore = useAppStore()
 const modalStore = useModalStore()
+const router = useRouter()
+const { handleError } = useErrorService()
 
 const showAccountCreate = ref(false)
 const showCredits = ref(false)
@@ -38,8 +43,20 @@ function handleShowLogin() {
   modalStore.openModal(MODAL_NAMES.firstSession)
 }
 
-function handleLoginUser() {
-  // login
+async function handleLoginUser(payload: { email: string, password: string }) {
+  try {
+    const data = await supabase.signIn(payload.email, payload.password)
+
+    if (!data) {
+      throw new Error('authSignInFailed')
+    }
+
+    modalStore.closeModal()
+    router.push({ name: 'Dashboard' })
+  } catch (error) {
+    console.error(error)
+    handleError({ showToast: true, msg: 'authSignInFailed' })
+  }
 }
 
 function handleShowCredits() {
@@ -52,6 +69,7 @@ function handleShowCredits() {
   <PageContainer
     class="flex items-center justify-center w-full text-center u-bg-app"
     padding="none"
+    :show-footer="false"
   >
     <div
       v-if="showAccountCreate"
@@ -137,7 +155,7 @@ function handleShowCredits() {
 
       <ModalLogin
         v-else
-        @create="handleLoginUser"
+        @login="handleLoginUser"
       />
     </Modal>
   </PageContainer>

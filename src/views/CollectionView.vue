@@ -8,10 +8,10 @@ import WordItem from '@/components/ui/WordItem.vue'
 import ModalWordCreate from '@/components/words/ModalWordCreate.vue'
 import ModalWordUpdate from '@/components/words/ModalWordUpdate.vue'
 import { MODAL_NAMES } from '@/configs/constants'
+import { ToastService } from '@/services/ToastService'
 import { useAppStore } from '@/stores/app.store'
 import { useModalStore } from '@/stores/modal.store'
 import { isEmptyArray } from '@/utils'
-import { emitToast } from '@/utils/ToastEmitter'
 import { computed, onMounted, ref } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { useRoute } from 'vue-router'
@@ -33,8 +33,9 @@ const ModalComponentMap = {
   delete: ModalConfirm,
 }
 
+const activeModal = ref<ModalConfig | null>(null)
 const searchQuery = ref('')
-const selectedCollection = ref<GameCollection | null>(null)
+const selectedCollection = ref<AppCollection | null>(null)
 const selectedWordUid = ref<string | null>(null)
 const actions = ref<CrudActions>('create')
 
@@ -43,13 +44,24 @@ const filteredWords = computed(() => {
     return []
   }
 
-  return selectedCollection.value.words.filter(word =>
+  const collectionId = selectedCollection.value?.id
+
+  if (!collectionId) {
+    return []
+  }
+
+  const words = appStore.collectionWords[collectionId] || []
+  if (!searchQuery.value) {
+    return words
+  }
+
+  return words.filter((word: AppWord) =>
     word.original.toLowerCase().includes(searchQuery.value.toLowerCase())
     || word.learn.toLowerCase().includes(searchQuery.value.toLowerCase()),
   )
 })
 
-const hasItems = computed(() => !!(selectedCollection.value && isEmptyArray(selectedCollection.value.words)))
+const hasItems = computed(() => !isEmptyArray(filteredWords.value))
 
 const modalComponent = computed(() => (ModalComponentMap as any)[actions.value] || null)
 
@@ -65,10 +77,12 @@ function getModalProps(): ModalProps {
       ctaText: t('delete'),
       iconName: 'trashbin',
       eventName: 'delete',
+      eventCallbackParams: selectedCollection.value?.id,
     },
     create: {
       onCreate: handleCreate,
-      locales: selectedCollection.value?.locales,
+      localeOriginal: selectedCollection.value?.locale_original,
+      localeLearn: selectedCollection.value?.locale_learn,
     },
     update: {
       onUpdate: handleUpdate,
@@ -82,63 +96,80 @@ function getModalProps(): ModalProps {
 
 function handleShowCreateWord() {
   actions.value = 'create'
-  modalStore.openModal(MODAL_NAMES.words)
+  activeModal.value = {
+    name: MODAL_NAMES.words,
+    heading: 'addAWord',
+  }
+
+  modalStore.openModal(activeModal.value.name)
 }
 
-function handleShowUpdateCollection(uid: string) {
+function handleShowUpdateCollection(id: string) {
+  selectedWordUid.value = id
+
   actions.value = 'update'
-  selectedWordUid.value = uid
-  modalStore.openModal(MODAL_NAMES.words)
+  activeModal.value = {
+    name: MODAL_NAMES.words,
+    heading: 'updateWord',
+  }
+
+  modalStore.openModal(activeModal.value.name)
 }
 
-function handleShowDeleteCollection(uid: string) {
+function handleShowDeleteCollection(id: string) {
+  selectedWordUid.value = id
+
   actions.value = 'delete'
-  selectedWordUid.value = uid
-  modalStore.openModal(MODAL_NAMES.words)
+  activeModal.value = {
+    name: MODAL_NAMES.words,
+    heading: 'deleteWord',
+  }
+
+  modalStore.openModal(activeModal.value.name)
 }
 
 function handleDelete() {
-  const rs = appStore.deleteWord(selectedCollection.value?.uid, selectedWordUid.value)
+  const rs = appStore.deleteWord(selectedCollection.value?.id, selectedWordUid.value)
 
   if (rs) {
     resetModal()
-    emitToast(t('wordDeleted'), 'success')
+    ToastService.emitToast(t('wordDeleted'), 'success')
   }
 }
 
 async function handleCreate(payload: WordPayload) {
   if (!(payload.original && payload.learn)) {
-    emitToast(t('cannotSaveWord'), 'error')
+    ToastService.emitToast(t('cannotSaveWord'), 'error')
     return
   }
 
-  const rs = await appStore.createWord(selectedCollection.value?.uid, payload)
+  const rs = await appStore.createWord(selectedCollection.value?.id, payload)
 
   if (rs) {
     resetModal()
-    emitToast(t('wordCreated'), 'success')
+    ToastService.emitToast(t('wordCreated'), 'success')
   } else {
-    emitToast(t('failedToCreateWord'), 'error')
+    ToastService.emitToast(t('failedToCreateWord'), 'error')
   }
 }
 
 async function handleUpdate(payload: WordPayload) {
   if (!(payload.original && payload.learn)) {
-    emitToast(t('cannotSaveWord'), 'error')
+    ToastService.emitToast(t('cannotSaveWord'), 'error')
     return
   }
 
-  const rs = await appStore.updateWord(selectedCollection.value?.uid, {
+  const rs = await appStore.updateWord(selectedCollection.value?.id, {
     uid: selectedWordUid.value,
     original: payload.original,
     learn: payload.learn,
   })
 
   if (rs) {
-    emitToast(t('wordSaved'), 'success')
+    ToastService.emitToast(t('wordSaved'), 'success')
     resetModal()
   } else {
-    emitToast(t('failedToSaveWord'), 'error')
+    ToastService.emitToast(t('failedToSaveWord'), 'error')
   }
 }
 
@@ -147,6 +178,7 @@ onMounted(async () => {
 
   if (collection) {
     selectedCollection.value = collection
+    appStore.fetchCollectionWords(selectedCollection.value?.id)
   }
 })
 </script>
@@ -155,8 +187,9 @@ onMounted(async () => {
   <PageContainer :heading="$t('collectionWords')">
     <div class="flex flex-col gap-3">
       <Breadcrumbs :breadcrumbs="[$t('collections'), String(selectedCollection?.name)]" />
+
       <SearchBar
-        v-if="!hasItems"
+        v-if="hasItems"
         v-model="searchQuery"
         :is-visible="hasItems"
       />
@@ -164,10 +197,11 @@ onMounted(async () => {
 
     <PageContent
       columns="1"
-      :is-empty="hasItems"
+      :is-empty="!hasItems"
       :empty-heading="$t('noWordsInCollection')"
       :empty-byline="$t('addYourFirstWord')"
       empty-icon-name="word"
+      empty-icon-stroke="stroke"
     >
       <WordItem
         v-for="(word, index) in filteredWords"
@@ -175,7 +209,8 @@ onMounted(async () => {
         :uid="word.uid"
         :original="word.original"
         :learn="word.learn"
-        :locales="selectedCollection?.locales!"
+        :locale-original="selectedCollection?.locale_original!"
+        :locale-learn="selectedCollection?.locale_learn!"
         @update="handleShowUpdateCollection"
         @delete="handleShowDeleteCollection"
       />
@@ -193,7 +228,10 @@ onMounted(async () => {
       </template>
     </PageContent>
 
-    <Modal :name="MODAL_NAMES.words">
+    <Modal
+      :name="activeModal ? activeModal.name : ''"
+      :heading="(activeModal && activeModal.heading) ? $t(activeModal.heading) : ''"
+    >
       <Component
         :is="modalComponent"
         v-bind="getModalProps()"

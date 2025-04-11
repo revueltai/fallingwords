@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import FirstSessionSuggestion from '@/components/ui/first-session/FirstSessionSuggestion.vue'
+import { Bus } from '@/services/EventBusService'
 import { useAppStore } from '@/stores/app.store'
-import { Bus } from '@/utils/EventBus'
 import { onMounted, onUnmounted, ref } from 'vue'
 
 interface Props {
@@ -16,7 +16,7 @@ const appStore = useAppStore()
 
 const original = ref('')
 const learn = ref('')
-const selectedCollection = ref<GameCollection | null>(null)
+const selectedCollection = ref<AppCollection | null>(null)
 const locales = ref<GameLocale | null>(null)
 
 const formErrors = ref({

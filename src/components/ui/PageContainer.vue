@@ -7,19 +7,27 @@ interface Props {
   heading?: string
   subheading?: string
   padding?: string
+  showFooter?: boolean
 }
 
-withDefaults(defineProps<Props>(), {
+const props = withDefaults(defineProps<Props>(), {
   heading: '',
   subheading: '',
   padding: 'px-4',
+  showFooter: true,
 })
 
-const useStore = useAppStore()
+const appStore = useAppStore()
 
-const cssStyles = computed(() => useStore.appUiElementHeights.appFooter ? createCssVar('app-footer', `${useStore.appUiElementHeights.appFooter}px`) : '')
+const cssStyles = computed(() => appStore.appUiElementHeights.appFooter && props.showFooter
+  ? createCssVar('app-footer', `${appStore.appUiElementHeights.appFooter}px`)
+  : '',
+)
 
-const cssClasses = computed(() => useStore.appUiElementHeights.appFooter ? 'pb-[var(--app-footer)] max-h-[calc(100%-var(--app-footer))]' : '')
+const cssClasses = computed(() => appStore.appUiElementHeights.appFooter && props.showFooter
+  ? 'pb-[var(--app-footer)] max-h-[calc(100%-var(--app-footer))]'
+  : '',
+)
 </script>
 
 <template>

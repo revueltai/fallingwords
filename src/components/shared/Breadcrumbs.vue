@@ -13,7 +13,9 @@ defineProps<Props>()
       :key="index"
       class="flex items-center gap-2"
     >
-      <span>{{ part }}</span>
+      <span class="truncate">
+        {{ part }}
+      </span>
 
       <Icon
         v-if="index < breadcrumbs.length - 1"

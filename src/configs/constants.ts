@@ -1,6 +1,6 @@
 export const APP_LOCALES = ['en', 'de', 'es', 'it', 'pt']
 
-export const API_KEYS = {
+export const APP_LOCALSTORAGE_KEYS = {
   settings: 'fwSettings',
   userAccountData: 'fwUserAccount',
   userAppData: 'fwUserApp',
@@ -251,6 +251,7 @@ export const MODAL_NAMES = {
   collections: 'collections',
   words: 'words',
   settings: 'settings',
+  deleteAccount: 'deleteAccount',
   noLives: 'noLives',
   headerLives: 'headerLives',
 }

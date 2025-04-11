@@ -5,10 +5,11 @@ interface Props {
   uid: string
   original: string
   learn: string
-  locales: GameLocale
+  localeOriginal: AppLocaleCode
+  localeLearn: AppLocaleCode
 }
 
-defineProps<Props>()
+const props = defineProps<Props>()
 
 const emit = defineEmits([
   'update',
@@ -16,7 +17,7 @@ const emit = defineEmits([
 ])
 
 function handleClick() {
-  console.log('click')
+  emit('update', props.uid)
 }
 </script>
 
@@ -29,12 +30,12 @@ function handleClick() {
       >
         <div class="text-start truncate w-full flex flex-col gap-3">
           <Word
-            :country-code="locales.original!"
+            :country-code="localeOriginal"
             :word="original"
           />
 
           <Word
-            :country-code="locales.learn!"
+            :country-code="localeLearn"
             :word="learn"
           />
         </div>

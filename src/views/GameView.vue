@@ -30,7 +30,7 @@ function setUIAnimation() {
 }
 
 onMounted(() => {
-  if (isEmptyArray(gameStore.gameWordsList)) {
+  if (isEmptyArray(gameStore.gameCollectionWords)) {
     router.push('/')
     return
   }

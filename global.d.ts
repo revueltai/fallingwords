@@ -4,6 +4,12 @@ declare global {
   type CrudActions = 'create' | 'update' | 'delete'
   type ModalProps = Record<string, any>
 
+  interface ModalConfig {
+    name: string
+    heading?: string
+    byline?: string
+  }
+
   interface FormSelectOption {
     value: string
     label: string
@@ -18,7 +24,7 @@ declare global {
   type ColorWeights = 'light' | 'dark'
   type ColorBase = 'black' | 'white' | 'grey'
   type Color = ColorBase | ColorScale | `${ColorScale}-${ColorWeights}` | 'none' | 'transparent'
-  type IconName = 'cornerDownLeft' | 'chevronDown' | 'chevronLeft' | 'chevronLeftDouble' | 'chevronRight' | 'chevronRightDouble' | 'chevronUp' | 'cross' | 'effects' | 'heart-empty' | 'heart-full' | 'home' | 'info' | 'list' | 'menu' | 'play' | 'pause' | 'plus' | 'powerup-fire' | 'powerup-ice' | 'powerup-wind' | 'skip' | 'sound' | 'check' | 'gear' | 'collection' | 'question' | 'trashbin' | 'word' | 'eye' | 'magnifier' | 'github' | 'star' | 'gem' | 'streak' | 'streakFlat' | 'game' | 'shop' | 'user' | 'gemFlat' | 'wordFlat' | 'gemStroke' | 'streakStroke' | 'heartStroke'
+  type IconName = 'cornerDownLeft' | 'chevronDown' | 'chevronLeft' | 'chevronLeftDouble' | 'chevronRight' | 'chevronRightDouble' | 'chevronUp' | 'cross' | 'effects' | 'heart-empty' | 'heart-full' | 'home' | 'info' | 'list' | 'menu' | 'play' | 'pause' | 'plus' | 'powerup-fire' | 'powerup-ice' | 'powerup-wind' | 'skip' | 'sound' | 'check' | 'gear' | 'collection' | 'question' | 'trashbin' | 'word' | 'eye' | 'eye-closed' | 'magnifier' | 'github' | 'star' | 'gem' | 'streak' | 'streakFlat' | 'game' | 'shop' | 'user' | 'gemFlat' | 'wordFlat' | 'gemStroke' | 'streakStroke' | 'heartStroke'
   type IconType = 'fill' | 'stroke' | 'both'
   type IconSizeName = 'xs' | 'sm' | 'md' | 'lg' | 'xl' | '2xl' | '3xl' | '4xl' | '5xl' | '6xl'
 
@@ -41,7 +47,29 @@ declare global {
     iconName: IconName
   }
 
-  // Dashboard
+  type AppLocaleCode = 'en' | 'es' | 'de' | 'it' | 'pt'
+
+  interface AppCollection {
+    id: string
+    name: string
+    locale_learn: AppLocaleCode
+    locale_original: AppLocaleCode
+    words_count: number
+  }
+
+  interface AppWord {
+    uid: string
+    original: string
+    learn: string
+    locales?: GameLocale
+  }
+
+  interface AppPowerups {
+    ice: number
+    fire: number
+    wind: number
+  }
+
   interface DashboardMenuItem {
     id: string
     heading: string
@@ -52,11 +80,9 @@ declare global {
   interface CollectionUpdate {
     uid?: string
     name: string
-    localeOriginal: RoundLocaleCodes
-    localeLearn: RoundLocaleCodes
+    localeOriginal: AppLocaleCode
+    localeLearn: AppLocaleCode
   }
-
-  type AppLocaleCode = 'en' | 'es' | 'de' | 'it' | 'pt'
 
   // Game
   interface BoardElements {
@@ -81,7 +107,10 @@ declare global {
     powerup: Powerup | null
   }
 
-  type PowerupName = 'life' | 'gem' | 'fire' | 'ice' | 'wind'
+  type PowerupIngame = 'fire' | 'ice' | 'wind'
+  type PowerupCollectable = 'life' | 'gem'
+
+  type PowerupName = PowerupIngame | PowerupCollectable
 
   interface Powerup {
     id: PowerupName
@@ -90,11 +119,9 @@ declare global {
     duration: number
     speed: number | null
     description?: string
-    // name: string
-    // type: string
   }
 
-  type Powerups = { [key in PowerupName]: Powerup }
+  type Powerups = { [key in PowerupName]?: Powerup }
 
   type GamePowerups = Partial<Record<keyof Powerups, number>>
   type RoundLocaleCodes = null | AppLocaleCode
@@ -104,21 +131,7 @@ declare global {
     learn: RoundLocaleCodes
   }
 
-  interface GameCollection {
-    uid: string
-    name: string
-    locales: GameLocale
-    words: GameWords
-  }
-
-  interface GameWord {
-    uid: string
-    original: string
-    learn: string
-    locales?: GameLocale
-  }
-
-  type GameWords = GameWord[]
+  type GameWords = AppWord[]
 
   type RoundState = 'loading' | 'ready' | 'paused' | 'playing' | 'roundwon' | 'roundlost' | 'gameover'
 
@@ -227,6 +240,32 @@ declare global {
   }
 
   type CharacterMobileControlDirection = 'left' | 'right'
+
+  interface UserPayload {
+    name: string | null
+    age: string | number | null
+    email: string | null
+    originalLocale: AppLocaleCode | null
+    learnLocale: AppLocaleCode | null
+    username: string | null
+    password?: string | null
+  }
+
+  interface UserDataPayload {
+    gems?: number
+    lives?: number
+    powerups?: AppPowerups
+    music?: boolean
+    sound_effects?: boolean
+  }
+
+  type ToastType = 'success' | 'error' | 'info'
+
+  interface ToastPayload {
+    message: string
+    type: ToastType
+    translateMessage?: boolean
+  }
 }
 
 export { }

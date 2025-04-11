@@ -28,6 +28,7 @@ interface Props {
   isSquared?: boolean
   isUnstyled?: boolean
   triggerKey?: string // New prop for the key to trigger click
+  exact?: boolean // New prop for exact matching
 }
 
 const props = withDefaults(defineProps<Props>(), {
@@ -51,6 +52,7 @@ const props = withDefaults(defineProps<Props>(), {
   isSquared: false,
   isUnstyled: false,
   triggerKey: 'Enter',
+  exact: false,
 })
 
 const emit = defineEmits(['click'])
@@ -176,8 +178,9 @@ function handleKeyPress(event: KeyboardEvent) {
   <RouterLink
     v-if="isRouterLink"
     :class="cssClasses"
-    :exact-active-class="activeClass"
-    :active-class="activeClass"
+    :exact="exact"
+    :exact-active-class="exact ? activeClass : undefined"
+    :active-class="!exact ? activeClass : undefined"
     :style="cssStyles"
     :to="to ?? ''"
     @click="handleClick"

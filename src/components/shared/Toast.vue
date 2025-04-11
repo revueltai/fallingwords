@@ -1,17 +1,12 @@
 <script setup lang="ts">
 import { UI } from '@/configs/constants'
+import { ToastService } from '@/services/ToastService'
 import { useSoundStore } from '@/stores/sounds.store'
-import { toastEmitter } from '@/utils/ToastEmitter'
 import { computed, onMounted, onUnmounted, ref } from 'vue'
-
-type ToastType = 'info' | 'error' | 'success'
-
-interface ToastPayload {
-  message: string
-  type: ToastType
-}
+import { useI18n } from 'vue-i18n'
 
 const soundStore = useSoundStore()
+const { t } = useI18n()
 
 const toastRef = ref<RefElement>(null)
 const message = ref('')
@@ -37,9 +32,11 @@ function handleAnimationEnd(event: AnimationEvent) {
 
 function showToast(payload: ToastPayload) {
   if (!isVisible.value) {
-    message.value = payload.message
-    type.value = payload.type || 'info'
     isVisible.value = true
+    type.value = payload.type || 'info'
+    message.value = payload.translateMessage
+      ? t(payload.message)
+      : payload.message
 
     if (toastRef.value) {
       toastRef.value.addEventListener('animationend', handleAnimationEnd)
@@ -53,10 +50,10 @@ function showToast(payload: ToastPayload) {
   }
 }
 
-onMounted(() => toastEmitter.on('toast', showToast))
+onMounted(() => ToastService.emitter.on('toast', showToast))
 
 onUnmounted(() => {
-  toastEmitter.off('toast', showToast)
+  ToastService.emitter.off('toast', showToast)
 
   if (toastRef.value) {
     toastRef.value.removeEventListener('animationend', handleAnimationEnd)

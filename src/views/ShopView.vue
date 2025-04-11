@@ -10,7 +10,7 @@ import { shopConfig } from '@/configs/shop.config'
 import { useModalStore } from '@/stores/modal.store'
 import { useUserStore } from '@/stores/user.store'
 import { getRandomNum } from '@/utils'
-import { emitToast } from '@/utils/ToastEmitter'
+import { ToastService } from '@/services/ToastService'
 import { computed, ref, shallowRef } from 'vue'
 import { useI18n } from 'vue-i18n'
 
@@ -72,7 +72,7 @@ function handlePurchase() {
 
     userStore.decreaseGems(itemToPurchase.value.price)
     modalStore.closeModal()
-    emitToast(t(`purchaseSign${getRandomNum(5)}`), 'success')
+    ToastService.emitToast(t(`purchaseSign${getRandomNum(5)}`), 'success')
   }
 }
 </script>

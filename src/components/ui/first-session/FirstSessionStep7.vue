@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import FirstSessionSuggestion from '@/components/ui/first-session/FirstSessionSuggestion.vue'
 import { useAppStore } from '@/stores/app.store'
-import { Bus } from '@/utils/EventBus'
+import { Bus } from '@/services/EventBusService'
 import { onMounted, onUnmounted, ref } from 'vue'
 
 interface Props {
