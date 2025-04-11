@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { emitToast } from '@/utils/ToastEmitter'
+import { ToastService } from '@/services/ToastService'
 import { onMounted, ref } from 'vue'
 import { useI18n } from 'vue-i18n'
 
@@ -39,7 +39,7 @@ function handleSubmit(event: Event) {
 
 onMounted(() => {
   if (!props.locales) {
-    emitToast(t('failedLoadLocales'), 'error')
+    ToastService.emitToast(t('failedLoadLocales'), 'error')
   }
 
   locales.value = props.locales

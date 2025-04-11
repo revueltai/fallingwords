@@ -1,6 +1,6 @@
-import { API_KEYS, LOCALES } from '@/configs/constants'
+import { APP_LOCALSTORAGE_KEYS, LOCALES } from '@/configs/constants'
+import APIService from '@/services/LocalStorageService'
 import { createUID, enterFullscreen, isEmptyArray } from '@/utils'
-import APIService from '@/utils/apiService'
 import { defineStore } from 'pinia'
 import { computed, ref, shallowRef } from 'vue'
 
@@ -13,7 +13,6 @@ export const useAppStore = defineStore('app', () => {
   const canvasMaxWidth = 430
   const canvasMaxHeight = 932
   const isFullscreen = ref(false)
-  const showMenu = ref(false)
   const canvasEl = shallowRef<RefElement>(null)
   const collections = ref<GameCollection[]>([])
   const formLocales = ref<FormSelectOption[]>([])
@@ -26,9 +25,13 @@ export const useAppStore = defineStore('app', () => {
 
   const collectionsWordsCount = computed(() => collections.value.reduce((acc, collection) => acc + collection.words.length, 0))
 
-  const originalLocales = computed(() => [...new Set(collections.value.map(collection => collection.locales.original))])
+  const originalLocales = computed(() => getUniqueLocales('original'))
 
-  const learningLocales = computed(() => [...new Set(collections.value.map(collection => collection.locales.learn))])
+  const learningLocales = computed(() => getUniqueLocales('learn'))
+
+  function getUniqueLocales(type: 'original' | 'learn') {
+    return [...new Set(collections.value.map(c => c.locales[type]))]
+  }
 
   function setAppUiElementHeights(key: keyof AppUiElementHeights, value: number) {
     if (key in appUiElementHeights.value) {
@@ -40,10 +43,6 @@ export const useAppStore = defineStore('app', () => {
     if (!isFullscreen.value) {
       enterFullscreen()
     }
-  }
-
-  function setAppMenu(state: boolean) {
-    showMenu.value = state
   }
 
   function setCanvasElement(el: HTMLElement) {
@@ -64,7 +63,7 @@ export const useAppStore = defineStore('app', () => {
 
   async function loadCollections() {
     try {
-      const userAppData = APIService.loadStoreData(API_KEYS.userAppData)
+      const userAppData = APIService.loadStoreData(APP_LOCALSTORAGE_KEYS.userAppData)
 
       if (userAppData) {
         collections.value = userAppData as GameCollection[]
@@ -103,7 +102,7 @@ export const useAppStore = defineStore('app', () => {
       words: [],
     })
 
-    const rs = APIService.saveStoreData(API_KEYS.userAppData, collections.value)
+    const rs = APIService.saveStoreData(APP_LOCALSTORAGE_KEYS.userAppData, collections.value)
     return rs ? uid : null
   }
 
@@ -118,7 +117,7 @@ export const useAppStore = defineStore('app', () => {
       const uid = createUID()
       collection.words.push({ ...payload, uid })
 
-      return APIService.saveStoreData(API_KEYS.userAppData, collections.value)
+      return APIService.saveStoreData(APP_LOCALSTORAGE_KEYS.userAppData, collections.value)
     }
 
     return false
@@ -140,7 +139,7 @@ export const useAppStore = defineStore('app', () => {
         },
       })
 
-      return APIService.saveStoreData(API_KEYS.userAppData, collections.value)
+      return APIService.saveStoreData(APP_LOCALSTORAGE_KEYS.userAppData, collections.value)
     }
 
     return false
@@ -164,7 +163,7 @@ export const useAppStore = defineStore('app', () => {
         })
       }
 
-      return APIService.saveStoreData(API_KEYS.userAppData, collections.value)
+      return APIService.saveStoreData(APP_LOCALSTORAGE_KEYS.userAppData, collections.value)
     }
 
     return false
@@ -180,7 +179,7 @@ export const useAppStore = defineStore('app', () => {
     if (deleteIndex !== -1) {
       collections.value.splice(deleteIndex, 1)
 
-      return APIService.saveStoreData(API_KEYS.userAppData, collections.value)
+      return APIService.saveStoreData(APP_LOCALSTORAGE_KEYS.userAppData, collections.value)
     }
 
     return false
@@ -199,7 +198,7 @@ export const useAppStore = defineStore('app', () => {
       if (wordIndex !== -1) {
         collection.words.splice(wordIndex, 1)
 
-        return APIService.saveStoreData(API_KEYS.userAppData, collections.value)
+        return APIService.saveStoreData(APP_LOCALSTORAGE_KEYS.userAppData, collections.value)
       }
     }
 
@@ -207,7 +206,6 @@ export const useAppStore = defineStore('app', () => {
   }
 
   return {
-    showMenu,
     collections,
     canvasMaxWidth,
     canvasMaxHeight,
@@ -218,7 +216,6 @@ export const useAppStore = defineStore('app', () => {
     originalLocales,
     learningLocales,
     appUiElementHeights,
-    setAppMenu,
     setFullscreen,
     setAppUiElementHeights,
     setCanvasElement,

@@ -1,6 +1,6 @@
-import { API_KEYS } from '@/configs/constants'
+import { APP_LOCALSTORAGE_KEYS } from '@/configs/constants'
+import APIService from '@/services/LocalStorageService'
 import { getToday, isEmptyArray } from '@/utils'
-import APIService from '@/utils/apiService'
 import { defineStore } from 'pinia'
 import { useUserStore } from './user.store'
 
@@ -35,7 +35,7 @@ export const useStreakStore = defineStore('streak', {
   actions: {
     async loadStreak() {
       if (this.userStore.isAuthenticated) {
-        const streakData = await APIService.loadStoreData(API_KEYS.userStreakData)
+        const streakData = await APIService.loadStoreData(APP_LOCALSTORAGE_KEYS.userStreakData)
 
         if (!streakData) {
           this.updateStreakData()
@@ -50,7 +50,7 @@ export const useStreakStore = defineStore('streak', {
 
     async updateStreakData() {
       if (this.userStore.isAuthenticated) {
-        return APIService.saveStoreData(API_KEYS.userStreakData, {
+        return APIService.saveStoreData(APP_LOCALSTORAGE_KEYS.userStreakData, {
           userUid: this.userStore.uid,
           streakDates: this.streakDates,
         })

@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { useAppStore } from '@/stores/app.store'
 import { isMobile } from '@/utils'
-import { Bus } from '@/utils/EventBus'
+import { Bus } from '@/services/EventBusService'
 import { computed, onMounted, onUnmounted, ref } from 'vue'
 
 interface Props {

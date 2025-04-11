@@ -2,14 +2,21 @@
 import { APP_MENU } from '@/configs/constants'
 import { useAppStore } from '@/stores/app.store'
 import { sanitizeRoute } from '@/utils'
-import { onMounted, ref } from 'vue'
+import { onMounted, onUnmounted, ref } from 'vue'
 
 const appStore = useAppStore()
 
 const activeClass = 'border bg-secondary-light border-senary-light'
 
+let resizeObserver: ResizeObserver | null = null
 const activeItem = ref('')
 const appFooterRef = ref<RefElement>(null)
+
+function updateHeight() {
+  if (appFooterRef.value) {
+    appStore.setAppUiElementHeights('appFooter', appFooterRef.value.offsetHeight)
+  }
+}
 
 function isActiveItem(item: AppMenuItem) {
   return item.id === activeItem.value
@@ -20,8 +27,17 @@ function handleClick(item: AppMenuItem) {
 }
 
 onMounted(() => {
+  updateHeight()
+  resizeObserver = new ResizeObserver(updateHeight)
+
   if (appFooterRef.value) {
-    appStore.setAppUiElementHeights('appFooter', appFooterRef.value.offsetHeight)
+    resizeObserver.observe(appFooterRef.value)
+  }
+})
+
+onUnmounted(() => {
+  if (resizeObserver) {
+    resizeObserver.disconnect()
   }
 })
 </script>

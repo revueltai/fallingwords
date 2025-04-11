@@ -1,6 +1,6 @@
-import { API_KEYS } from '@/configs/constants'
+import { APP_LOCALSTORAGE_KEYS } from '@/configs/constants'
 import { soundsConfig, soundsEffectsConfig } from '@/configs/sounds.config'
-import APIService from '@/utils/apiService'
+import APIService from '@/services/LocalStorageService'
 import { defineStore } from 'pinia'
 
 interface SoundState {
@@ -90,7 +90,7 @@ export const useSoundStore = defineStore('sound', {
 
     updateSoundSetting(value: boolean) {
       this.soundsOn = value
-      APIService.saveStoreData(API_KEYS.settings, {
+      APIService.saveStoreData(APP_LOCALSTORAGE_KEYS.settings, {
         sound: this.soundsOn,
         soundEffects: this.soundEffectsOn,
       })
@@ -98,7 +98,7 @@ export const useSoundStore = defineStore('sound', {
 
     updateSoundEffectsSetting(value: boolean) {
       this.soundEffectsOn = value
-      APIService.saveStoreData(API_KEYS.settings, {
+      APIService.saveStoreData(APP_LOCALSTORAGE_KEYS.settings, {
         sound: this.soundsOn,
         soundEffects: this.soundEffectsOn,
       })
@@ -106,7 +106,7 @@ export const useSoundStore = defineStore('sound', {
 
     initializeSounds() {
       if (!this.initialized) {
-        const settingsData = APIService.loadStoreData(API_KEYS.settings)
+        const settingsData = APIService.loadStoreData(APP_LOCALSTORAGE_KEYS.settings)
 
         if (settingsData) {
           if (settingsData.sound) {
@@ -120,7 +120,7 @@ export const useSoundStore = defineStore('sound', {
           this.soundsOn = true
           this.soundEffectsOn = true
 
-          APIService.saveStoreData(API_KEYS.settings, {
+          APIService.saveStoreData(APP_LOCALSTORAGE_KEYS.settings, {
             sound: this.soundsOn,
             soundEffects: this.soundEffectsOn,
           })

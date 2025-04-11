@@ -7,10 +7,10 @@ import ModalConfirm from '@/components/ui/modals/ModalConfirm.vue'
 import PageContainer from '@/components/ui/PageContainer.vue'
 import PageContent from '@/components/ui/PageContent.vue'
 import { MODAL_NAMES } from '@/configs/constants'
+import { ToastService } from '@/services/ToastService'
 import { useAppStore } from '@/stores/app.store'
 import { useModalStore } from '@/stores/modal.store'
 import { isEmptyArray } from '@/utils'
-import { emitToast } from '@/utils/ToastEmitter'
 import { computed, ref } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { useRouter } from 'vue-router'
@@ -98,7 +98,7 @@ function handleDelete(uid: string) {
 
   if (rs) {
     resetModal()
-    emitToast(t('collectionDeleted'), 'success')
+    ToastService.emitToast(t('collectionDeleted'), 'success')
   }
 }
 
@@ -107,24 +107,24 @@ function handleCreate(payload: CollectionUpdate) {
 
   if (rs) {
     resetModal()
-    emitToast(t('collectionCreated'), 'success')
+    ToastService.emitToast(t('collectionCreated'), 'success')
   } else {
-    emitToast(t('collectionCreateError'), 'error')
+    ToastService.emitToast(t('collectionCreateError'), 'error')
   }
 }
 
 async function handleUpdate(payload: CollectionUpdate) {
   if (payload.localeOriginal === payload.localeLearn) {
-    emitToast(t('collectionSameLanguageError'), 'error')
+    ToastService.emitToast(t('collectionSameLanguageError'), 'error')
     return
   }
 
   const rs = await appStore.updateCollection(payload)
   if (rs) {
-    emitToast(t('collectionUpdated'), 'success')
+    ToastService.emitToast(t('collectionUpdated'), 'success')
     resetModal()
   } else {
-    emitToast(t('collectionUpdateError'), 'error')
+    ToastService.emitToast(t('collectionUpdateError'), 'error')
   }
 }
 </script>

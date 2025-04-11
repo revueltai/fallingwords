@@ -18,7 +18,7 @@ declare global {
   type ColorWeights = 'light' | 'dark'
   type ColorBase = 'black' | 'white' | 'grey'
   type Color = ColorBase | ColorScale | `${ColorScale}-${ColorWeights}` | 'none' | 'transparent'
-  type IconName = 'cornerDownLeft' | 'chevronDown' | 'chevronLeft' | 'chevronLeftDouble' | 'chevronRight' | 'chevronRightDouble' | 'chevronUp' | 'cross' | 'effects' | 'heart-empty' | 'heart-full' | 'home' | 'info' | 'list' | 'menu' | 'play' | 'pause' | 'plus' | 'powerup-fire' | 'powerup-ice' | 'powerup-wind' | 'skip' | 'sound' | 'check' | 'gear' | 'collection' | 'question' | 'trashbin' | 'word' | 'eye' | 'magnifier' | 'github' | 'star' | 'gem' | 'streak' | 'streakFlat' | 'game' | 'shop' | 'user' | 'gemFlat' | 'wordFlat' | 'gemStroke' | 'streakStroke' | 'heartStroke'
+  type IconName = 'cornerDownLeft' | 'chevronDown' | 'chevronLeft' | 'chevronLeftDouble' | 'chevronRight' | 'chevronRightDouble' | 'chevronUp' | 'cross' | 'effects' | 'heart-empty' | 'heart-full' | 'home' | 'info' | 'list' | 'menu' | 'play' | 'pause' | 'plus' | 'powerup-fire' | 'powerup-ice' | 'powerup-wind' | 'skip' | 'sound' | 'check' | 'gear' | 'collection' | 'question' | 'trashbin' | 'word' | 'eye' | 'eye-closed' | 'magnifier' | 'github' | 'star' | 'gem' | 'streak' | 'streakFlat' | 'game' | 'shop' | 'user' | 'gemFlat' | 'wordFlat' | 'gemStroke' | 'streakStroke' | 'heartStroke'
   type IconType = 'fill' | 'stroke' | 'both'
   type IconSizeName = 'xs' | 'sm' | 'md' | 'lg' | 'xl' | '2xl' | '3xl' | '4xl' | '5xl' | '6xl'
 
@@ -227,6 +227,30 @@ declare global {
   }
 
   type CharacterMobileControlDirection = 'left' | 'right'
+
+  interface UserPayload {
+    name: string | null
+    age: string | number | null
+    email: string | null
+    username: string | null
+    password: string | null
+    originalLocale: AppLocaleCode | null
+    learnLocale: AppLocaleCode | null
+  }
+
+  interface UserDataPayload {
+    gems?: number
+    lives?: number
+    powerups?: GamePowerups
+  }
+
+  type ToastType = 'success' | 'error' | 'info'
+
+  interface ToastPayload {
+    message: string
+    type: ToastType
+    translateMessage?: boolean
+  }
 }
 
 export { }

@@ -5,7 +5,7 @@ import { useGameCharacterStore } from '@/stores/gameCharacter.store'
 import { useGameRoundStore } from '@/stores/gameRound.store'
 import { useSoundStore } from '@/stores/sounds.store'
 import { isMobile } from '@/utils'
-import { Bus } from '@/utils/EventBus'
+import { Bus } from '@/services/EventBusService'
 import { nextTick, onBeforeUnmount, onMounted, ref, watch } from 'vue'
 
 const soundStore = useSoundStore()

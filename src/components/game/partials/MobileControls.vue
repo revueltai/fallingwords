@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { isMobile } from '@/utils'
-import { Bus } from '@/utils/EventBus'
+import { Bus } from '@/services/EventBusService'
 
 const controls: {
   direction: CharacterMobileControlDirection

@@ -22,7 +22,13 @@ const isLoaded = ref(false)
 const isFocused = ref(false)
 
 const canvasMaxWidth = computed(() => appStore.canvasMaxWidth)
+
 const canvasMaxHeight = computed(() => appStore.canvasMaxHeight)
+
+const isAppPage = computed(() => {
+  const { path } = router.currentRoute.value
+  return !['/game', '/welcome', '/'].includes(path)
+})
 
 function setCanvasSize() {
   if (appWrapperRef.value) {
@@ -86,7 +92,7 @@ onUnmounted(() => window.removeEventListener('focus', handleWindowFocus))
       class="relative w-full h-full overflow-hidden bg-secondary-dark border border-secondary sm:rounded-xl"
     >
       <div class="flex flex-col h-full">
-        <AppHeader v-if="appStore.showMenu" />
+        <AppHeader v-if="isAppPage" />
 
         <Transition name="fade" mode="out-in">
           <Component
@@ -95,7 +101,7 @@ onUnmounted(() => window.removeEventListener('focus', handleWindowFocus))
           />
         </Transition>
 
-        <AppFooter v-if="appStore.showMenu" />
+        <AppFooter v-if="isAppPage" />
       </div>
 
       <ModalContainer />

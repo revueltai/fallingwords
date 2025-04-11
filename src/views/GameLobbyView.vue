@@ -7,7 +7,7 @@ import { useAppStore } from '@/stores/app.store'
 import { useGameStore } from '@/stores/game.store'
 import { useUserStore } from '@/stores/user.store'
 import { isEmptyArray } from '@/utils'
-import { emitToast } from '@/utils/ToastEmitter'
+import { ToastService } from '@/services/ToastService'
 import { computed, onMounted, ref } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { useRouter } from 'vue-router'
@@ -66,7 +66,7 @@ function handleGameStart() {
     router.push('game')
   }
  else {
-    emitToast(t('failedToStartGame'), 'error')
+    ToastService.emitToast(t('failedToStartGame'), 'error')
     router.push('/')
   }
 }

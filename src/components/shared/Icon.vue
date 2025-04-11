@@ -11,7 +11,7 @@ interface Props {
 }
 
 const props = withDefaults(defineProps<Props>(), {
-  iconset: `/iconset.svg?v${Date.now()}`,
+  iconset: `/iconset.svg?v${Date.now() + 12345}`,
   type: 'stroke',
   size: 'sm',
   color: 'white',

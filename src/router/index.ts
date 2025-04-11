@@ -1,32 +1,37 @@
 import type { I18n } from 'vue-i18n'
-import type { Router, RouteRecordRaw } from 'vue-router'
+import type { RouteLocationNormalized, Router, RouteRecordRaw } from 'vue-router'
 import { APP_LOCALES } from '@/configs/constants'
-import { useAppStore } from '@/stores/app.store'
+import { getLocale, isI18nInitialized, loadLocaleMessages, setI18nLanguage } from '@/services/I18nService'
 import { useModalStore } from '@/stores/modal.store'
 import { useUserStore } from '@/stores/user.store'
-import { getLocale, isI18nInitialized, loadLocaleMessages, setI18nLanguage } from '@/utils/i18n'
 import { createRouter, createWebHistory } from 'vue-router'
 
-async function validateUser(to: any): Promise<{ name: string, params?: Record<string, any> } | undefined> {
+const publicRoutes = ['Splash', 'Welcome']
+
+async function validateUser(to: RouteLocationNormalized): Promise<{ name: string } | undefined> {
   const userStore = useUserStore()
+  const isPublicRoute = publicRoutes.includes(to.name as string)
 
   if (!userStore.isAuthenticated) {
+    // console.log(1, 'load')
     await userStore.loadUserAccount()
-
-    if (userStore.isFirstSession && to.name !== 'Welcome') {
-      return { name: 'Welcome' }
-    }
   }
 
-  // if (!userStore.isFirstSession && !userStore.isAuthenticated) {
-  //   return { name: 'Login' }
-  // }
+  // console.log(2, userStore.isAuthenticated, isPublicRoute, to.name)
+
+  if (userStore.isAuthenticated) {
+    // console.log(3, 'isAuthenticated', to.name)
+    if (isPublicRoute) {
+      return { name: 'Dashboard' }
+    }
+  } else if (!isPublicRoute) {
+    // console.log(5, 'notPublicRoute', to.name)
+    return { name: 'Welcome' }
+  }
+
+  // console.log(6)
 
   return undefined
-}
-
-function isAppScreen(to: any): boolean {
-  return !['/game', '/welcome', '/'].includes(to.path)
 }
 
 async function setI18nAppLanguage(i18n: I18n) {
@@ -109,15 +114,12 @@ export function setupRouter(i18n: I18n): Router {
   })
 
   router.beforeEach(async (to, from, next) => {
-    const route = await validateUser(to)
-    const appStore = useAppStore()
     const modalStore = useModalStore()
-
-    appStore.setAppMenu(isAppScreen(to))
     modalStore.closeModal()
 
     setI18nAppLanguage(i18n)
 
+    const route = await validateUser(to)
     if (route) {
       next(route)
     } else {

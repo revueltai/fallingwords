@@ -11,7 +11,7 @@ import { MODAL_NAMES } from '@/configs/constants'
 import { useAppStore } from '@/stores/app.store'
 import { useModalStore } from '@/stores/modal.store'
 import { isEmptyArray } from '@/utils'
-import { emitToast } from '@/utils/ToastEmitter'
+import { ToastService } from '@/services/ToastService'
 import { computed, onMounted, ref } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { useRoute } from 'vue-router'
@@ -102,13 +102,13 @@ function handleDelete() {
 
   if (rs) {
     resetModal()
-    emitToast(t('wordDeleted'), 'success')
+    ToastService.emitToast(t('wordDeleted'), 'success')
   }
 }
 
 async function handleCreate(payload: WordPayload) {
   if (!(payload.original && payload.learn)) {
-    emitToast(t('cannotSaveWord'), 'error')
+    ToastService.emitToast(t('cannotSaveWord'), 'error')
     return
   }
 
@@ -116,15 +116,15 @@ async function handleCreate(payload: WordPayload) {
 
   if (rs) {
     resetModal()
-    emitToast(t('wordCreated'), 'success')
+    ToastService.emitToast(t('wordCreated'), 'success')
   } else {
-    emitToast(t('failedToCreateWord'), 'error')
+    ToastService.emitToast(t('failedToCreateWord'), 'error')
   }
 }
 
 async function handleUpdate(payload: WordPayload) {
   if (!(payload.original && payload.learn)) {
-    emitToast(t('cannotSaveWord'), 'error')
+    ToastService.emitToast(t('cannotSaveWord'), 'error')
     return
   }
 
@@ -135,10 +135,10 @@ async function handleUpdate(payload: WordPayload) {
   })
 
   if (rs) {
-    emitToast(t('wordSaved'), 'success')
+    ToastService.emitToast(t('wordSaved'), 'success')
     resetModal()
   } else {
-    emitToast(t('failedToSaveWord'), 'error')
+    ToastService.emitToast(t('failedToSaveWord'), 'error')
   }
 }
 

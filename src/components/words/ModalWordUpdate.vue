@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { useAppStore } from '@/stores/app.store'
-import { emitToast } from '@/utils/ToastEmitter'
+import { ToastService } from '@/services/ToastService'
 import { onMounted, ref } from 'vue'
 import { useI18n } from 'vue-i18n'
 
@@ -44,7 +44,7 @@ onMounted(async () => {
   const word = await appStore.getWordById(props.collection.uid, props.wordUid)
 
   if (!word || !props.collection) {
-    emitToast(t('failedToLoadWord'), 'error')
+    ToastService.emitToast(t('failedToLoadWord'), 'error')
   }
 
   original.value = word.original

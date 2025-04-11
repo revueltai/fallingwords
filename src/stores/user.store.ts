@@ -1,34 +1,25 @@
+import { useErrorService } from '@/composables/useErrorService'
 import {
-  API_KEYS,
+  APP_LOCALSTORAGE_KEYS,
   LIFE_MAX_REFILL_LIVES,
   LIFE_REFILL_TIME,
   LIFE_REGENERATION_INTERVAL_TIME,
   USER_ACCOUNT_DEFAULTS,
 } from '@/configs/constants'
-import { createUID, isEmptyObject } from '@/utils'
-import APIService from '@/utils/apiService'
+import localStorage from '@/services/LocalStorageService'
+import { supabase } from '@/services/SupabaseService'
+import { isEmptyObject } from '@/utils'
 import { defineStore } from 'pinia'
 import { useStreakStore } from './streak.store'
-import { resetStore } from './utils.store'
-
-interface UserPayload {
-  name: string | null
-  age: string | number | null
-  email: string | null
-  username: string | null
-  password: string | null
-}
 
 interface UserState extends UserPayload {
   createdAt: string | null
   uid: string | null
-  isFirstSession: boolean
-  isAuthenticated: boolean
   powerups: GamePowerups | null
   lives: number
   gems: number
   lastLifeAddedAt: number | null
-  lifeRegenerationInterval: number | null
+  lifeRegenerationInterval: NodeJS.Timeout | null
 }
 
 function initialState(): UserState {
@@ -43,85 +34,166 @@ function initialState(): UserState {
     powerups: null,
     lives: 0,
     gems: 0,
-    isFirstSession: true,
-    isAuthenticated: false,
     lastLifeAddedAt: null,
     lifeRegenerationInterval: null,
+    originalLocale: null,
+    learnLocale: null,
   }
 }
+
+const { handleError } = useErrorService()
 
 export const useUserStore = defineStore('user', {
   state: initialState,
 
   getters: {
+    isAuthenticated: state => !!state.uid,
+    isFirstSession: state => !state.createdAt,
     hasLives: state => state.lives > 0,
     hasLessThanMaxRefillLives: state => state.lives < LIFE_MAX_REFILL_LIVES,
   },
 
   actions: {
+    async checkEmailExists(email: string): Promise<boolean> {
+      try {
+        const isUnique = await supabase.isEmailUnique(email)
+        return !isUnique
+      } catch (error) {
+        console.error('Error checking email:', error)
+        return true
+      }
+    },
+
+    async checkUsernameExists(username: string): Promise<boolean> {
+      try {
+        const isUnique = await supabase.isUsernameUnique(username)
+        return !isUnique
+      } catch (error) {
+        console.error('Error checking username:', error)
+        return true
+      }
+    },
+
     async createUserAccount(payload: UserPayload) {
       try {
-        this.createdAt = new Date().toISOString()
-        this.uid = createUID(payload.name!)
+        if (!payload.email || !payload.password || !payload.username) {
+          return handleError({ msg: 'authSignupFailed', shouldThrow: false })
+        }
+
+        const { data, error } = await supabase.signUp(payload)
+
+        if (error || !data.user) {
+          return handleError({ msg: 'authSignupFailed', shouldThrow: false })
+        }
+
+        const userData: UserDataPayload[] = await supabase.insertUserData()
+
+        if (!userData) {
+          await supabase.revertSignUp(payload.email)
+          return handleError({ msg: 'authSignupFailed', shouldThrow: false })
+        }
+
+        const userDataEntry = userData[0]
+
+        this.uid = data.user.id
+        this.createdAt = data.user.created_at
         this.name = payload.name
         this.email = payload.email
         this.username = payload.username
-        this.password = payload.password
-        this.powerups = USER_ACCOUNT_DEFAULTS.powerups
-        this.lives = USER_ACCOUNT_DEFAULTS.lives
-        this.gems = USER_ACCOUNT_DEFAULTS.gems
-        this.isAuthenticated = true
-        this.isFirstSession = false
+        this.powerups = userDataEntry.powerups || USER_ACCOUNT_DEFAULTS.powerups
+        this.lives = userDataEntry.lives || USER_ACCOUNT_DEFAULTS.lives
+        this.gems = userDataEntry.gems || USER_ACCOUNT_DEFAULTS.gems
 
-        return this.updateUserData()
+        localStorage.saveStoreData(APP_LOCALSTORAGE_KEYS.userAccountData, {
+          uid: this.uid,
+          createdAt: this.createdAt,
+        })
+
+        return true
       } catch (error: any) {
-        throw new Error(error)
+        console.error(error)
+        return handleError({ msg: 'authSignupFailed', shouldThrow: false })
       }
     },
 
     async updateUserData() {
-      if (this.isAuthenticated) {
-        return APIService.saveStoreData(API_KEYS.userAccountData, {
-          createdAt: this.createdAt,
-          uid: this.uid,
-          name: this.name,
-          email: this.email,
-          username: this.username,
-          password: this.password, // TODO: Replace when server auth is set
-          powerups: this.powerups,
-          lives: this.lives,
-          gems: this.gems,
-          isAuthenticated: this.isAuthenticated,
-          isFirstSession: this.isFirstSession,
-          lastLifeAddedAt: this.lastLifeAddedAt,
-        })
+      if (!this.isAuthenticated || !this.email || !this.password) {
+        return false
       }
+
+      // return APIService.saveStoreData(API_KEYS.userAccountData, {
+      //   createdAt: this.createdAt,
+      //   uid: this.uid,
+      //   name: this.name,
+      //   email: this.email,
+      //   username: this.username,
+      //   password: this.password, // TODO: Replace when server auth is set
+      //   powerups: this.powerups,
+      //   lives: this.lives,
+      //   gems: this.gems,
+      //   isAuthenticated: this.isAuthenticated,
+      //   isFirstSession: this.isFirstSession,
+      //   lastLifeAddedAt: this.lastLifeAddedAt,
+      // })
     },
 
     async loadUserAccount() {
       try {
-        const userAccountData = APIService.loadStoreData(API_KEYS.userAccountData)
+        const sessionData = await supabase.initializeSession()
 
-        if (userAccountData) {
-          this.createdAt = userAccountData.createdAt
-          this.uid = userAccountData.uid
-          this.name = userAccountData.name
-          this.email = userAccountData.email
-          this.username = userAccountData.username
-          this.powerups = userAccountData.powerups
-          this.lives = userAccountData.lives
-          this.gems = userAccountData.gems
-          this.lastLifeAddedAt = userAccountData.lastLifeAddedAt
-          this.isAuthenticated = true
-          this.isFirstSession = false
-
-          this.startLifeRegeneration()
-
-          const streakStore = useStreakStore()
-          streakStore.loadStreak()
+        if (!sessionData) {
+          this.$reset()
+          return false
         }
+
+        const { user, userData } = sessionData
+
+        this.uid = user.id
+        this.email = user.email!
+        this.name = user.user_metadata?.name
+        this.username = user.user_metadata?.display_name
+        this.powerups = userData.powerups
+        this.lives = userData.lives
+        this.gems = userData.gems
+        this.lastLifeAddedAt = userData.last_life_added_at
+
+        this.startLifeRegeneration()
+
+        const streakStore = useStreakStore()
+        await streakStore.loadStreak()
       } catch (error: any) {
-        throw new Error(error)
+        console.error('Error loading user account:', error)
+        handleError({ shouldThrow: true })
+      }
+    },
+
+    async logout() {
+      try {
+        await supabase.signOut()
+        this.stopLifeRegeneration()
+        this.$reset()
+      } catch (error) {
+        console.error('Logout failed:', error)
+        throw error
+      }
+    },
+
+    async deleteAccount() {
+      try {
+        if (!this.uid) {
+          return
+        }
+
+        await supabase.updateUser({
+          customMetadata: {
+            account_deleted: true,
+          },
+        })
+
+        await this.logout()
+      } catch (error) {
+        console.error('authAccountDeleted', error)
+        throw error
       }
     },
 
@@ -188,19 +260,6 @@ export const useUserStore = defineStore('user', {
         }
 
         this.lifeRegenerationInterval = null
-      }
-    },
-
-    logout() {
-      try {
-        this.stopLifeRegeneration()
-        this.isAuthenticated = false
-
-        // TODO: reeneable after DB connection.
-        // resetStore(this, initialState())
-        // APIService.clearAllStoresAppData()
-      } catch (error: any) {
-        throw new Error(error)
       }
     },
   },
