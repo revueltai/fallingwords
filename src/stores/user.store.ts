@@ -59,7 +59,7 @@ export const useUserStore = defineStore('user', {
   },
 
   actions: {
-    async createUserAccount(payload: UserState) {
+    async createUserAccount(payload: UserPayload) {
       try {
         this.createdAt = new Date().toISOString()
         this.uid = createUID(payload.name!)
@@ -70,8 +70,8 @@ export const useUserStore = defineStore('user', {
         this.powerups = USER_ACCOUNT_DEFAULTS.powerups
         this.lives = USER_ACCOUNT_DEFAULTS.lives
         this.gems = USER_ACCOUNT_DEFAULTS.gems
-        this.isAuthenticated = payload.isAuthenticated || true
-        this.isFirstSession = payload.isFirstSession || false
+        this.isAuthenticated = true
+        this.isFirstSession = false
 
         return this.updateUserData()
       } catch (error: any) {
@@ -80,8 +80,6 @@ export const useUserStore = defineStore('user', {
     },
 
     async updateUserData() {
-      console.log(3333, this.isAuthenticated)
-
       if (this.isAuthenticated) {
         return APIService.saveStoreData(API_KEYS.userAccountData, {
           createdAt: this.createdAt,
@@ -197,8 +195,8 @@ export const useUserStore = defineStore('user', {
       try {
         this.stopLifeRegeneration()
         this.isAuthenticated = false
-        console.log(1111)
 
+        // TODO: reeneable after DB connection.
         // resetStore(this, initialState())
         // APIService.clearAllStoresAppData()
       } catch (error: any) {

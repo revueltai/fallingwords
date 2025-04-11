@@ -12,7 +12,6 @@ async function validateUser(to: any): Promise<{ name: string, params?: Record<st
 
   if (!userStore.isAuthenticated) {
     await userStore.loadUserAccount()
-    console.log(userStore.isFirstSession, userStore.isAuthenticated)
 
     if (userStore.isFirstSession && to.name !== 'Welcome') {
       return { name: 'Welcome' }
@@ -30,10 +29,10 @@ function isAppScreen(to: any): boolean {
   return !['/game', '/welcome', '/'].includes(to.path)
 }
 
-async function setI18nAppLanguage(i18n: I18n) { // , newLocale: AppLocaleCode = 'en'
+async function setI18nAppLanguage(i18n: I18n) {
   const appCurrentLocale = getLocale(i18n)
 
-  if (!isI18nInitialized) { // || newLocale !== appCurrentLocale)
+  if (!isI18nInitialized) {
     if (APP_LOCALES.includes(appCurrentLocale)) {
       if (!i18n.global.availableLocales.includes(appCurrentLocale)) {
         await loadLocaleMessages(i18n, appCurrentLocale)
@@ -121,8 +120,7 @@ export function setupRouter(i18n: I18n): Router {
 
     if (route) {
       next(route)
-    }
- else {
+    } else {
       next()
     }
   })
