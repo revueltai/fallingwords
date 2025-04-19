@@ -284,3 +284,7 @@ body {
   animation: beat 250ms infinite alternate;
   transform-origin: center;
 }
+
+#__vue-devtools-container__ {
+  display: none !important;
+}

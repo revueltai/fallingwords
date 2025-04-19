@@ -236,7 +236,67 @@ export class SupabaseService {
 
   // DATA ==========
 
-  async getCollections() {
+  private async insertRecord<T>(
+    table: 'collections' | 'words',
+    payload: Record<string, any>,
+  ): Promise<T> {
+    const { data, error } = await this.client
+      .from(table)
+      .insert(payload)
+      .select()
+      .single()
+
+    if (error) {
+      throw error
+    }
+
+    if (!data) {
+      throw new Error(`FailedInsert_${table}`)
+    }
+
+    return data as T
+  }
+
+  private async deleteRecord(
+    table: 'collections' | 'words',
+    id: string,
+    options?: { fkField?: string },
+  ): Promise<boolean> {
+    const query = this.client.from(table).delete()
+
+    if (options?.fkField) {
+      query.eq(options.fkField, id)
+    } else {
+      query.eq('id', id)
+    }
+
+    const { error } = await query
+
+    if (error) {
+      return false
+    }
+
+    return true
+  }
+
+  async insertCollection(payload: {
+    name: string
+    locale_original: RoundLocaleCodes
+    locale_learn: RoundLocaleCodes
+  }) {
+    const user = await this.getCurrentUser()
+
+    if (!user) {
+      throw new Error('User not authenticated')
+    }
+
+    return this.insertRecord('collections', {
+      ...payload,
+      user_id: user.id,
+    })
+  }
+
+  async fetchCollections() {
     const user = await this.getCurrentUser()
     const { data, error } = await this.client
       .from('collections')
@@ -261,6 +321,36 @@ export class SupabaseService {
     }
 
     return data
+  }
+
+  async deleteCollection(collectionId: string): Promise<boolean> {
+    const rs = await this.deleteRecord('collections', collectionId)
+    return rs
+  }
+
+  async deleteWords(
+    wordId: string | string[],
+    collectionId?: string,
+  ): Promise<void> {
+    if (collectionId) {
+      await this.deleteRecord('words', collectionId, { fkField: 'collection_id' })
+      return
+    }
+
+    if (Array.isArray(wordId)) {
+      // Delete multiple words by IDs
+      const { error } = await this.client
+        .from('words')
+        .delete()
+        .in('id', wordId)
+
+      if (error) {
+        throw error
+      }
+    } else {
+      // Delete single word by ID
+      await this.deleteRecord('words', wordId)
+    }
   }
 }
 

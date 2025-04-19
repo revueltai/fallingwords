@@ -41,6 +41,8 @@ declare global {
     iconName: IconName
   }
 
+  type AppLocaleCode = 'en' | 'es' | 'de' | 'it' | 'pt'
+
   // Dashboard
   interface DashboardMenuItem {
     id: string
@@ -52,11 +54,9 @@ declare global {
   interface CollectionUpdate {
     uid?: string
     name: string
-    localeOriginal: RoundLocaleCodes
-    localeLearn: RoundLocaleCodes
+    localeOriginal: AppLocaleCode
+    localeLearn: AppLocaleCode
   }
-
-  type AppLocaleCode = 'en' | 'es' | 'de' | 'it' | 'pt'
 
   // Game
   interface BoardElements {
@@ -104,6 +104,15 @@ declare global {
     learn: RoundLocaleCodes
   }
 
+  interface AppCollection {
+    id: string
+    name: string
+    locale_learn: AppLocaleCode
+    locale_original: AppLocaleCode
+    words_count: number
+  }
+
+  // TODO: replace with APPCollection. and load words only on gamelobby or on collection view.
   interface GameCollection {
     uid: string
     name: string

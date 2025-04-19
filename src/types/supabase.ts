@@ -44,19 +44,20 @@ export interface Database {
           created_at: string
           name: string
           user_id: string
-          locale_original: string
-          locale_learn: string
+          words_count: number
+          locale_original: AppLocaleCode
+          locale_learn: AppLocaleCode
         }
         Insert: {
           name: string
           user_id: string
-          locale_original: string
-          locale_learn: string
+          locale_original: AppLocaleCode
+          locale_learn: AppLocaleCode
         }
         Update: {
           name?: string
-          locale_original?: string
-          locale_learn?: string
+          locale_original?: AppLocaleCode
+          locale_learn?: AppLocaleCode
         }
       }
       words: {

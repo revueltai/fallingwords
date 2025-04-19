@@ -99,7 +99,10 @@ function handleDelete(uid: string) {
   if (rs) {
     resetModal()
     ToastService.emitToast(t('collectionDeleted'), 'success')
+    return
   }
+
+  ToastService.emitToast(t('collectionDeletedFailed'), 'error')
 }
 
 function handleCreate(payload: CollectionUpdate) {
@@ -148,11 +151,12 @@ async function handleUpdate(payload: CollectionUpdate) {
     >
       <CollectionItem
         v-for="(collection, index) in filteredCollections"
+        :id="collection.id"
         :key="index"
-        :uid="collection.uid"
         :name="collection.name"
-        :locales="collection.locales"
-        :word-count="collection.words.length"
+        :locale-original="collection.locale_original"
+        :locale-learn="collection.locale_learn"
+        :words-count="collection.words_count"
         :has-buttons="true"
         @click-text="handleShowViewCollection"
         @update="handleShowUpdateCollection"

@@ -3,11 +3,11 @@ import SearchBar from '@/components/shared/SearchBar.vue'
 import CollectionItem from '@/components/ui/CollectionItem.vue'
 import PageContainer from '@/components/ui/PageContainer.vue'
 import PageContent from '@/components/ui/PageContent.vue'
+import { ToastService } from '@/services/ToastService'
 import { useAppStore } from '@/stores/app.store'
 import { useGameStore } from '@/stores/game.store'
 import { useUserStore } from '@/stores/user.store'
 import { isEmptyArray } from '@/utils'
-import { ToastService } from '@/services/ToastService'
 import { computed, onMounted, ref } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { useRouter } from 'vue-router'
@@ -46,8 +46,7 @@ function handleCollectionToggling(collection: GameCollection) {
 
   if (index !== -1) {
     selectedCollections.value.splice(index, 1)
-  }
- else if (selectedCollections.value.length < maxGameCollections) {
+  } else if (selectedCollections.value.length < maxGameCollections) {
     selectedCollections.value.push(collection)
   }
 }
@@ -64,8 +63,7 @@ function handleGameStart() {
 
   if (rs) {
     router.push('game')
-  }
- else {
+  } else {
     ToastService.emitToast(t('failedToStartGame'), 'error')
     router.push('/')
   }
@@ -92,11 +90,12 @@ onMounted(() => handleRefillLivesRedirect())
 
       <CollectionItem
         v-for="(collection, index) in filteredCollections"
+        :id="collection.id"
         :key="index"
-        :uid="collection.uid"
         :name="collection.name"
-        :locales="collection.locales"
-        :word-count="collection.words.length"
+        :locale-original="collection.locale_original"
+        :locale-learn="collection.locale_learn"
+        :words-count="collection.words_count"
         :has-buttons="false"
         :selectable="true"
         :is-selected="isSelectedCollection(collection)"

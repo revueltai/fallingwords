@@ -40,6 +40,6 @@ const emit = defineEmits<{
       type="fill"
     />
 
-    {{ $t(ctaText) }}
+    {{ ctaText }}
   </Button>
 </template>

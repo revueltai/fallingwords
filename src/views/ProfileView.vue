@@ -72,12 +72,12 @@ function handleShowModalDeleteAccount() {
 
 function handleLogout() {
   userStore.logout()
-  router.push('/')
+  router.push({ name: 'Welcome' })
 }
 
 function handleDeleteAccount() {
   userStore.deleteAccount()
-  router.push('/')
+  router.push({ name: 'Welcome' })
 }
 </script>
 
@@ -233,6 +233,8 @@ function handleDeleteAccount() {
       <Component
         :is="modalComponent"
         :byline="activeModal && activeModal.byline ? $t(activeModal.byline) : ''"
+        :cta-text="$t('delete')"
+        icon-name="trashbin"
         event-name="delete"
         @delete="handleDeleteAccount"
       />

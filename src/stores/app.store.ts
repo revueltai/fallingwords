@@ -1,8 +1,12 @@
+import type { Database } from '@/types/supabase'
 import { APP_LOCALSTORAGE_KEYS, LOCALES } from '@/configs/constants'
 import APIService from '@/services/LocalStorageService'
+import { supabase } from '@/services/SupabaseService'
 import { createUID, enterFullscreen, isEmptyArray } from '@/utils'
 import { defineStore } from 'pinia'
 import { computed, ref, shallowRef } from 'vue'
+
+type CollectionRow = Database['public']['Tables']['collections']['Row']
 
 interface AppUiElementHeights {
   appHeader: number | null
@@ -14,7 +18,7 @@ export const useAppStore = defineStore('app', () => {
   const canvasMaxHeight = 932
   const isFullscreen = ref(false)
   const canvasEl = shallowRef<RefElement>(null)
-  const collections = ref<GameCollection[]>([])
+  const collections = ref<AppCollection[]>([])
   const formLocales = ref<FormSelectOption[]>([])
   const appUiElementHeights = ref<AppUiElementHeights>({
     appHeader: null,
@@ -23,14 +27,17 @@ export const useAppStore = defineStore('app', () => {
 
   const collectionsCount = computed(() => collections.value.length)
 
-  const collectionsWordsCount = computed(() => collections.value.reduce((acc, collection) => acc + collection.words.length, 0))
+  const collectionsWordsCount = computed(() => collections.value.reduce((acc, collection) => acc + collection.words_count, 0))
 
   const originalLocales = computed(() => getUniqueLocales('original'))
 
   const learningLocales = computed(() => getUniqueLocales('learn'))
 
   function getUniqueLocales(type: 'original' | 'learn') {
-    return [...new Set(collections.value.map(c => c.locales[type]))]
+    return [...new Set(collections.value.map(c => type === 'original'
+      ? c.locale_original
+      : c.locale_learn),
+    )]
   }
 
   function setAppUiElementHeights(key: keyof AppUiElementHeights, value: number) {
@@ -61,26 +68,23 @@ export const useAppStore = defineStore('app', () => {
     }
   }
 
-  async function loadCollections() {
-    try {
-      const userAppData = APIService.loadStoreData(APP_LOCALSTORAGE_KEYS.userAppData)
+  async function fetchCollections() {
+    const data = await supabase.fetchCollections()
 
-      if (userAppData) {
-        collections.value = userAppData as GameCollection[]
-      }
-
-      return true
-    } catch (error: any) {
-      throw new Error(error)
+    if (isEmptyArray(data)) {
+      return false
     }
+
+    collections.value = data
+    return true
   }
 
-  async function getCollectionById(uid: string): Promise<GameCollection | undefined> {
-    return collections.value.find(collection => collection.uid === uid)
+  async function getCollectionById(uid: string): Promise<AppCollection | undefined> {
+    return collections.value.find(collection => collection.id === uid)
   }
 
   async function getWordById(collectionUid: string, wordUid: string): Promise<GameWord | undefined> {
-    const collection = collections.value.find(item => item.uid === collectionUid)
+    const collection = collections.value.find(item => item.id === collectionUid)
 
     if (collection) {
       return collection.words.find(item => item.uid === wordUid)
@@ -90,20 +94,30 @@ export const useAppStore = defineStore('app', () => {
   }
 
   async function createCollection(payload: CollectionUpdate) {
-    const uid = createUID(payload.name)
+    try {
+      const { data } = await supabase.insertCollection({
+        name: payload.name,
+        locale_original: payload.localeOriginal,
+        locale_learn: payload.localeLearn,
+      }) as { data: CollectionRow }
 
-    collections.value.push({
-      uid,
-      name: payload.name,
-      locales: {
-        original: payload.localeOriginal,
-        learn: payload.localeLearn,
-      },
-      words: [],
-    })
+      if (!data) {
+        throw new Error('FailedCreateCollection')
+      }
 
-    const rs = APIService.saveStoreData(APP_LOCALSTORAGE_KEYS.userAppData, collections.value)
-    return rs ? uid : null
+      collections.value.push({
+        id: data.id,
+        name: data.name,
+        locale_original: data.locale_original,
+        locale_learn: data.locale_learn,
+        words_count: data.words_count,
+      })
+
+      return data.id
+    } catch (error) {
+      console.error('FailedCreateCollection:', error)
+      throw error
+    }
   }
 
   async function createWord(collectionUid: string, payload: GameWord) {
@@ -111,7 +125,7 @@ export const useAppStore = defineStore('app', () => {
       throw new Error('No uid provided')
     }
 
-    const collection = collections.value.find(item => item.uid === collectionUid)
+    const collection = collections.value.find(item => item.id === collectionUid)
 
     if (collection) {
       const uid = createUID()
@@ -128,7 +142,7 @@ export const useAppStore = defineStore('app', () => {
       throw new Error('No uid provided')
     }
 
-    const collectionToUpdate = collections.value.find(item => item.uid === payload.uid)
+    const collectionToUpdate = collections.value.find(item => item.id === payload.uid)
 
     if (collectionToUpdate) {
       Object.assign(collectionToUpdate, {
@@ -150,7 +164,7 @@ export const useAppStore = defineStore('app', () => {
       throw new Error('No uid provided')
     }
 
-    const collection = collections.value.find(item => item.uid === collectionUid)
+    const collection = collections.value.find(item => item.id === collectionUid)
 
     if (collection) {
       const wordToUpdate = collection.words.find(item => item.uid === payload.uid)
@@ -169,20 +183,18 @@ export const useAppStore = defineStore('app', () => {
     return false
   }
 
-  async function deleteCollection(uid: string): Promise<boolean> {
-    if (!uid) {
-      throw new Error('No uid provided')
+  async function deleteCollection(id: string): Promise<boolean> {
+    if (!id) {
+      return false
     }
 
-    const deleteIndex = collections.value.findIndex(item => item.uid === uid)
+    const rs = await supabase.deleteCollection(id)
 
-    if (deleteIndex !== -1) {
-      collections.value.splice(deleteIndex, 1)
-
-      return APIService.saveStoreData(APP_LOCALSTORAGE_KEYS.userAppData, collections.value)
+    if (rs) {
+      collections.value = collections.value.filter(c => c.id !== id)
     }
 
-    return false
+    return rs
   }
 
   async function deleteWord(collectionUid: string, wordUid: string): Promise<boolean> {
@@ -190,7 +202,7 @@ export const useAppStore = defineStore('app', () => {
       throw new Error('No uid provided')
     }
 
-    const collection = collections.value.find(item => item.uid === collectionUid)
+    const collection = collections.value.find(item => item.id === collectionUid)
 
     if (collection) {
       const wordIndex = collection.words.findIndex(item => item.uid === wordUid)
@@ -220,7 +232,7 @@ export const useAppStore = defineStore('app', () => {
     setAppUiElementHeights,
     setCanvasElement,
     setFormLocales,
-    loadCollections,
+    fetchCollections,
     createCollection,
     updateCollection,
     deleteCollection,
