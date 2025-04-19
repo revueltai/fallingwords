@@ -57,16 +57,12 @@ watch(isFocused, (newFocusState: boolean) => {
 
 async function initializeCollections() {
   if (userStore.isAuthenticated) {
-    const rs = await appStore.fetchCollections()
-
-    if (!rs) {
-      userStore.logout()
-    }
+    await appStore.fetchCollections()
   }
 }
 
 onMounted(async () => {
-  // await initializeCollections()
+  await initializeCollections()
   userStore.startLifeRegeneration()
   streakStore.setStreakLength()
 

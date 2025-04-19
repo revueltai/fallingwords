@@ -5,7 +5,7 @@ import { onMounted, onUnmounted, ref } from 'vue'
 const userStore = useUserStore()
 
 const timeRemaining = ref('')
-let countdownInterval: number | null = null
+let countdownInterval: NodeJS.Timeout | null = null
 
 function updateCountdown() {
   if (!userStore.lastLifeAddedAt) {
@@ -44,6 +44,8 @@ onUnmounted(() => {
     class="mt-4 p-3 border-secondary-light border bg-secondary-dark rounded-full"
   >
     {{ $t('nextLifeIn') }}:
-    <span class="inline-block ml-2 text-senary-light">{{ timeRemaining }}</span>
+    <span class="inline-block ml-2 text-senary-light">
+      {{ timeRemaining }}
+    </span>
   </p>
 </template>
