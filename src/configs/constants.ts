@@ -1,11 +1,8 @@
 export const APP_LOCALES = ['en', 'de', 'es', 'it', 'pt']
 
-export const API_KEYS = {
-  settings: 'fwSettings',
+export const APP_LOCALSTORAGE_KEYS = {
+  userFirstSession: 'fwUserFirstSession',
   userAccountData: 'fwUserAccount',
-  userAppData: 'fwUserApp',
-  userStreakData: 'fwStreak',
-  userStreak: 'fwStreak',
 }
 
 export const LIFE_MAX_REFILL_LIVES = 5
@@ -251,6 +248,7 @@ export const MODAL_NAMES = {
   collections: 'collections',
   words: 'words',
   settings: 'settings',
+  deleteAccount: 'deleteAccount',
   noLives: 'noLives',
   headerLives: 'headerLives',
 }

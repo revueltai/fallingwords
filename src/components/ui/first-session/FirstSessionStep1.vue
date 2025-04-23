@@ -1,6 +1,6 @@
 <script setup lang="ts">
+import { Bus } from '@/services/EventBusService'
 import { useAppStore } from '@/stores/app.store'
-import { Bus } from '@/utils/EventBus'
 import { onMounted, onUnmounted, ref } from 'vue'
 
 interface Props {
@@ -50,6 +50,7 @@ onUnmounted(() => Bus.off('firstSessionSaveStepData', handleStoreData))
     <div class="mb-8 flex flex-col gap-4">
       <Select
         v-model="userLocaleOriginal"
+        :asset="userLocaleOriginal"
         :options="appStore.formLocales"
         name="userNativeLocale"
         :label="$t('nativeLanguage')"

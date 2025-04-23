@@ -7,16 +7,23 @@ import { useModalStore } from '@/stores/modal.store'
 import { useStreakStore } from '@/stores/streak.store'
 import { useUserStore } from '@/stores/user.store'
 import { sanitizeRoute } from '@/utils'
-import { onMounted, ref } from 'vue'
+import { onMounted, onUnmounted, ref } from 'vue'
 import { useRouter } from 'vue-router'
 
 const router = useRouter()
-
-const appHeaderRef = ref<RefElement>(null)
 const userStore = useUserStore()
 const appStore = useAppStore()
 const streakStore = useStreakStore()
 const modalStore = useModalStore()
+
+let resizeObserver: ResizeObserver | null = null
+const appHeaderRef = ref<RefElement>(null)
+
+function updateHeight() {
+  if (appHeaderRef.value) {
+    appStore.setAppUiElementHeights('appHeader', appHeaderRef.value.offsetHeight)
+  }
+}
 
 function handleShowModalLives() {
   modalStore.openModal(MODAL_NAMES.headerLives)
@@ -27,8 +34,17 @@ function handleGoto(name: string) {
 }
 
 onMounted(() => {
+  updateHeight()
+  resizeObserver = new ResizeObserver(updateHeight)
+
   if (appHeaderRef.value) {
-    appStore.setAppUiElementHeights('appHeader', appHeaderRef.value.offsetHeight)
+    resizeObserver.observe(appHeaderRef.value)
+  }
+})
+
+onUnmounted(() => {
+  if (resizeObserver) {
+    resizeObserver.disconnect()
   }
 })
 </script>

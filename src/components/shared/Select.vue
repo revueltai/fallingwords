@@ -8,11 +8,15 @@ interface Props {
   selectLabel?: string
   required?: boolean
   disabled?: boolean
-  options: FormSelectOption[]
+  asset?: string
+  iconName?: IconName | ''
+  options?: FormSelectOption[]
 }
 
 const props = withDefaults(defineProps<Props>(), {
   label: '',
+  iconName: '',
+  asset: '',
   selectLabel: 'Select an option',
   required: false,
   disabled: false,
@@ -58,17 +62,17 @@ function handleChange(event: Event) {
       :class="cssClasses"
       class="bg-white border-2 border-grey p-2 rounded-lg form-shadow-top transition-colors hover:border-primary flex gap-2 select-wrapper"
     >
-      <!-- <Icon
-            v-if="option.icon"
-            :name="option.icon"
-            :size="isMobile() ? 'sm' : 'md'"
-          />
+      <Icon
+        v-if="iconName"
+        :name="iconName"
+        :size="isMobile() ? 'sm' : 'md'"
+      />
 
-          <Flag
-            v-else-if="option.image"
-            :country-code="option.image"
-            :size="isMobile() ? 'sm' : 'md'"
-          /> -->
+      <Flag
+        v-else-if="asset"
+        :country-code="asset"
+        :size="isMobile() ? 'sm' : 'md'"
+      />
       <select
         :id="name"
         v-model="selectModel"

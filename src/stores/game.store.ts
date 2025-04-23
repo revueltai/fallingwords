@@ -1,4 +1,5 @@
 import { GAME_DEFAULTS } from '@/configs/constants'
+import { supabase } from '@/services/SupabaseService'
 import { defineStore } from 'pinia'
 import { useAppStore } from './app.store'
 import { useGameRoundStore } from './gameRound.store'
@@ -9,8 +10,8 @@ interface GameState {
   gameTotalRounds: number
   gameCurrentRound: number
   gameAwardedGems: number
-  gameCollections: GameCollection[]
-  gameWordsList: GameWords
+  gameCollections: AppCollection[]
+  gameCollectionWords: GameWords
   gameSummary: GameSummary
   gamePowerupsDuration: number
   gameLocales: GameLocale
@@ -23,7 +24,7 @@ function initialState(): GameState {
     gameCurrentRound: 0,
     gameAwardedGems: 0,
     gameCollections: [],
-    gameWordsList: [],
+    gameCollectionWords: [],
     gameSummary: GAME_DEFAULTS.gameSummary,
     gamePowerupsDuration: GAME_DEFAULTS.powerupDuration,
     gameLocales: {
@@ -31,6 +32,12 @@ function initialState(): GameState {
       learn: null,
     },
   }
+}
+
+function shuffleGameWords(words: GameWords, maxRounds: number) {
+  return words
+    .sort(() => Math.random() - 0.5)
+    .slice(0, maxRounds)
 }
 
 export const useGameStore = defineStore('game', {
@@ -55,13 +62,37 @@ export const useGameStore = defineStore('game', {
       }
     },
 
-    setGameCollections(collections: GameCollection[]) {
+    async setGameCollections(collections: AppCollection[]) {
       this.gameCollections = collections
     },
 
-    setGameWords(wordsList: GameWords) {
-      this.gameWordsList = wordsList
-      this.gameTotalRounds = wordsList.length
+    async setGameWords(wordsList: GameWords | null) {
+      this.gameCollectionWords = []
+
+      if (wordsList) {
+        this.gameCollectionWords = wordsList
+      } else {
+        for (const collection of this.gameCollections) {
+          const words = await supabase.fetchWords(collection.id)
+
+          if (words) {
+            const mappedWords = words.map(word => ({
+              uid: word.id,
+              original: word.original,
+              learn: word.learn,
+              locales: {
+                original: collection.locale_original,
+                learn: collection.locale_learn,
+              },
+            }))
+
+            this.gameCollectionWords.push(...mappedWords)
+          }
+        }
+      }
+
+      this.gameCollectionWords = shuffleGameWords(this.gameCollectionWords, this.gameMaxRounds)
+      this.gameTotalRounds = this.gameCollectionWords.length
     },
 
     setGameLocales(locales: GameLocale) {
@@ -71,13 +102,12 @@ export const useGameStore = defineStore('game', {
     setGameReset() {
       const gameRoundStore = useGameRoundStore()
       gameRoundStore.setRoundsReset()
-
-      Object.assign(this, initialState())
+      this.$reset()
     },
 
     setGameGemsReward() {
       // One gem for each word guessed
-      this.gameAwardedGems = this.gameWordsList.length
+      this.gameAwardedGems = this.gameCollectionWords.length
 
       // One gem extra for each game word where score > 50
       this.gameAwardedGems += this.gameSummary.reduce((acc, word) => {
@@ -89,33 +119,38 @@ export const useGameStore = defineStore('game', {
       this.userStore.increaseGems(this.gameAwardedGems)
     },
 
-    replayGame(collections: GameCollection[]) {
+    async saveGameResults() {
+      await this.userStore.updateUserData()
+    },
+
+    async replayGame() {
+      const tempGameCollections = this.gameCollections
+      const tempGameCollectionWords = this.gameCollectionWords
       this.setGameReset()
-      this.setGameCollections(collections)
-      this.prepareGame()
+
+      await this.prepareGame(tempGameCollections, tempGameCollectionWords)
 
       const gameRoundStore = useGameRoundStore()
       gameRoundStore.prepareRound()
     },
 
-    prepareGame() {
+    async prepareGame(
+      collections: AppCollection[],
+      words: GameWords | null = null,
+    ) {
       try {
-        const mergedWords = this.gameCollections.flatMap(({ words, locales }) =>
-          words.map(word => ({ ...word, locales })),
-        )
+        await this.setGameCollections(collections)
+        await this.setGameWords(words)
 
-        const shuffledWords = mergedWords
-          .sort(() => Math.random() - 0.5)
-          .slice(0, this.gameMaxRounds)
+        const firstWordLocales = this.gameCollectionWords[0].locales
 
-        const gameLocales = this.gameCollections[0]?.locales
+        if (firstWordLocales) {
+          this.setGameLocales(firstWordLocales)
+        }
 
-        this.setGameWords(shuffledWords)
-        this.setGameLocales(gameLocales)
-        this.setGameLocales(gameLocales)
         return true
       } catch (error) {
-        console.error(error)
+        console.error('FailedPrepareGame', error)
         return false
       }
     },

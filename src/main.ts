@@ -14,8 +14,8 @@ import TextBlock from '@/components/shared/TextBlock.vue'
 import Toast from '@/components/shared/Toast.vue'
 import en from '@/configs/locales/en.json'
 import { setupRouter } from '@/router'
-import { subscribeToUserStore } from '@/stores/services/user.store.subscriber'
-import { detectBrowserLanguage, setupI18n } from '@/utils/i18n'
+import { detectBrowserLanguage, setupI18n } from '@/services/I18nService'
+import { subscribeToStores } from '@/services/StoreSubscriber'
 import { createPinia } from 'pinia'
 import { createApp } from 'vue'
 
@@ -53,7 +53,7 @@ app.component('Button', Button)
 app.component('Badge', Badge)
 app.component('ProgressBar', ProgressBar)
 
-subscribeToUserStore()
+subscribeToStores()
 
 router.isReady()
   .then(() => app.mount('#app'))

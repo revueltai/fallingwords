@@ -4,25 +4,29 @@ import Toast from '@/components/shared/Toast.vue'
 import AppFooter from '@/components/ui/AppFooter.vue'
 import AppHeader from '@/components/ui/AppHeader.vue'
 import { useUserStore } from '@/stores/user.store'
-import { computed, onMounted, onUnmounted, ref, watch } from 'vue'
+import { computed, onMounted, ref } from 'vue'
 import { RouterView, useRouter } from 'vue-router'
 import { useAppStore } from './stores/app.store'
-import { useSoundStore } from './stores/sounds.store'
 import { useStreakStore } from './stores/streak.store'
 import 'movinblocks/styles'
 
 const router = useRouter()
 const streakStore = useStreakStore()
 const userStore = useUserStore()
-const soundStore = useSoundStore()
+
 const appStore = useAppStore()
 
 const appWrapperRef = ref<RefElement>(null)
 const isLoaded = ref(false)
-const isFocused = ref(false)
 
 const canvasMaxWidth = computed(() => appStore.canvasMaxWidth)
+
 const canvasMaxHeight = computed(() => appStore.canvasMaxHeight)
+
+const isAppPage = computed(() => {
+  const { path } = router.currentRoute.value
+  return !['/game', '/welcome', '/'].includes(path)
+})
 
 function setCanvasSize() {
   if (appWrapperRef.value) {
@@ -31,37 +35,20 @@ function setCanvasSize() {
   }
 }
 
-function handleWindowFocus() {
-  isFocused.value = true
-}
-
-function handleSoundLoading() {
-  soundStore.initializeSounds()
-}
-
 function handleRouterViewClick() {
   appStore.setFullscreen()
 }
 
-watch(isFocused, (newFocusState: boolean) => {
-  if (newFocusState) {
-    handleSoundLoading()
+async function initializeCollections() {
+  if (userStore.isAuthenticated) {
+    await appStore.fetchCollections()
   }
-})
+}
 
 onMounted(async () => {
-  const rs = await appStore.loadCollections()
-
-  if (!rs) {
-    userStore.logout()
-    return
-  }
-
+  await initializeCollections()
   userStore.startLifeRegeneration()
   streakStore.setStreakLength()
-
-  window.addEventListener('focus', () => handleWindowFocus)
-  handleSoundLoading()
 
   if (appWrapperRef.value) {
     setCanvasSize()
@@ -71,8 +58,6 @@ onMounted(async () => {
 
   router.push({ name: 'Splash' })
 })
-
-onUnmounted(() => window.removeEventListener('focus', handleWindowFocus))
 </script>
 
 <template>
@@ -86,7 +71,7 @@ onUnmounted(() => window.removeEventListener('focus', handleWindowFocus))
       class="relative w-full h-full overflow-hidden bg-secondary-dark border border-secondary sm:rounded-xl"
     >
       <div class="flex flex-col h-full">
-        <AppHeader v-if="appStore.showMenu" />
+        <AppHeader v-if="isAppPage" />
 
         <Transition name="fade" mode="out-in">
           <Component
@@ -95,7 +80,7 @@ onUnmounted(() => window.removeEventListener('focus', handleWindowFocus))
           />
         </Transition>
 
-        <AppFooter v-if="appStore.showMenu" />
+        <AppFooter v-if="isAppPage" />
       </div>
 
       <ModalContainer />

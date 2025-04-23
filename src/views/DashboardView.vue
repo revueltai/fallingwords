@@ -95,9 +95,7 @@ onMounted(() => handleShowRefillLivesModal())
         </div>
 
         <div class="col-span-2 flex border border-b-4 bg-secondary border-secondary-light rounded-2xl gap-0">
-          <img
-            src="/images/dashboard/DashboardPlay.svg"
-          >
+          <img src="/images/dashboard/DashboardPlay.svg">
 
           <div class="p-4 pb-6 -ml-[20%] sm:-ml-[10%] z-10">
             <p class="text-md mb-2 sm:text-lg">

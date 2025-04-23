@@ -1,4 +1,5 @@
 <script lang="ts" setup>
+import ModalConfirm from '@/components/ui/modals/ModalConfirm.vue'
 import ModalSettings from '@/components/ui/modals/ModalSettings.vue'
 import PageContainer from '@/components/ui/PageContainer.vue'
 import PageContent from '@/components/ui/PageContent.vue'
@@ -10,7 +11,7 @@ import { useModalStore } from '@/stores/modal.store'
 import { useStreakStore } from '@/stores/streak.store'
 import { useUserStore } from '@/stores/user.store'
 import { formatDate } from '@/utils'
-import { computed } from 'vue'
+import { computed, ref } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { useRouter } from 'vue-router'
 
@@ -22,22 +23,55 @@ const appStore = useAppStore()
 const modalStore = useModalStore()
 const streakStore = useStreakStore()
 
+const ModalComponentMap = {
+  settings: ModalSettings,
+  deleteAccount: ModalConfirm,
+}
+
+const activeModal = ref<ModalConfig | null>(null)
+
 const createdAtDate = computed(() => {
   const date = formatDate(userStore.createdAt!)
   return `${date.day} ${t(date.month)} ${date.year}`
+})
+
+const modalComponent = computed(() => {
+  return activeModal.value
+    ? (ModalComponentMap as any)[activeModal.value.name]
+    : null
 })
 
 function handleShowAvatarEditor() {
   // TODO: implement
 }
 
-function handleShowSettings() {
-  modalStore.openModal(MODAL_NAMES.settings)
+function handleShowModalSettings() {
+  activeModal.value = {
+    name: MODAL_NAMES.settings,
+    heading: 'settings',
+  }
+
+  modalStore.openModal(activeModal.value.name)
 }
 
-function handleLogout() {
-  userStore.logout()
-  router.push('/')
+function handleShowModalDeleteAccount() {
+  activeModal.value = {
+    name: MODAL_NAMES.deleteAccount,
+    heading: 'deleteAccount',
+    byline: 'deleteAccountConfirm',
+  }
+
+  modalStore.openModal(activeModal.value.name)
+}
+
+async function handleLogout() {
+  await userStore.logout()
+  router.push({ name: 'Welcome' })
+}
+
+async function handleDeleteAccount() {
+  await userStore.deleteAccount()
+  router.push({ name: 'Welcome' })
 }
 </script>
 
@@ -101,7 +135,7 @@ function handleLogout() {
         <Button
           is-unstyled
           icon-only
-          @click="handleShowSettings"
+          @click="handleShowModalSettings"
         >
           <Icon
             name="gear"
@@ -138,16 +172,29 @@ function handleLogout() {
       </div>
 
       <template #footer>
-        <Button
-          background-color="secondary-dark"
-          border-color="secondary"
-          class="w-full"
-          :has-shadow="true"
-          size="md"
-          @click="handleLogout"
-        >
-          {{ $t('logout') }}
-        </Button>
+        <div class="flex flex-col w-full gap-4">
+          <Button
+            background-color="secondary-dark"
+            border-color="secondary"
+            class="w-full"
+            :has-shadow="true"
+            size="md"
+            @click="handleLogout"
+          >
+            {{ $t('logout') }}
+          </Button>
+
+          <Button
+            background-color="secondary-dark"
+            border-color="quaternary-dark"
+            class="w-full"
+            :has-shadow="true"
+            size="md"
+            @click="handleShowModalDeleteAccount"
+          >
+            {{ $t('deleteAccount') }}
+          </Button>
+        </div>
       </template>
       <!-- avatar:
       no img upload... generate avatar with custom faces and expressions from predefined options (head color, head deco, eyes expression/deco, mouth expression/deco).
@@ -174,10 +221,17 @@ function handleLogout() {
     </PageContent>
 
     <Modal
-      :name="MODAL_NAMES.settings"
-      heading="Settings"
+      :name="activeModal ? activeModal.name : ''"
+      :heading="(activeModal && activeModal.heading) ? $t(activeModal.heading) : ''"
     >
-      <ModalSettings />
+      <Component
+        :is="modalComponent"
+        :byline="(activeModal && activeModal.byline) ? $t(activeModal.byline) : ''"
+        :cta-text="$t('delete')"
+        icon-name="trashbin"
+        event-name="delete"
+        @delete="handleDeleteAccount"
+      />
     </Modal>
   </PageContainer>
 </template>

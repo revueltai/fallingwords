@@ -9,6 +9,7 @@ interface Props {
   emptyHeading?: string
   emptyByline?: string
   emptyIconName?: IconName
+  emptyIconType?: IconType
   overflow?: 'hidden' | 'visible'
 }
 
@@ -39,6 +40,7 @@ const footerIsHidden = computed(() => !props.isEmpty && !props.hasFooter)
       <ListMessage
         v-if="isEmpty"
         :icon-name="emptyIconName"
+        :icon-type="emptyIconType"
         :heading="emptyHeading"
         :byline="emptyByline"
       />

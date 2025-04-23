@@ -87,14 +87,14 @@ export const useGameRoundStore = defineStore('gameRound', {
   },
 
   actions: {
-    activatePowerup(type: PowerupName) {
+    activatePowerup(type: PowerupIngame) {
       this.userStore.decreasePowerups(type)
       this.roundActivePowerup = {
         active: true,
         type,
       }
 
-      const { duration, speed } = this.powerups[type]
+      const { duration, speed } = this.powerups[type] as Powerup
       this.gameStore.gamePowerupsDuration = duration
 
       if (speed) {
@@ -126,15 +126,15 @@ export const useGameRoundStore = defineStore('gameRound', {
     },
 
     setRoundsReset() {
-      Object.assign(this, initialState())
+      this.$reset()
     },
 
     setRoundWord() {
-      if (isEmptyArray(this.gameStore.gameWordsList)) {
+      if (isEmptyArray(this.gameStore.gameCollectionWords)) {
         return
       }
 
-      const word = this.gameStore.gameWordsList[this.gameStore.gameCurrentRound]
+      const word = this.gameStore.gameCollectionWords[this.gameStore.gameCurrentRound]
 
       this.roundWordOriginal = word.original
       this.roundWordLocales = word.locales!

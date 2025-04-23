@@ -1,5 +1,7 @@
 {
   "en": "abcdefghijklmnopqrstuvwxyz",
   "es": "abcdefghijklmnopqrstuvwxyzñàèìòùü",
-  "de": "abcdefghijklmnopqrstuvwxyzäüöß"
+  "de": "abcdefghijklmnopqrstuvwxyzäüöß",
+  "pt": "abcdefghijklmnopqrstuvwxyzáàâãçéêíóôõúü",
+  "it": "abcdefghijklmnopqrstuvwxyzàèéìíîòóùú"
 }

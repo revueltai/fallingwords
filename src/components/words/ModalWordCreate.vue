@@ -1,10 +1,12 @@
 <script setup lang="ts">
-import { emitToast } from '@/utils/ToastEmitter'
+import { useErrorService } from '@/composables/useErrorService'
+import { ToastService } from '@/services/ToastService'
 import { onMounted, ref } from 'vue'
 import { useI18n } from 'vue-i18n'
 
 interface Props {
-  locales: GameLocale
+  localeOriginal: AppLocaleCode
+  localeLearn: AppLocaleCode
 }
 
 const props = defineProps<Props>()
@@ -12,10 +14,12 @@ const props = defineProps<Props>()
 const emit = defineEmits(['create'])
 
 const { t } = useI18n()
+const { handleError } = useErrorService()
 
 const original = ref('')
 const learn = ref('')
-const locales = ref<GameLocale | null>(null)
+const localeOriginal = ref<AppLocaleCode | null>(null)
+const localeLearn = ref<AppLocaleCode | null>(null)
 
 const formErrors = ref({
   original: '',
@@ -23,13 +27,19 @@ const formErrors = ref({
 })
 
 function validateForm(): boolean {
-  return !!(original.value && learn.value)
+  if (!(original.value && learn.value)) {
+    return handleError({ showToast: true, msg: 'authMissingFields' })
+  }
+
+  return true
 }
 
 function handleSubmit(event: Event) {
   event.preventDefault()
 
-  if (validateForm()) {
+  const formIsValid = validateForm()
+
+  if (formIsValid) {
     emit('create', {
       original: original.value,
       learn: learn.value,
@@ -38,11 +48,12 @@ function handleSubmit(event: Event) {
 }
 
 onMounted(() => {
-  if (!props.locales) {
-    emitToast(t('failedLoadLocales'), 'error')
+  if (!(props.localeLearn && props.localeOriginal)) {
+    ToastService.emitToast(t('failedLoadLocales'), 'error')
   }
 
-  locales.value = props.locales
+  localeOriginal.value = props.localeOriginal
+  localeLearn.value = props.localeLearn
 })
 </script>
 
@@ -56,7 +67,7 @@ onMounted(() => {
         :label="$t('originalWord')"
         :placeholder="$t('enterOriginalWord')"
         required
-        :country-code="locales?.original"
+        :country-code="localeOriginal"
         :error="formErrors.original"
       />
 
@@ -67,7 +78,7 @@ onMounted(() => {
         :label="$t('wordToLearn')"
         :placeholder="$t('enterWordToLearn')"
         required
-        :country-code="locales?.learn"
+        :country-code="localeLearn"
         :error="formErrors.learn"
       />
     </div>
@@ -78,7 +89,7 @@ onMounted(() => {
       type="submit"
       class="w-full"
     >
-      {{ $t('saveWord') }}
+      {{ $t('add') }}
     </Button>
   </form>
 </template>

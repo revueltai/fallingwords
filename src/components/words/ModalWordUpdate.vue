@@ -1,11 +1,12 @@
 <script setup lang="ts">
+import { useErrorService } from '@/composables/useErrorService'
+import { ToastService } from '@/services/ToastService'
 import { useAppStore } from '@/stores/app.store'
-import { emitToast } from '@/utils/ToastEmitter'
 import { onMounted, ref } from 'vue'
 import { useI18n } from 'vue-i18n'
 
 interface Props {
-  collection: GameCollection
+  collection: AppCollection
   wordUid: string
 }
 
@@ -14,11 +15,13 @@ const props = defineProps<Props>()
 const emit = defineEmits(['update'])
 
 const { t } = useI18n()
+const { handleError } = useErrorService()
 const appStore = useAppStore()
 
 const original = ref('')
 const learn = ref('')
-const locales = ref<GameLocale | null>(null)
+const localeOriginal = ref<AppLocaleCode | null>(null)
+const localeLearn = ref<AppLocaleCode | null>(null)
 
 const formErrors = ref({
   original: '',
@@ -26,13 +29,19 @@ const formErrors = ref({
 })
 
 function validateForm(): boolean {
-  return !!(original.value && learn.value)
+  if (!(original.value && learn.value)) {
+    return handleError({ showToast: true, msg: 'authMissingFields' })
+  }
+
+  return true
 }
 
 function handleSubmit(event: Event) {
   event.preventDefault()
 
-  if (validateForm()) {
+  const formIsValid = validateForm()
+
+  if (formIsValid) {
     emit('update', {
       original: original.value,
       learn: learn.value,
@@ -41,15 +50,16 @@ function handleSubmit(event: Event) {
 }
 
 onMounted(async () => {
-  const word = await appStore.getWordById(props.collection.uid, props.wordUid)
+  const word = await appStore.getWordById(props.collection.id, props.wordUid)
 
   if (!word || !props.collection) {
-    emitToast(t('failedToLoadWord'), 'error')
+    ToastService.emitToast(t('failedToLoadWord'), 'error')
   }
 
   original.value = word.original
   learn.value = word.learn
-  locales.value = props.collection?.locales
+  localeOriginal.value = props.collection.locale_original
+  localeLearn.value = props.collection.locale_learn
 })
 </script>
 
@@ -63,7 +73,7 @@ onMounted(async () => {
         :label="$t('nativeWord')"
         :placeholder="$t('enterNativeWord')"
         required
-        :country-code="locales?.original"
+        :country-code="localeOriginal"
         :error="formErrors.original"
       />
 
@@ -74,7 +84,7 @@ onMounted(async () => {
         :label="$t('wordToLearn')"
         :placeholder="$t('enterWordToLearn')"
         required
-        :country-code="locales?.learn"
+        :country-code="localeLearn"
         :error="formErrors.learn"
       />
     </div>

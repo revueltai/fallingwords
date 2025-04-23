@@ -6,6 +6,8 @@ import { computed, ref } from 'vue'
 interface Props {
   label?: string
   labelColor?: Color
+  footnote?: string
+  footnoteColor?: Color
   placeholder?: string
   name?: string
   required?: boolean
@@ -14,18 +16,22 @@ interface Props {
   countryCode?: string
   iconName?: IconName
   iconType?: IconType
+  hasClickableIcon?: boolean
 }
 
 const props = withDefaults(defineProps<Props>(), {
   label: '',
+  footnote: '',
+  footnoteColor: 'grey',
   placeholder: 'Enter a text',
   type: 'text',
   required: false,
   disabled: false,
+  hasClickableIcon: false,
   countryCode: '',
 })
 
-const emit = defineEmits(['update:modelValue'])
+const emit = defineEmits(['update:modelValue', 'clickIcon'])
 const inputModel = defineModel()
 
 const isTouched = ref(false)
@@ -45,6 +51,12 @@ const cssClasses = computed(() => {
 
   return output
 })
+
+function handleIconClick() {
+  if (props.hasClickableIcon) {
+    emit('clickIcon')
+  }
+}
 </script>
 
 <template>
@@ -74,6 +86,7 @@ const cssClasses = computed(() => {
         color="grey"
         :size="isMobile() ? 'sm' : 'md'"
         stroke-width="3"
+        @click="handleIconClick"
       />
 
       <input
@@ -87,6 +100,13 @@ const cssClasses = computed(() => {
         class="w-full bg-transparent outline-none text-black disabled:text-grey invalid:text-quaternary transition-colors"
         @input="emit('update:modelValue', ($event.target as HTMLInputElement).value)"
       >
+
+      <p
+        v-if="footnote"
+        :class="`text-xs text-${footnoteColor}`"
+      >
+        {{ footnote }}
+      </p>
     </div>
   </div>
 </template>

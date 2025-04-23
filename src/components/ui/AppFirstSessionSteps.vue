@@ -3,9 +3,9 @@ import PageContent from '@/components/ui//PageContent.vue'
 import SpeechBubble from '@/components/ui/SpeechBubble.vue'
 import { CharacterSunray } from '@/configs/assets.config'
 import FirstSessionConfig from '@/configs/firstSession.config'
+import { Bus } from '@/services/EventBusService'
+import { LocalStorageService } from '@/services/LocalStorageService'
 import { isMobile } from '@/utils'
-import APIService from '@/utils/apiService'
-import { Bus } from '@/utils/EventBus'
 import { computed, onMounted, onUnmounted, ref, watch } from 'vue'
 import { useRouter } from 'vue-router'
 
@@ -27,6 +27,10 @@ function updateCompletitionPercentage() {
 
 function handleEnableCta() {
   stepReady.value = true
+}
+
+function handleDisableCta() {
+  stepReady.value = false
 }
 
 async function handleGetData() {
@@ -78,14 +82,16 @@ watch(activeStep, () => {
 }, { immediate: true })
 
 onMounted(() => {
-  APIService.clearAllStoresAppData()
+  LocalStorageService.clearAllLocalstorageAppData()
   Bus.on('firstSessionGetData', handleGetData)
   Bus.on('firstSessionEnableCta', handleEnableCta)
+  Bus.on('firstSessionDisableCta', handleDisableCta)
   Bus.on('firstSessionGotoNextStep', handleSetData)
 })
 
 onUnmounted(() => {
   Bus.off('firstSessionEnableCta', handleEnableCta)
+  Bus.off('firstSessionDisableCta', handleDisableCta)
   Bus.off('firstSessionGotoNextStep', handleSetData)
 })
 </script>

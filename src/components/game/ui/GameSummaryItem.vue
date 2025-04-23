@@ -3,7 +3,7 @@ import { getRoundStars } from '@/utils'
 import { computed } from 'vue'
 
 interface Props {
-  word: GameWord
+  word: AppWord
   summary: GameSummaryItem
 }
 

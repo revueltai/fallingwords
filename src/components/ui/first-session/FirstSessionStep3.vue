@@ -26,6 +26,7 @@ const targetLearnWordHidden = '?'.repeat(targetLearnWord.length)
           :country-code="userOriginalLocale"
           :word="targetOriginalWord"
         />
+
         <WordIndicator
           :text="$t('yourLanguage')"
           class="border-senary bg-secondary-light"
@@ -37,6 +38,7 @@ const targetLearnWordHidden = '?'.repeat(targetLearnWord.length)
           :country-code="userLearnLocale"
           :word="targetLearnWordHidden"
         />
+
         <WordIndicator
           :text="$t('learnLanguage')"
           class="border-tertiary-light bg-tertiary"

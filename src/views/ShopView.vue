@@ -7,10 +7,10 @@ import PageContainer from '@/components/ui/PageContainer.vue'
 import PageContent from '@/components/ui/PageContent.vue'
 import { MODAL_NAMES } from '@/configs/constants'
 import { shopConfig } from '@/configs/shop.config'
+import { ToastService } from '@/services/ToastService'
 import { useModalStore } from '@/stores/modal.store'
 import { useUserStore } from '@/stores/user.store'
 import { getRandomNum } from '@/utils'
-import { emitToast } from '@/utils/ToastEmitter'
 import { computed, ref, shallowRef } from 'vue'
 import { useI18n } from 'vue-i18n'
 
@@ -66,13 +66,13 @@ function handlePurchase() {
       if (item[0] === 'lives') {
         userStore.increaseLives(item[1])
       } else {
-        userStore.increasePowerups(item[0] as PowerupName, item[1])
+        userStore.increasePowerups(item[0] as PowerupIngame, item[1])
       }
     })
 
     userStore.decreaseGems(itemToPurchase.value.price)
     modalStore.closeModal()
-    emitToast(t(`purchaseSign${getRandomNum(5)}`), 'success')
+    ToastService.emitToast(t(`purchaseSign${getRandomNum(5)}`), 'success')
   }
 }
 </script>

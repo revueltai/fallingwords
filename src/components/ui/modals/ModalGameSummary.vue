@@ -14,7 +14,7 @@ const gameUIStore = useGameUIStore()
 const gameStore = useGameStore()
 
 function handlePlayAgain() {
-  gameStore.replayGame(gameStore.gameCollections)
+  gameStore.replayGame()
 }
 
 function handleShowDashboard() {
@@ -23,7 +23,10 @@ function handleShowDashboard() {
   router.push('/')
 }
 
-onMounted(() => gameUIStore.fadeInGameModal())
+onMounted(async () => {
+  await gameStore.saveGameResults()
+  gameUIStore.fadeInGameModal()
+})
 </script>
 
 <template>
@@ -59,7 +62,7 @@ onMounted(() => gameUIStore.fadeInGameModal())
 
         <div class="grid gap-3 items-start auto-rows-min h-max anim-fade-in-timed max-h-72 overflow-y-auto pt-6 pb-10">
           <GameSummaryItem
-            v-for="(word, index) in gameStore.gameWordsList"
+            v-for="(word, index) in gameStore.gameCollectionWords"
             :key="index"
             :word="word"
             :summary="gameStore.gameSummary[index]"

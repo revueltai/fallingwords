@@ -9,7 +9,6 @@ interface Props {
 }
 
 const props = withDefaults(defineProps<Props>(), {
-  iconName: 'info',
   ctaText: 'confirm',
 })
 
@@ -24,10 +23,9 @@ const emit = defineEmits<{
 
     <span
       v-if="byline"
-      class="text-sm text-quaternary-light"
-    >
-      {{ byline }}
-    </span>
+      class="text-sm"
+      v-html="byline"
+    />
   </div>
 
   <Button
@@ -36,11 +34,12 @@ const emit = defineEmits<{
     @click="emit(props.eventName, eventCallbackParams)"
   >
     <Icon
+      v-if="iconName"
       :name="iconName"
       size="md"
       type="fill"
     />
 
-    {{ $t(ctaText) }}
+    {{ ctaText }}
   </Button>
 </template>

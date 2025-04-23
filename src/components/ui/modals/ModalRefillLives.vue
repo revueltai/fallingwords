@@ -3,9 +3,9 @@ import NextLifeIndicator from '@/components/shared/NextLifeIndicator.vue'
 import ShopBanner from '@/components/ui/ShopBanner.vue'
 import { LIFE_REFILL_TIME } from '@/configs/constants'
 import { shopConfig } from '@/configs/shop.config'
+import { ToastService } from '@/services/ToastService'
 import { useModalStore } from '@/stores/modal.store'
 import { useUserStore } from '@/stores/user.store'
-import { emitToast } from '@/utils/ToastEmitter'
 import { computed } from 'vue'
 import { useI18n } from 'vue-i18n'
 
@@ -27,7 +27,7 @@ function handleRefillLives() {
   if (livesRefillPackage) {
     userStore.increaseLives(livesRefillPackage.amount.lives)
     userStore.decreaseGems(livesRefillPackage.price)
-    emitToast(t('livesRefilled'), 'success')
+    ToastService.emitToast(t('livesRefilled'), 'success')
   }
 
   handleCloseModal()

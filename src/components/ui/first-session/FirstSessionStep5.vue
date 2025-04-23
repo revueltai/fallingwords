@@ -23,7 +23,7 @@ const targetLearnWordHidden = '?'.repeat(targetLearnWord.length)
 
 const learnWord = ref(targetLearnWordHidden)
 const currentIndex = ref(0)
-let interval: number | null | undefined = null
+let interval: NodeJS.Timeout | null | undefined = null
 
 onMounted(() => {
   const loopTime = 1300

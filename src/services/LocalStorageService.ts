@@ -1,11 +1,10 @@
 /**
- * API service to handle data storage.
- *
- * TODO: Replace localstorage with propper backend.
+ * Handles app data storage in localstorage.
  */
-import { API_KEYS } from '@/configs/constants'
 
-export default {
+import { APP_LOCALSTORAGE_KEYS } from '@/configs/constants'
+
+export const LocalStorageService = {
   /**
    * Retrieves data from local storage using a predefined key.
    *
@@ -45,7 +44,7 @@ export default {
    * @param {string} key - The key for the local storage container.
    * @returns {boolean} - Returns true if data was successfully deleted, false if key doesn't exist
    */
-  deleteStoreData(key: string): boolean {
+  deleteSingleLocalstorageAppData(key: string): boolean {
     if (this.hasStoreData(key)) {
       localStorage.removeItem(key)
       return true
@@ -57,9 +56,9 @@ export default {
   /**
    * Clears all data of the the app from local storage
    */
-  clearAllStoresAppData(): void {
-    for (const [_, value] of Object.entries(API_KEYS)) {
-      this.deleteStoreData(value)
+  clearAllLocalstorageAppData(): void {
+    for (const [_, value] of Object.entries(APP_LOCALSTORAGE_KEYS)) {
+      this.deleteSingleLocalstorageAppData(value)
     }
   },
 

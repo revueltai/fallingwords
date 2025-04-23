@@ -2,10 +2,11 @@
 import { computed } from 'vue'
 
 interface Props {
-  uid: string
+  id: string
   name: string
-  locales: GameLocale
-  wordCount: number
+  localeOriginal: AppLocaleCode
+  localeLearn: AppLocaleCode
+  wordsCount: number
   hasButtons?: boolean
   selectable?: boolean
   isSelected?: boolean
@@ -24,7 +25,7 @@ const emit = defineEmits([
   'delete',
 ])
 
-const hasWords = computed(() => props.wordCount > 0)
+const hasWords = computed(() => props.wordsCount > 0)
 const isDisabled = computed(() => hasWords.value && props.selectable && props.isSelected)
 const cssClasses = computed(() => {
   const output = []
@@ -41,12 +42,12 @@ const cssClasses = computed(() => {
 })
 
 function handleTextClick() {
-  emit('clickText', props.uid)
+  emit('clickText', props.id)
 }
 
 function handleCardClick() {
   if (props.selectable && hasWords.value) {
-    emit('selectCollection', props.uid)
+    emit('selectCollection', props.id)
   }
 }
 </script>
@@ -75,7 +76,7 @@ function handleCardClick() {
 
     <div
       :class="isSelected && 'opacity-60'"
-      class="flex justify-between items-center gap-4 overflow-hidden transition-opacity w-full"
+      class="flex justify-between items-center gap-4 transition-opacity w-full"
     >
       <div
         class="flex justify-between items-center gap-4"
@@ -83,13 +84,13 @@ function handleCardClick() {
       >
         <div class="relative w-11 h-13 flex-shrink-0">
           <Flag
-            :country-code="locales.original"
+            :country-code="localeOriginal"
             size="sm"
             class="absolute top-1 left-2"
           />
 
           <Flag
-            :country-code="locales.learn"
+            :country-code="localeLearn"
             size="sm"
             class="absolute top-5 left-5"
           />
@@ -116,9 +117,9 @@ function handleCardClick() {
 
           <p
             class="text-xs"
-            :class="wordCount ? 'text-primary' : 'text-quaternary-light'"
+            :class="wordsCount ? 'text-primary' : 'text-quaternary-light'"
           >
-            {{ wordCount }} {{ $t('words') }}
+            {{ wordsCount }} {{ $t('words') }}
           </p>
         </div>
       </div>
@@ -143,7 +144,7 @@ function handleCardClick() {
           background-color="tertiary"
           border-color="tertiary-light"
           size="md"
-          @click="emit('update', uid)"
+          @click="emit('update', id)"
         >
           <Icon
             name="pencil"
@@ -157,7 +158,7 @@ function handleCardClick() {
           background-color="quaternary"
           border-color="quaternary-light"
           icon-only
-          @click="emit('delete', uid)"
+          @click="emit('delete', id)"
         >
           <Icon
             name="trashbin"

@@ -1,26 +1,35 @@
 <script setup lang="ts">
+import { useErrorService } from '@/composables/useErrorService'
 import { ref } from 'vue'
 
-const emit = defineEmits(['create'])
+const emit = defineEmits(['login'])
 
-const userName = ref('')
+const { handleError } = useErrorService()
+
+const email = ref('')
 const password = ref('')
 
 const formErrors = ref({
-  userName: '',
+  email: '',
   password: '',
 })
 
-function validateForm(): boolean {
-  return !!(userName.value && password.value)
+async function validateForm(): Promise<boolean> {
+  if (!(email.value && password.value)) {
+    return handleError({ showToast: true, msg: 'authMissingFields' })
+  }
+
+  return true
 }
 
-function handleSubmit(event: Event) {
+async function handleSubmit(event: Event) {
   event.preventDefault()
 
-  if (validateForm()) {
-    emit('create', {
-      userName: userName.value,
+  const formIsValid = await validateForm()
+
+  if (formIsValid) {
+    emit('login', {
+      email: email.value,
       password: password.value,
     })
   }
@@ -31,13 +40,13 @@ function handleSubmit(event: Event) {
   <form @submit.prevent="handleSubmit">
     <div class="mb-8 flex flex-col gap-4">
       <Input
-        v-model="userName"
-        name="userName"
-        type="text"
-        :label="$t('usernameLabel')"
-        :placeholder="$t('usernamePlaceholderEnter')"
+        v-model="email"
+        name="email"
+        type="email"
+        :label="$t('emailLabel')"
+        :placeholder="$t('emailPlaceholderEnter')"
         required
-        :error="formErrors.userName"
+        :error="formErrors.email"
       />
       <Input
         v-model="password"

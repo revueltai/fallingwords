@@ -3,11 +3,11 @@ import SearchBar from '@/components/shared/SearchBar.vue'
 import CollectionItem from '@/components/ui/CollectionItem.vue'
 import PageContainer from '@/components/ui/PageContainer.vue'
 import PageContent from '@/components/ui/PageContent.vue'
+import { ToastService } from '@/services/ToastService'
 import { useAppStore } from '@/stores/app.store'
 import { useGameStore } from '@/stores/game.store'
 import { useUserStore } from '@/stores/user.store'
 import { isEmptyArray } from '@/utils'
-import { emitToast } from '@/utils/ToastEmitter'
 import { computed, onMounted, ref } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { useRouter } from 'vue-router'
@@ -21,33 +21,32 @@ const appStore = useAppStore()
 
 const maxGameCollections = 4
 const searchQuery = ref('')
-const selectedCollections = ref<GameCollection[]>([])
+const selectedCollections = ref<AppCollection[]>([])
 
 const isReady = computed(() => selectedCollections.value.length > 0)
 
-const hasItems = computed(() => isEmptyArray(appStore.collections))
+const hasItems = computed(() => !isEmptyArray(appStore.collections))
 
 const filteredCollections = computed(() => {
   if (!appStore.collections) {
     return []
   }
 
-  return appStore.collections.filter((collection: GameCollection) =>
+  return appStore.collections.filter((collection: AppCollection) =>
     collection.name.toLowerCase().includes(searchQuery.value.toLowerCase()),
   )
 })
 
-function isSelectedCollection(collection: GameCollection) {
-  return selectedCollections.value.some(item => item.uid === collection.uid)
+function isSelectedCollection(collection: AppCollection) {
+  return selectedCollections.value.some(item => item.id === collection.id)
 }
 
-function handleCollectionToggling(collection: GameCollection) {
-  const index = selectedCollections.value.findIndex(item => item.uid === collection.uid)
+function handleCollectionToggling(collection: AppCollection) {
+  const index = selectedCollections.value.findIndex(item => item.id === collection.id)
 
   if (index !== -1) {
     selectedCollections.value.splice(index, 1)
-  }
- else if (selectedCollections.value.length < maxGameCollections) {
+  } else if (selectedCollections.value.length < maxGameCollections) {
     selectedCollections.value.push(collection)
   }
 }
@@ -58,17 +57,16 @@ function handleRefillLivesRedirect() {
   }
 }
 
-function handleGameStart() {
-  gameStore.setGameCollections(selectedCollections.value)
-  const rs = gameStore.prepareGame()
+async function handleGameStart() {
+  const rs = await gameStore.prepareGame(selectedCollections.value)
 
   if (rs) {
     router.push('game')
+    return
   }
- else {
-    emitToast(t('failedToStartGame'), 'error')
-    router.push('/')
-  }
+
+  ToastService.emitToast(t('failedToStartGame'), 'error')
+  router.push('/')
 }
 
 onMounted(() => handleRefillLivesRedirect())
@@ -80,23 +78,24 @@ onMounted(() => handleRefillLivesRedirect())
     :subheading="$t('selectCollectionsGame')"
   >
     <PageContent
-      :is-empty="hasItems"
+      :is-empty="!hasItems"
       :empty-heading="$t('noCollectionsFound')"
       :empty-byline="$t('createCollectionsToPlayWith')"
       empty-icon-name="collection"
     >
       <SearchBar
-        v-if="!hasItems"
+        v-if="hasItems"
         v-model="searchQuery"
       />
 
       <CollectionItem
         v-for="(collection, index) in filteredCollections"
+        :id="collection.id"
         :key="index"
-        :uid="collection.uid"
         :name="collection.name"
-        :locales="collection.locales"
-        :word-count="collection.words.length"
+        :locale-original="collection.locale_original"
+        :locale-learn="collection.locale_learn"
+        :words-count="collection.words_count"
         :has-buttons="false"
         :selectable="true"
         :is-selected="isSelectedCollection(collection)"

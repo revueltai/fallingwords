@@ -284,10 +284,13 @@ export function sanitizeRoute(route: string): string {
 /**
  * Returns Today's date
  *
+ * @param {boolean} onlyDate - Wether to return just the date (e.g. "2025-04-11"). Otherwise, returns the full ISO string with time.
  * @returns {string} Today's date.
  */
-export function getToday(): string {
-  return new Date().toISOString().split('T')[0]
+export function getToday(onlyDate: boolean = true): string {
+  return onlyDate
+    ? new Date().toISOString().split('T')[0]
+    : new Date().toISOString()
 }
 
 /**
