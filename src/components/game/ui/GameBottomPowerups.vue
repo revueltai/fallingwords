@@ -7,7 +7,7 @@ import { isMobile } from '@/utils'
 import { computed, onBeforeUnmount, onMounted } from 'vue'
 
 interface PowerupButton {
-  id: PowerupName
+  id: PowerupIngame
   asset: string
   count: number
   keyboardKey: string
@@ -29,11 +29,11 @@ const powerupButtons = computed(() => {
     let count: number = 0
 
     for (const [key, value] of Object.entries(userStore.powerups)) {
-      const isValidPowerup = ![powerups.life.id, powerups.gem.id].includes(key as PowerupName)
+      const isValidIngamePowerup = ![powerups.life.id, powerups.gem.id].includes(key as PowerupName)
 
-      if (isValidPowerup) {
+      if (isValidIngamePowerup) {
         output.push({
-          id: key as PowerupName,
+          id: key as PowerupIngame,
           asset: `powerup-${key}`,
           count: value as number,
           keyboardKey: keyboardKeys[count],

@@ -6,7 +6,7 @@ import {
   LIFE_REGENERATION_INTERVAL_TIME,
   USER_ACCOUNT_DEFAULTS,
 } from '@/configs/constants'
-import localStorage from '@/services/LocalStorageService'
+import { LocalStorageService } from '@/services/LocalStorageService'
 import { supabase } from '@/services/SupabaseService'
 import { isEmptyObject } from '@/utils'
 import { defineStore } from 'pinia'
@@ -107,7 +107,7 @@ export const useUserStore = defineStore('user', {
         this.lives = userDataEntry.lives || USER_ACCOUNT_DEFAULTS.lives
         this.gems = userDataEntry.gems || USER_ACCOUNT_DEFAULTS.gems
 
-        localStorage.saveStoreData(APP_LOCALSTORAGE_KEYS.userAccountData, {
+        LocalStorageService.saveStoreData(APP_LOCALSTORAGE_KEYS.userAccountData, {
           uid: this.uid,
           createdAt: this.createdAt,
         })

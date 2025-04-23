@@ -8,6 +8,10 @@ type CollectionUpdate = Database['public']['Tables']['collections']['Update']
 type WordRow = Database['public']['Tables']['words']['Row']
 type WordUpdate = Database['public']['Tables']['words']['Update']
 
+function noRowsReturned(supabaseErrorCode: string) {
+  return supabaseErrorCode === 'PGRST116'
+}
+
 export class SupabaseService {
   private static instance: SupabaseService
   private client: SupabaseClient<Database>
@@ -17,7 +21,7 @@ export class SupabaseService {
     const supabaseKey = import.meta.env.VITE_SUPABASE_ANON_KEY
 
     if (!supabaseUrl || !supabaseKey) {
-      throw new Error('Missing Supabase environment variables')
+      throw new Error('MissingSupabaseConfig')
     }
 
     this.client = createClient<Database>(supabaseUrl, supabaseKey)
@@ -54,7 +58,7 @@ export class SupabaseService {
       const exists = await this.checkUserExists(email, null)
       return !exists
     } catch (error) {
-      console.error('Error checking email uniqueness:', error)
+      console.error('ErrorEmailUniqueness', error)
       return false
     }
   }
@@ -64,7 +68,7 @@ export class SupabaseService {
       const exists = await this.checkUserExists(null, username)
       return !exists
     } catch (error) {
-      console.error('Error checking username uniqueness:', error)
+      console.error('ErrorUsernameUniqueness', error)
       return false
     }
   }
@@ -81,7 +85,7 @@ export class SupabaseService {
     } = payload
 
     if (!email || !password) {
-      throw new Error('Missing email or password')
+      throw new Error('MissingEmailOrPassword')
     }
 
     const { data, error } = await this.client.auth.signUp({
@@ -376,7 +380,7 @@ export class SupabaseService {
       .single()
 
     if (error) {
-      if (error.code === 'PGRST116') {
+      if (noRowsReturned(error.code)) {
         return null
       }
 
@@ -457,7 +461,7 @@ export class SupabaseService {
       .single()
 
     if (error) {
-      if (error.code === 'PGRST116') {
+      if (noRowsReturned(error.code)) {
         return null
       }
 

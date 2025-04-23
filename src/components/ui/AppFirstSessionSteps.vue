@@ -4,7 +4,7 @@ import SpeechBubble from '@/components/ui/SpeechBubble.vue'
 import { CharacterSunray } from '@/configs/assets.config'
 import FirstSessionConfig from '@/configs/firstSession.config'
 import { Bus } from '@/services/EventBusService'
-import APIService from '@/services/LocalStorageService'
+import { LocalStorageService } from '@/services/LocalStorageService'
 import { isMobile } from '@/utils'
 import { computed, onMounted, onUnmounted, ref, watch } from 'vue'
 import { useRouter } from 'vue-router'
@@ -82,7 +82,7 @@ watch(activeStep, () => {
 }, { immediate: true })
 
 onMounted(() => {
-  APIService.clearAllStoresAppData()
+  LocalStorageService.clearAllLocalstorageAppData()
   Bus.on('firstSessionGetData', handleGetData)
   Bus.on('firstSessionEnableCta', handleEnableCta)
   Bus.on('firstSessionDisableCta', handleDisableCta)

@@ -1,11 +1,8 @@
 export const APP_LOCALES = ['en', 'de', 'es', 'it', 'pt']
 
 export const APP_LOCALSTORAGE_KEYS = {
-  settings: 'fwSettings',
+  userFirstSession: 'fwUserFirstSession',
   userAccountData: 'fwUserAccount',
-  userAppData: 'fwUserApp',
-  userStreakData: 'fwStreak',
-  userStreak: 'fwStreak',
 }
 
 export const LIFE_MAX_REFILL_LIVES = 5

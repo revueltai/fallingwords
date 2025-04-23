@@ -1,7 +1,7 @@
 <script setup lang="ts">
+import { Bus } from '@/services/EventBusService'
 import { useAppStore } from '@/stores/app.store'
 import { isMobile } from '@/utils'
-import { Bus } from '@/services/EventBusService'
 import { computed, onMounted, onUnmounted, ref } from 'vue'
 
 interface Props {
@@ -55,6 +55,7 @@ onUnmounted(() => Bus.off('firstSessionSaveStepData', handleStoreData))
       <Select
         v-model="userLocaleLearn"
         :options="sanitizedOptions"
+        :asset="userLocaleLearn"
         name="userLearnLocale"
         :label="$t('learnLanguage')"
         :select-label="$t('selectLanguage')"

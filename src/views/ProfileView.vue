@@ -64,13 +64,13 @@ function handleShowModalDeleteAccount() {
   modalStore.openModal(activeModal.value.name)
 }
 
-function handleLogout() {
-  userStore.logout()
+async function handleLogout() {
+  await userStore.logout()
   router.push({ name: 'Welcome' })
 }
 
-function handleDeleteAccount() {
-  userStore.deleteAccount()
+async function handleDeleteAccount() {
+  await userStore.deleteAccount()
   router.push({ name: 'Welcome' })
 }
 </script>

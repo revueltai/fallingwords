@@ -122,7 +122,7 @@ function getSafelist() {
 
   // Fonts
   output.push({
-    pattern: new RegExp(`(text)-(${[...Object.keys(fontSize)].join('|')})`, 'g'),
+    pattern: new RegExp(`(text)-(${Object.keys(fontSize).join('|')})`, 'g'),
   })
 
   return output

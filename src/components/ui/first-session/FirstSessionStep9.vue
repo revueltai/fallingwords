@@ -1,6 +1,9 @@
 <script setup lang="ts">
 import { useErrorService } from '@/composables/useErrorService'
+import { APP_LOCALSTORAGE_KEYS } from '@/configs/constants'
 import { Bus } from '@/services/EventBusService'
+import { LocalStorageService } from '@/services/LocalStorageService'
+import { useAppStore } from '@/stores/app.store'
 import { useUserStore } from '@/stores/user.store'
 import { onMounted, onUnmounted, ref } from 'vue'
 
@@ -14,6 +17,7 @@ const props = defineProps<Props>()
 
 const { handleError } = useErrorService()
 const userStore = useUserStore()
+const appStore = useAppStore()
 
 const isPasswordVisible = ref(false)
 const name = ref('ignacio')
@@ -75,12 +79,31 @@ async function handleValidate(event: Event) {
   Bus.emit('firstSessionEnableCta')
 }
 
+async function createFirstWord(collectionId: string, storageData: any) {
+  const rsFirstWordId = await appStore.createWord(collectionId, {
+    original: storageData.word.original,
+    learn: storageData.word.learn,
+  })
+
+  if (rsFirstWordId) {
+    Bus.emit('firstSessionGotoNextStep')
+  }
+}
+
+async function createFirstCollection(storageData: any) {
+  return await appStore.createCollection({
+    name: storageData.name,
+    localeOriginal: storageData.userOriginalLocale,
+    localeLearn: storageData.userLearnLocale,
+  })
+}
+
 async function handleStoreData() {
   if (props.stepId !== 'createAccountPrompt') {
     return
   }
 
-  const rs = await userStore.createUserAccount({
+  const rsUserAccount = await userStore.createUserAccount({
     name: name.value,
     age: age.value,
     email: email.value,
@@ -90,8 +113,15 @@ async function handleStoreData() {
     learnLocale: props.userLearnLocale,
   })
 
-  if (rs) {
-    Bus.emit('firstSessionGotoNextStep')
+  if (!rsUserAccount) {
+    return
+  }
+
+  const storageData = LocalStorageService.loadStoreData(APP_LOCALSTORAGE_KEYS.userFirstSession)
+  const collectionId = await createFirstCollection(storageData)
+
+  if (collectionId) {
+    await createFirstWord(collectionId, storageData)
   }
 }
 
@@ -200,7 +230,7 @@ onUnmounted(() => Bus.off('firstSessionSaveStepData', handleStoreData))
             background-color="secondary-dark"
             :has-shadow="false"
             size="xs"
-            class="min-w-20 mt-4 text-right"
+            class="min-w-20 text-right"
             @click="handleGeneratePassword"
           >
             {{ $t('generatePassword') }}

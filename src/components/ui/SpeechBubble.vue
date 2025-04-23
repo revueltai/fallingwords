@@ -8,7 +8,7 @@ defineProps<Props>()
 
 function highlightColors(text: string): string {
   return text.replace(/\[(.*?)\]%([a-z-]+)%/gi, (match, content, colorName) => {
-    return `<span class=\"text-${colorName}\">${content}</span>`
+    return `<span class="text-${colorName}">${content}</span>`
   })
 }
 </script>

@@ -33,6 +33,12 @@ export const useAppStore = defineStore('app', () => {
 
   const learningLocales = computed(() => getUniqueLocales('learn'))
 
+  /**
+   * Returns a unique list of locales from collections.
+   *
+   * @param {('original' | 'learn')} type - Type of locale to extract.
+   * @returns {string[]} Array of unique locales.
+   */
   function getUniqueLocales(type: 'original' | 'learn') {
     return [...new Set(collections.value.map(c => type === 'original'
       ? c.locale_original
@@ -40,23 +46,45 @@ export const useAppStore = defineStore('app', () => {
     )]
   }
 
+  /**
+   * Sets the height for a UI element.
+   *
+   * @param {keyof AppUiElementHeights} key - UI element key.
+   * @param {number} value - Height value to set.
+   */
   function setAppUiElementHeights(key: keyof AppUiElementHeights, value: number) {
     if (key in appUiElementHeights.value) {
       appUiElementHeights.value[key] = value
     }
   }
 
-  function setFullscreen() {
+  /**
+   * Enters fullscreen mode if not already active.
+   *
+   * @returns {void}
+   */
+  function setFullscreen(): void {
     if (!isFullscreen.value) {
       enterFullscreen()
     }
   }
 
-  function setCanvasElement(el: HTMLElement) {
+  /**
+   * Sets the canvas element reference.
+   *
+   * @param {HTMLElement} el - The canvas HTML element.
+   * @returns {void}
+   */
+  function setCanvasElement(el: HTMLElement): void {
     canvasEl.value = el
   }
 
-  async function setFormLocales() {
+  /**
+   * Sets formLocales if it's empty.
+   *
+   * @returns {Promise<void>}
+   */
+  async function setFormLocales(): Promise<void> {
     if (!isEmptyArray(formLocales.value)) {
       return
     }
@@ -68,7 +96,12 @@ export const useAppStore = defineStore('app', () => {
     }
   }
 
-  async function fetchCollections() {
+  /**
+   * Fetches collections from Supabase and stores them.
+   *
+   * @returns {Promise<boolean>} True if data was fetched, false otherwise.
+   */
+  async function fetchCollections(): Promise<boolean> {
     const data = await supabase.fetchCollections()
 
     if (isEmptyArray(data)) {
@@ -79,7 +112,13 @@ export const useAppStore = defineStore('app', () => {
     return true
   }
 
-  async function fetchCollectionWords(collectionId: string) {
+  /**
+   * Fetches words for a given collection ID and stores them.
+   *
+   * @param {string} collectionId - ID of the collection.
+   * @returns {Promise<boolean>} True if words were fetched, false otherwise.
+   */
+  async function fetchCollectionWords(collectionId: string): Promise<boolean> {
     try {
       const words = await supabase.fetchWords(collectionId)
 
@@ -100,10 +139,23 @@ export const useAppStore = defineStore('app', () => {
     }
   }
 
-  async function getCollectionById(uid: string): Promise<AppCollection | undefined> {
-    return collections.value.find(collection => collection.id === uid)
+  /**
+   * Finds a collection by its ID.
+   *
+   * @param {string} collectionId - Collection ID.
+   * @returns {Promise<AppCollection | undefined>} The found collection or undefined.
+   */
+  async function getCollectionById(collectionId: string): Promise<AppCollection | undefined> {
+    return collections.value.find(collection => collection.id === collectionId)
   }
 
+  /**
+   * Finds a word by ID within a collection.
+   *
+   * @param {string} collectionId - ID of the collection.
+   * @param {string} wordId - ID of the word.
+   * @returns {Promise<AppWord | undefined>} The found word or undefined.
+   */
   async function getWordById(collectionId: string, wordId: string): Promise<AppWord | undefined> {
     if (!collectionWords.value[collectionId]) {
       await fetchCollectionWords(collectionId)
@@ -112,7 +164,13 @@ export const useAppStore = defineStore('app', () => {
     return collectionWords.value[collectionId]?.find(word => word.uid === wordId)
   }
 
-  async function updateCollectionState(collectionId: string) {
+  /**
+   * Updates local state for a specific collection by fetching its latest data.
+   *
+   * @param {string} collectionId - ID of the collection to update.
+   * @returns {Promise<void>}
+   */
+  async function updateCollectionState(collectionId: string): Promise<void> {
     const updatedCollection = await supabase.fetchCollection(collectionId)
 
     if (updatedCollection) {
@@ -124,7 +182,14 @@ export const useAppStore = defineStore('app', () => {
     }
   }
 
-  async function createWord(collectionId: string, payload: { original: string, learn: string }) {
+  /**
+   * Creates a new word in the specified collection.
+   *
+   * @param {string} collectionId - ID of the collection.
+   * @param {{ original: string, learn: string }} payload - Word data to insert.
+   * @returns {Promise<string>} ID of the created word.
+   */
+  async function createWord(collectionId: string, payload: { original: string, learn: string }): Promise<string> {
     if (!collectionId) {
       throw new Error('MissingCollectionId')
     }
@@ -159,7 +224,13 @@ export const useAppStore = defineStore('app', () => {
     }
   }
 
-  async function createCollection(payload: CollectionUpdate) {
+  /**
+   * Creates a new collection and updates local state.
+   *
+   * @param {CollectionUpdate} payload - Data for the new collection.
+   * @returns {Promise<string>} ID of the created collection.
+   */
+  async function createCollection(payload: CollectionUpdate): Promise<string> {
     try {
       const rs = await supabase.insertCollection({
         name: payload.name,
@@ -186,7 +257,13 @@ export const useAppStore = defineStore('app', () => {
     }
   }
 
-  async function updateCollection(payload: CollectionUpdate) {
+  /**
+   * Updates an existing collection.
+   *
+   * @param {CollectionUpdate} payload - Updated collection data.
+   * @returns {Promise<string>} ID of the updated collection.
+   */
+  async function updateCollection(payload: CollectionUpdate): Promise<string> {
     if (!payload) {
       throw new Error('MissingCollectionPayload')
     }
@@ -227,7 +304,14 @@ export const useAppStore = defineStore('app', () => {
     }
   }
 
-  async function updateWord(collectionId: string, payload: AppWord) {
+  /**
+   * Updates an existing word in a collection.
+   *
+   * @param {string} collectionId - ID of the collection.
+   * @param {AppWord} payload - Updated word data.
+   * @returns {Promise<string>} ID of the updated word.
+   */
+  async function updateWord(collectionId: string, payload: AppWord): Promise<string> {
     if (!collectionId || !payload.uid) {
       throw new Error('MissingIds')
     }
@@ -261,6 +345,12 @@ export const useAppStore = defineStore('app', () => {
     }
   }
 
+  /**
+   * Deletes a collection by ID.
+   *
+   * @param {string} id - ID of the collection to delete.
+   * @returns {Promise<boolean>} True if deleted successfully.
+   */
   async function deleteCollection(id: string): Promise<boolean> {
     if (!id) {
       return false
@@ -275,6 +365,13 @@ export const useAppStore = defineStore('app', () => {
     return rs
   }
 
+  /**
+   * Deletes a word from a collection.
+   *
+   * @param {string} collectionId - ID of the collection.
+   * @param {string} wordId - ID of the word to delete.
+   * @returns {Promise<boolean>} True if deleted successfully.
+   */
   async function deleteWord(collectionId: string, wordId: string): Promise<boolean> {
     if (!wordId || !collectionId) {
       throw new Error('MissingIds')

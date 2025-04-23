@@ -97,7 +97,7 @@ export const useGameBoardStore = defineStore('gameBoard', {
           } else if (id === this.gameRoundStore.powerups.gem.id) {
             this.userStore.increaseGems()
           } else {
-            this.userStore.increasePowerups(id)
+            this.userStore.increasePowerups(id as PowerupIngame)
           }
         }
       }

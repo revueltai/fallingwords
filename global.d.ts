@@ -121,7 +121,7 @@ declare global {
     description?: string
   }
 
-  type Powerups = { [key in PowerupName]?: Powerup }
+  type Powerups = { [key in PowerupName]: Powerup }
 
   type GamePowerups = Partial<Record<keyof Powerups, number>>
   type RoundLocaleCodes = null | AppLocaleCode

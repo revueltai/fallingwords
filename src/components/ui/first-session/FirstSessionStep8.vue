@@ -1,8 +1,10 @@
 <script setup lang="ts">
 import FirstSessionSuggestion from '@/components/ui/first-session/FirstSessionSuggestion.vue'
+import { APP_LOCALSTORAGE_KEYS } from '@/configs/constants'
 import { Bus } from '@/services/EventBusService'
-import { useAppStore } from '@/stores/app.store'
+import { LocalStorageService } from '@/services/LocalStorageService'
 import { onMounted, onUnmounted, ref } from 'vue'
+import { useRouter } from 'vue-router'
 
 interface Props {
   stepId: string
@@ -12,7 +14,7 @@ interface Props {
 
 const props = defineProps<Props>()
 
-const appStore = useAppStore()
+const router = useRouter()
 
 const original = ref('')
 const learn = ref('')
@@ -50,11 +52,17 @@ async function handleValidate(event: Event | null = null) {
   }
 }
 
-async function handleSetData(uid: string) {
-  selectedCollection.value = await appStore.getCollectionById(uid)
+async function handleSetData() {
+  selectedCollection.value = LocalStorageService.loadStoreData(APP_LOCALSTORAGE_KEYS.userFirstSession)
 
-  if (selectedCollection.value) {
-    locales.value = selectedCollection.value.locales
+  if (!selectedCollection.value) {
+    router.push({ name: 'Welcome' })
+    return
+  }
+
+  locales.value = {
+    original: selectedCollection.value.locale_original,
+    learn: selectedCollection.value.locale_learn,
   }
 }
 
@@ -63,9 +71,13 @@ async function handleStoreData() {
     return
   }
 
-  const rs = await appStore.createWord(selectedCollection.value?.uid, {
-    original: original.value,
-    learn: learn.value,
+  const storageData = LocalStorageService.loadStoreData(APP_LOCALSTORAGE_KEYS.userFirstSession)
+  const rs = LocalStorageService.saveStoreData(APP_LOCALSTORAGE_KEYS.userFirstSession, {
+    ...storageData,
+    word: {
+      original: original.value,
+      learn: learn.value,
+    },
   })
 
   if (rs) {

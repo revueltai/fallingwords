@@ -1,6 +1,5 @@
 import { soundsConfig, soundsEffectsConfig } from '@/configs/sounds.config'
 import { defineStore } from 'pinia'
-import { useUserStore } from './user.store'
 
 interface SoundState {
   initialized: boolean
