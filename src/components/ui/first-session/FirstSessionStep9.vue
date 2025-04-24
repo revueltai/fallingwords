@@ -93,8 +93,8 @@ async function createFirstWord(collectionId: string, storageData: any) {
 async function createFirstCollection(storageData: any) {
   return await appStore.createCollection({
     name: storageData.name,
-    localeOriginal: storageData.userOriginalLocale,
-    localeLearn: storageData.userLearnLocale,
+    localeOriginal: storageData.localeOriginal,
+    localeLearn: storageData.localeLearn,
   })
 }
 

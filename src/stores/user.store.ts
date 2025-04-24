@@ -86,6 +86,7 @@ export const useUserStore = defineStore('user', {
         const { data, error } = await supabase.signUp(payload)
 
         if (error || !data.user) {
+          await supabase.revertSignUp(payload.email)
           return handleError({ msg: 'authSignupFailed', shouldThrow: false })
         }
 
