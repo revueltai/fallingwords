@@ -20,10 +20,10 @@ const userStore = useUserStore()
 const appStore = useAppStore()
 
 const isPasswordVisible = ref(false)
-const name = ref('ignacio')
-const email = ref('revuelta.ig@gmail.com')
-const age = ref('39')
-const username = ref('iamnacho')
+const name = ref('')
+const email = ref('')
+const age = ref('')
+const username = ref('')
 const password = ref('')
 
 const formErrors = ref({
