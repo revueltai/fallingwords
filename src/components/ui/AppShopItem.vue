@@ -22,7 +22,7 @@ const props = withDefaults(defineProps<Props>(), {
   borderColor: 'secondary',
   borderColorHover: 'secondary-light',
   direction: 'col',
-  padding: 'p-4',
+  padding: 'px-2 py-4',
   cssClasses: '',
 })
 
@@ -37,7 +37,6 @@ const cssClasses = computed(() => {
   <div
     :class="cssClasses"
     class="flex items-center rounded-2xl gap-3 border border-b-4 transition-colors cursor-pointer"
-    @click="emit('click', uid)"
   >
     <div class="relative">
       <img
@@ -60,6 +59,7 @@ const cssClasses = computed(() => {
       border-color="transparent"
       background-color="transparent"
       padding="none"
+      @click="emit('click', uid)"
     />
   </div>
 </template>

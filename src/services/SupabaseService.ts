@@ -7,6 +7,7 @@ type CollectionRow = Database['public']['Tables']['collections']['Row']
 type CollectionUpdate = Database['public']['Tables']['collections']['Update']
 type WordRow = Database['public']['Tables']['words']['Row']
 type WordUpdate = Database['public']['Tables']['words']['Update']
+type WordInsert = Database['public']['Tables']['words']['Insert']
 
 function noRowsReturned(supabaseErrorCode: string) {
   return supabaseErrorCode === 'PGRST116'
@@ -373,6 +374,24 @@ export class SupabaseService {
     }
   }
 
+  async fetchSettings(): Promise<AppSettings> {
+    const { data, error } = await this.client
+      .from('settings')
+      .select('key, value')
+
+    if (error) {
+      throw new Error('FailedFetchSettings')
+    }
+
+    return data.reduce((
+      acc: AppSettings,
+      setting: { key: keyof AppSettings, value: any },
+    ) => {
+      acc[setting.key] = setting.value
+      return acc
+    }, {} as AppSettings)
+  }
+
   async fetchStreak(): Promise<{
     streak_dates: string[]
     current_streak: number
@@ -533,18 +552,23 @@ export class SupabaseService {
     return data
   }
 
-  async insertWord(payload: {
-    collection_id: string
-    original: string
-    learn: string
-  }): Promise<WordRow> {
-    const hasAccess = await this.verifyCollectionOwnership(payload.collection_id)
+  async insertWord(payload: WordInsert): Promise<WordRow> {
+    const { data, error } = await this.client
+      .rpc('insert_word_with_limit', {
+        p_collection_id: payload.collection_id,
+        p_original: payload.original,
+        p_learn: payload.learn,
+      })
 
-    if (!hasAccess) {
-      throw new Error('CollectionNotFoundForUser')
+    if (error) {
+      if (error.message === 'MaxWordsLimitReached') {
+        throw new Error('MaxWordsLimitReached')
+      }
+
+      throw error
     }
 
-    return this.insertRecord<WordRow>('words', payload)
+    return data
   }
 
   async updateWord(

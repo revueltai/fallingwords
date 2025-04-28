@@ -1,4 +1,6 @@
 <script setup lang="ts">
+import { isMobile } from '@/utils'
+
 interface Props {
   iconName?: IconName
   iconType?: IconType
@@ -16,7 +18,7 @@ withDefaults(defineProps<Props>(), {
   text: '',
   borderColor: 'secondary-light',
   backgroundColor: 'secondary-dark',
-  padding: 'px-4 py-2',
+  padding: 'px-4 pt-1 pb-2',
 })
 </script>
 
@@ -25,15 +27,23 @@ withDefaults(defineProps<Props>(), {
     :class="`bg-${backgroundColor} border-${borderColor} ${padding !== 'none' ? padding : ''}`"
     class="flex gap-1 items-center border rounded-full justify-center"
   >
-    <Icon
-      :name="iconName"
-      :color="iconColor"
-      :type="iconType"
-      size="lg"
-    />
+    <Button
+      class="mt-2 self-start w-full pr-3"
+      size="sm"
+      background-color="secondary-dark"
+      border-color="secondary-light"
+      has-icon
+    >
+      <Icon
+        :name="iconName"
+        :color="iconColor"
+        :type="iconType"
+        :size="isMobile() ? 'sm' : 'lg'"
+      />
 
-    <span class="text-lg">
-      {{ text }}
-    </span>
+      <span class="text-md sm:text-lg">
+        {{ text }}
+      </span>
+    </Button>
   </div>
 </template>

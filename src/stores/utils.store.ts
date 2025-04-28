@@ -180,7 +180,7 @@ export function getLetters(
  * @param {string} word - The word to create a Word object from.
  * @returns {Word} A Word object.
  */
-export function createWord(word: string): Word {
+export function createGameWord(word: string): Word {
   const letters = word.split('')
   return letters.map((letter: string): Letter => ({
     letter,

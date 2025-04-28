@@ -218,7 +218,11 @@ export const useAppStore = defineStore('app', () => {
       await updateCollectionState(collectionId)
 
       return rs.id
-    } catch (error) {
+    } catch (error: any) {
+      if (error.message === 'MaxWordsLimitReached') {
+        throw new Error('MaxWordsLimitReached')
+      }
+
       console.error('FailedCreateWord:', error)
       throw error
     }

@@ -49,6 +49,18 @@ declare global {
 
   type AppLocaleCode = 'en' | 'es' | 'de' | 'it' | 'pt'
 
+  interface AppSettings {
+    collection_limits: {
+      max_words: number
+      max_words_expanded: {
+        sm: number
+        md: number
+        lg: number
+        xl: number
+      }
+    }
+  }
+
   interface AppCollection {
     id: string
     name: string

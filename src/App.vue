@@ -3,16 +3,19 @@ import ModalContainer from '@/components/shared/ModalContainer.vue'
 import Toast from '@/components/shared/Toast.vue'
 import AppFooter from '@/components/ui/AppFooter.vue'
 import AppHeader from '@/components/ui/AppHeader.vue'
+import { useSettingsStore } from '@/stores/settings.store'
 import { useUserStore } from '@/stores/user.store'
 import { computed, onMounted, ref } from 'vue'
 import { RouterView, useRouter } from 'vue-router'
 import { useAppStore } from './stores/app.store'
 import { useStreakStore } from './stores/streak.store'
+
 import 'movinblocks/styles'
 
 const router = useRouter()
 const streakStore = useStreakStore()
 const userStore = useUserStore()
+const settingsStore = useSettingsStore()
 
 const appStore = useAppStore()
 
@@ -46,7 +49,9 @@ async function initializeCollections() {
 }
 
 onMounted(async () => {
+  await settingsStore.loadSettings()
   await initializeCollections()
+
   userStore.startLifeRegeneration()
   streakStore.setStreakLength()
 
