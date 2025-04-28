@@ -34,23 +34,47 @@ const formErrors = ref({
   password: '',
 })
 
-async function validateForm(): Promise<boolean> {
-  if (!(name.value && email.value && age.value && username.value && password.value)) {
-    return handleError({ showToast: true, msg: 'authMissingFields' })
+async function validateUsername() {
+  const usernameExists = await userStore.checkUsernameExists(username.value)
+  if (usernameExists) {
+    return handleError({ showToast: true, msg: 'authUsernameExists' })
   }
 
-  if (!isValidPassword(password.value)) {
-    return handleError({ showToast: true, msg: 'authPasswordWeak' })
-  }
+  return true
+}
 
+async function validateEmail() {
   const emailExists = await userStore.checkEmailExists(email.value)
   if (emailExists) {
     return handleError({ showToast: true, msg: 'authEmailExists' })
   }
 
-  const usernameExists = await userStore.checkUsernameExists(username.value)
-  if (usernameExists) {
-    return handleError({ showToast: true, msg: 'authUsernameExists' })
+  return true
+}
+
+function validatePassword() {
+  if (!isValidPassword(password.value)) {
+    return handleError({ showToast: true, msg: 'authPasswordWeak' })
+  }
+
+  return true
+}
+
+async function validateForm(): Promise<boolean> {
+  if (!(name.value && email.value && age.value && username.value && password.value)) {
+    return handleError({ showToast: true, msg: 'authMissingFields' })
+  }
+
+  if (!validatePassword()) {
+    return false
+  }
+
+  if (!await validateEmail()) {
+    return false
+  }
+
+  if (!await validateUsername()) {
+    return false
   }
 
   return true
@@ -160,7 +184,7 @@ onUnmounted(() => Bus.off('firstSessionSaveStepData', handleStoreData))
 </script>
 
 <template>
-  <form class="anim-scale-in-timed">
+  <form class="anim-scale-in-timed" @blur="handleValidate">
     <div class="mb-8 flex flex-col gap-4">
       <Input
         v-model="name"
@@ -170,7 +194,6 @@ onUnmounted(() => Bus.off('firstSessionSaveStepData', handleStoreData))
         :placeholder="$t('enterAName')"
         required
         :error="formErrors.name"
-        @input="handleValidate"
       />
 
       <Input
@@ -181,7 +204,7 @@ onUnmounted(() => Bus.off('firstSessionSaveStepData', handleStoreData))
         :placeholder="$t('emailPlaceholder')"
         required
         :error="formErrors.email"
-        @input="handleValidate"
+        @blur="validateEmail"
       />
 
       <Input
@@ -191,8 +214,7 @@ onUnmounted(() => Bus.off('firstSessionSaveStepData', handleStoreData))
         :label="$t('ageLabel')"
         :placeholder="$t('agePlaceholder')"
         required
-        :error="formErrors.email"
-        @input="handleValidate"
+        :error="formErrors.age"
       />
 
       <div class="mb-8 flex flex-col gap-4 border-t border-primary-light pt-6 mt-4">
@@ -205,7 +227,7 @@ onUnmounted(() => Bus.off('firstSessionSaveStepData', handleStoreData))
           :placeholder="$t('usernamePlaceholder')"
           required
           :error="formErrors.username"
-          @input="handleValidate"
+          @blur="validateUsername"
         />
 
         <div class="flex flex-col gap-3 items-end">
@@ -221,8 +243,8 @@ onUnmounted(() => Bus.off('firstSessionSaveStepData', handleStoreData))
             required
             class="w-full"
             has-clickable-icon
-            @input="handleValidate"
             @click-icon="handlePasswordVisibilityToggle"
+            @blur="validatePassword"
           />
 
           <Button

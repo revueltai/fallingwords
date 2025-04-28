@@ -31,7 +31,7 @@ const props = withDefaults(defineProps<Props>(), {
   countryCode: '',
 })
 
-const emit = defineEmits(['update:modelValue', 'clickIcon'])
+const emit = defineEmits(['update:modelValue', 'blur', 'clickIcon'])
 const inputModel = defineModel()
 
 const isTouched = ref(false)
@@ -99,6 +99,7 @@ function handleIconClick() {
         :disabled="disabled"
         class="w-full bg-transparent outline-none text-black disabled:text-grey invalid:text-quaternary transition-colors"
         @input="emit('update:modelValue', ($event.target as HTMLInputElement).value)"
+        @blur="emit('blur', $event)"
       >
 
       <p

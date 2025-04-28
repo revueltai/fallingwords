@@ -8,6 +8,7 @@ interface Props {
 withDefaults(defineProps<Props>(), {
   label: '',
   color: 'senary-light',
+  name: '',
 })
 </script>
 
@@ -15,7 +16,7 @@ withDefaults(defineProps<Props>(), {
   <label
     :for="name"
     class="text-start text-xs sm:text-sm"
-    :class="`text-${color}`"
+    :class="`text-${color} ${name ? 'cursor-pointer' : ''}`"
   >
     {{ label }}
   </label>

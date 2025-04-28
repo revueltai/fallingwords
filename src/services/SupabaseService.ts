@@ -109,11 +109,21 @@ export class SupabaseService {
     return { data, error }
   }
 
-  async signIn(email: string, password: string) {
-    const { data, error } = await this.client.auth.signInWithPassword({ email, password })
+  async signIn(email: string, password: string, rememberMe: boolean = false) {
+    const { data, error } = await this.client.auth.signInWithPassword({
+      email,
+      password,
+    })
 
     if (error) {
       throw error
+    }
+
+    if (rememberMe) {
+      await this.client.auth.setSession({
+        access_token: data.session.access_token,
+        refresh_token: data.session.refresh_token,
+      })
     }
 
     return data

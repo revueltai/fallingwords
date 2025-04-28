@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { APP_MENU } from '@/configs/constants'
 import { useAppStore } from '@/stores/app.store'
-import { sanitizeRoute } from '@/utils'
+import { isMobile, sanitizeRoute } from '@/utils'
 import { computed, onMounted, onUnmounted, ref } from 'vue'
 import { useRoute } from 'vue-router'
 
@@ -51,14 +51,14 @@ onUnmounted(() => {
 <template>
   <footer
     ref="appFooterRef"
-    class="w-full absolute bottom-0 flex justify-center px-4 py-3 bg-secondary border-t border-secondary-light gap-3 sm:gap-5"
+    class="w-full absolute bottom-0 flex justify-center bg-secondary border-t border-secondary-light gap-4 px-2 py-2 sm:gap-5 sm:px-4 sm:py-3"
   >
     <Button
       v-for="(item, index) in APP_MENU"
       :key="index"
       :to="sanitizeRoute(item.url)"
       :exact="isActiveItem(item)"
-      class="transition-colors rounded-lg hover:bg-secondary-light hover:border-senary-light"
+      class="transition-colors rounded-lg hover:bg-secondary-light hover:border-senary-light xs:p-0.5"
       :class="!isActiveItem(item) ? 'border border-transparent' : ''"
       :css-classes="isActiveItem(item) ? activeClass : ''"
       :active-class="activeClass"
@@ -66,8 +66,8 @@ onUnmounted(() => {
     >
       <Icon
         :name="item.iconName"
+        :size="isMobile() ? 'lg' : 'xl'"
         type="fill"
-        size="xl"
       />
     </Button>
   </footer>

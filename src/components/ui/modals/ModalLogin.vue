@@ -8,6 +8,7 @@ const { handleError } = useErrorService()
 
 const email = ref('')
 const password = ref('')
+const rememberMe = ref(false)
 
 const formErrors = ref({
   email: '',
@@ -22,6 +23,7 @@ async function validateForm(): Promise<boolean> {
   return true
 }
 
+// Update handleSubmit to pass rememberMe
 async function handleSubmit(event: Event) {
   event.preventDefault()
 
@@ -31,6 +33,7 @@ async function handleSubmit(event: Event) {
     emit('login', {
       email: email.value,
       password: password.value,
+      rememberMe: rememberMe.value,
     })
   }
 }
@@ -48,6 +51,7 @@ async function handleSubmit(event: Event) {
         required
         :error="formErrors.email"
       />
+
       <Input
         v-model="password"
         name="password"
@@ -56,6 +60,14 @@ async function handleSubmit(event: Event) {
         :placeholder="$t('passwordPlaceholderEnter')"
         required
         :error="formErrors.password"
+      />
+
+      <Switch
+        v-model="rememberMe"
+        name="remember"
+        size="sm"
+        direction="row"
+        :label="$t('rememberMe')"
       />
     </div>
 

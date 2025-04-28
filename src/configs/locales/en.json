@@ -235,5 +235,8 @@
   "createWord": "Create a Word",
   "updateCollection": "Update Collection",
   "updateWord": "Update Word",
-  "collectionUpdated": "Collection Updated!"
+  "collectionUpdated": "Collection Updated!",
+  "rememberMe": "Remember Me",
+  "forgotPassword": "Forgot Password?",
+  "duration": "Duration"
 }

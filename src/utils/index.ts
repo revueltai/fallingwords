@@ -314,8 +314,8 @@ export function formatDate(dateString: string): { day: string, month: string, ye
  */
 export function enterFullscreen() {
   if (isMobile()) {
-    document.documentElement.requestFullscreen().catch((err) => {
-      console.error('Fullscreen request failed:', err)
-    })
+    // document.documentElement.requestFullscreen().catch((err) => {
+    //   console.error('Fullscreen request failed:', err)
+    // })
   }
 }

@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { getRoundStars } from '@/utils'
+import { getRoundStars, isMobile } from '@/utils'
 import { computed } from 'vue'
 
 interface Props {
@@ -33,36 +33,37 @@ function isFullStar(star: string) {
       <div
         v-for="(wordItem, index) in wordsData"
         :key="index"
-        class="flex justify-start items-center gap-2 truncate"
+        class="flex justify-start items-center truncate gap-1 sm:gap-2"
       >
-        <Flag :country-code="wordItem.countryCode" />
+        <Flag
+          :country-code="wordItem.countryCode"
+          :size="isMobile() ? 'sm' : 'md'"
+        />
 
-        <span class="text-sm truncate">
+        <span class="truncate text-xs sm:text-sm">
           {{ wordItem.word }}
         </span>
       </div>
     </div>
 
-    <div class="text-xs text-end flex flex-col justify-between">
+    <div class="text-xs text-end flex justify-between flex-col gap-1">
       <p>
-        <strong class="block">Duration</strong>
+        <strong class="block">{{ $t('duration') }}</strong>
+
         <span class="text-primary-light">
           {{ summary.duration }}
         </span>
       </p>
 
       <p>
-        <strong class="block">Score</strong>
-        <span class="text-senary flex">
-          <Icon
-            v-for="(star, index) in roundStars"
-            :key="index"
-            :type="isFullStar(star) ? 'both' : 'stroke'"
-            :color="isFullStar(star) ? 'quinary-light' : 'white'"
-            name="star"
-            size="sm"
-          />
-        </span>
+        <Icon
+          v-for="(star, index) in roundStars"
+          :key="index"
+          :type="isFullStar(star) ? 'both' : 'stroke'"
+          :color="isFullStar(star) ? 'quinary-light' : 'white'"
+          name="star"
+          size="sm"
+        />
       </p>
     </div>
   </div>

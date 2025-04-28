@@ -1,5 +1,5 @@
 import { supabase } from '@/services/SupabaseService'
-import { getToday } from '@/utils'
+import { getToday, isEmptyArray } from '@/utils'
 import { defineStore } from 'pinia'
 import { useUserStore } from './user.store'
 
@@ -27,21 +27,27 @@ export const useStreakStore = defineStore('streak', {
     hasPlayedToday(): boolean {
       return this.streakDates.includes(getToday())
     },
+    hasStreak(): boolean {
+      return this.currentStreak > 0
+    },
   },
 
   actions: {
     setStreakLength() {
+      if (isEmptyArray(this.streakDates)) {
+        this.currentStreak = 0
+        return
+      }
+
+      this.currentStreak = 1
       const sortedDates = [...this.streakDates].sort()
 
-      for (let i = sortedDates.length - 1; i >= 0; i--) {
+      for (let i = sortedDates.length - 1; i > 0; i--) {
         const date = new Date(sortedDates[i])
-        const previousDate = i > 0
-          ? new Date(sortedDates[i - 1])
-          : null
+        const previousDate = new Date(sortedDates[i - 1])
 
-        const dayDifference = previousDate
-          ? (date.getTime() - previousDate.getTime()) / (1000 * 60 * 60 * 24)
-          : 1
+        const dayInMs = 1000 * 60 * 60 * 24
+        const dayDifference = (date.getTime() - previousDate.getTime()) / dayInMs
 
         if (dayDifference === 1) {
           this.currentStreak++

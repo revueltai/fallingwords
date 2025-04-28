@@ -60,7 +60,7 @@ onMounted(async () => {
         <div class="absolute z-10 bottom-0 w-full h-10 bg-gradient-to-b from-transparent to-secondary via-secondary" />
         <div class="absolute z-10 top-0 w-full h-10 bg-gradient-to-b from-secondary to-transparent via-transparent" />
 
-        <div class="grid gap-3 items-start auto-rows-min h-max anim-fade-in-timed max-h-72 overflow-y-auto pt-6 pb-10">
+        <div class="grid gap-3 items-start auto-rows-min h-max anim-fade-in-timed max-h-52 sm:max-h-72  overflow-y-auto pt-6 pb-10">
           <GameSummaryItem
             v-for="(word, index) in gameStore.gameCollectionWords"
             :key="index"
