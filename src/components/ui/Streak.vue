@@ -24,7 +24,7 @@ const assetExpresion = computed(() => {
 
 function getClasses(day: UserStreak) {
   if (day.isToday && !streakStore.hasPlayedToday) {
-    return 'shadow-lg border-primary-light bg-primary'
+    return 'shadow-lg border-primary-light bg-primary anim-beat-timed'
   }
 
   switch (day.state) {

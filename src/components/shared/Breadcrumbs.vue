@@ -13,7 +13,10 @@ defineProps<Props>()
       :key="index"
       class="flex items-center gap-2"
     >
-      <span class="truncate">
+      <span
+        class="truncate"
+        :class="index === breadcrumbs.length - 1 && 'text-grey'"
+      >
         {{ part }}
       </span>
 

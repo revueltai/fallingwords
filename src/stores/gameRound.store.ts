@@ -2,7 +2,7 @@ import { GAME_DEFAULTS } from '@/configs/constants'
 import { useGameStore } from '@/stores/game.store'
 import { useGameBoardStore } from '@/stores/gameBoard.store'
 import { useGameUIStore } from '@/stores/gameUI.store'
-import { createWord, formatRoundDuration, getLetters, getRoundScorePercentage } from '@/stores/utils.store'
+import { createGameWord, formatRoundDuration, getLetters, getRoundScorePercentage } from '@/stores/utils.store'
 import { getTimestamp, isEmptyArray, logTimeDifference } from '@/utils'
 import { defineStore } from 'pinia'
 import { useStreakStore } from './streak.store'
@@ -138,7 +138,7 @@ export const useGameRoundStore = defineStore('gameRound', {
 
       this.roundWordOriginal = word.original
       this.roundWordLocales = word.locales!
-      this.roundWordGuess = createWord(word.learn)
+      this.roundWordGuess = createGameWord(word.learn)
 
       const gameBoardStore = useGameBoardStore()
       gameBoardStore.roundBoardTiles = getLetters(

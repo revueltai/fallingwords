@@ -11,6 +11,7 @@ import { MODAL_NAMES } from '@/configs/constants'
 import { ToastService } from '@/services/ToastService'
 import { useAppStore } from '@/stores/app.store'
 import { useModalStore } from '@/stores/modal.store'
+import { useSettingsStore } from '@/stores/settings.store'
 import { isEmptyArray } from '@/utils'
 import { computed, onMounted, ref } from 'vue'
 import { useI18n } from 'vue-i18n'
@@ -25,6 +26,7 @@ const route = useRoute()
 
 const { t } = useI18n()
 const appStore = useAppStore()
+const settingsStore = useSettingsStore()
 const modalStore = useModalStore()
 
 const ModalComponentMap = {
@@ -143,13 +145,20 @@ async function handleCreate(payload: WordPayload) {
     return
   }
 
-  const rs = await appStore.createWord(selectedCollection.value?.id, payload)
-
-  if (rs) {
+  try {
+    const rs = await appStore.createWord(selectedCollection.value?.id, payload)
     resetModal()
+
     ToastService.emitToast(t('wordCreated'), 'success')
-  } else {
-    ToastService.emitToast(t('failedToCreateWord'), 'error')
+
+    return rs
+  } catch (error: any) {
+    if (error.message === 'MaxWordsLimitReached') {
+      ToastService.emitToast(t('collectionWordLimitReached'), 'error')
+    } else {
+      ToastService.emitToast(t('failedToCreateWord'), 'error')
+      console.error('Failed to create word:', error)
+    }
   }
 }
 
@@ -214,6 +223,13 @@ onMounted(async () => {
         @update="handleShowUpdateCollection"
         @delete="handleShowDeleteCollection"
       />
+
+      <p
+        v-if="settingsStore.maxWordsPerCollection"
+        class="text-sm text-grey"
+      >
+        {{ $t('collectionWordLimit', { limit: settingsStore.maxWordsPerCollection }) }}
+      </p>
 
       <template #footer>
         <Button

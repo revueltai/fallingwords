@@ -88,7 +88,7 @@ function handlePurchase() {
       columns="1"
     >
       <div>
-        <p class="text-senary-light text-md mb-2">
+        <p class="text-senary-light mb-2 text-sm sm:text-md">
           {{ $t('specialOffers') }}
         </p>
 
@@ -112,7 +112,7 @@ function handlePurchase() {
         v-for="(shopBlock, index) in shopBlocks"
         :key="index"
       >
-        <p class="text-primary text-md mb-2">
+        <p class="text-primary mb-2 text-sm sm:text-md">
           {{ shopBlock.heading }}
         </p>
 
