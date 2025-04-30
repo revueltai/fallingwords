@@ -9,6 +9,7 @@ const { handleError } = useErrorService()
 const email = ref('')
 const password = ref('')
 const rememberMe = ref(false)
+const isPasswordVisible = ref(false)
 
 const formErrors = ref({
   email: '',
@@ -21,6 +22,10 @@ async function validateForm(): Promise<boolean> {
   }
 
   return true
+}
+
+function handlePasswordVisibilityToggle() {
+  isPasswordVisible.value = !isPasswordVisible.value
 }
 
 // Update handleSubmit to pass rememberMe
@@ -55,11 +60,14 @@ async function handleSubmit(event: Event) {
       <Input
         v-model="password"
         name="password"
-        type="password"
         :label="$t('passwordLabel')"
         :placeholder="$t('passwordPlaceholderEnter')"
+        :type="isPasswordVisible ? 'text' : 'password'"
+        :icon-name="isPasswordVisible ? 'eye-closed' : 'eye'"
         required
         :error="formErrors.password"
+        has-clickable-icon
+        @click-icon="handlePasswordVisibilityToggle"
       />
 
       <Switch
