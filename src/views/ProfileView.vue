@@ -28,7 +28,22 @@ const ModalComponentMap = {
   deleteAccount: ModalConfirm,
 }
 
+const gameMaxroundsCount = ref(userStore.gameMaxroundsCount)
+
 const activeModal = ref<ModalConfig | null>(null)
+
+const gameMaxroundsOptions = computed(() => {
+  const output = []
+
+  for (let index = 1; index <= 10; index++) {
+    output.push({
+      label: index.toString(),
+      value: index,
+    })
+  }
+
+  return output
+})
 
 const createdAtDate = computed(() => {
   const date = formatDate(userStore.createdAt!)
@@ -62,6 +77,10 @@ function handleShowModalDeleteAccount() {
   }
 
   modalStore.openModal(activeModal.value.name)
+}
+
+async function handleChangeGameMaxRounds() {
+  userStore.gameMaxroundsCount = gameMaxroundsCount.value
 }
 
 async function handleLogout() {
@@ -168,6 +187,17 @@ async function handleDeleteAccount() {
           icon-name="wordFlat"
           text="profileCreatedWords"
           :amount="appStore.collectionsWordsCount"
+        />
+      </div>
+
+      <div>
+        <Select
+          v-model="gameMaxroundsCount"
+          :options="gameMaxroundsOptions"
+          name="userNativeLocale"
+          :label="$t('gameMaxRoundsCount')"
+          :select-label="$t('selectValue')"
+          @change="handleChangeGameMaxRounds"
         />
       </div>
 

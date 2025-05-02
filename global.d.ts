@@ -269,6 +269,7 @@ declare global {
     powerups?: AppPowerups
     music?: boolean
     sound_effects?: boolean
+    game_maxrounds_count?: number
   }
 
   type ToastType = 'success' | 'error' | 'info'

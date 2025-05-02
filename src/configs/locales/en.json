@@ -246,5 +246,7 @@
   "aiSuggestionButton": "Get Suggestions",
   "aiSuggestionError": "Failed to get suggestions",
   "collectionWordLimitReached": "Maximum words limit reached for this collection",
-  "collectionWordLimit": "You can add up to {limit} words in this collection. Get a Collection Boost from the shop to expand the limit."
+  "collectionWordLimit": "You can add up to {limit} words in this collection. Get a Collection Boost from the shop to expand the limit.",
+  "gameMaxRoundsCount": "Maximum rounds in a game",
+  "selectValue": "Select a value"
 }

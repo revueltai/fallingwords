@@ -21,6 +21,7 @@ interface UserState extends UserPayload {
   gems: number
   lastLifeAddedAt: number | null
   lifeRegenerationInterval: NodeJS.Timeout | null
+  gameMaxroundsCount: number
 }
 
 function initialState(): UserState {
@@ -38,6 +39,7 @@ function initialState(): UserState {
     lifeRegenerationInterval: null,
     originalLocale: null,
     learnLocale: null,
+    gameMaxroundsCount: 0,
   }
 }
 
@@ -131,6 +133,7 @@ export const useUserStore = defineStore('user', {
         powerups: this.powerups as AppPowerups,
         music: this.soundStore.soundsOn,
         sound_effects: this.soundStore.soundEffectsOn,
+        game_maxrounds_count: this.gameMaxroundsCount,
       })
     },
 
@@ -156,6 +159,7 @@ export const useUserStore = defineStore('user', {
         this.lives = userData.lives
         this.gems = userData.gems
         this.lastLifeAddedAt = userData.last_life_added_at
+        this.gameMaxroundsCount = userData.game_maxrounds_count
 
         this.startLifeRegeneration()
         this.soundStore.initializeSounds(userData.music, userData.sound_effects)

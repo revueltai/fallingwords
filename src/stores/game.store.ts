@@ -6,7 +6,6 @@ import { useGameRoundStore } from './gameRound.store'
 import { useUserStore } from './user.store'
 
 interface GameState {
-  gameMaxRounds: number
   gameTotalRounds: number
   gameCurrentRound: number
   gameAwardedGems: number
@@ -19,7 +18,6 @@ interface GameState {
 
 function initialState(): GameState {
   return {
-    gameMaxRounds: 7,
     gameTotalRounds: 0,
     gameCurrentRound: 0,
     gameAwardedGems: 0,
@@ -91,7 +89,7 @@ export const useGameStore = defineStore('game', {
         }
       }
 
-      this.gameCollectionWords = shuffleGameWords(this.gameCollectionWords, this.gameMaxRounds)
+      this.gameCollectionWords = shuffleGameWords(this.gameCollectionWords, this.userStore.gameMaxroundsCount)
       this.gameTotalRounds = this.gameCollectionWords.length
     },
 
