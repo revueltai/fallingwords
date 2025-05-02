@@ -1,9 +1,9 @@
 <script setup lang="ts">
 import SearchBar from '@/components/shared/SearchBar.vue'
+import ModalCollectionPackageUpdate from '@/components/ui/modals/ModalCollectionPackageUpdate.vue'
 import ModalConfirm from '@/components/ui/modals/ModalConfirm.vue'
 import PageContainer from '@/components/ui/PageContainer.vue'
 import PageContent from '@/components/ui/PageContent.vue'
-
 import WordItem from '@/components/ui/WordItem.vue'
 import ModalWordCreate from '@/components/words/ModalWordCreate.vue'
 import ModalWordUpdate from '@/components/words/ModalWordUpdate.vue'
@@ -12,7 +12,7 @@ import { ToastService } from '@/services/ToastService'
 import { useAppStore } from '@/stores/app.store'
 import { useModalStore } from '@/stores/modal.store'
 import { useSettingsStore } from '@/stores/settings.store'
-import { isEmptyArray } from '@/utils'
+import { isEmptyArray, isEmptyObject } from '@/utils'
 import { computed, onMounted, ref } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { useRoute } from 'vue-router'
@@ -20,6 +20,9 @@ import { useRoute } from 'vue-router'
 interface WordPayload {
   original: string
   learn: string
+  originalArticle: string
+  learnArticle: string
+  wordType: AppWordType
 }
 
 const route = useRoute()
@@ -33,13 +36,23 @@ const ModalComponentMap = {
   create: ModalWordCreate,
   update: ModalWordUpdate,
   delete: ModalConfirm,
+  updateCollectionPackage: ModalCollectionPackageUpdate,
 }
 
 const activeModal = ref<ModalConfig | null>(null)
 const searchQuery = ref('')
-const selectedCollection = ref<AppCollection | null>(null)
+const selectedCollectionId = ref<string | null>(null)
+
+const selectedCollection = computed(() => {
+  if (!selectedCollectionId.value) {
+    return null
+  }
+
+  return appStore.collections.find((c: any) => c.id === selectedCollectionId.value) || null
+})
+
 const selectedWordUid = ref<string | null>(null)
-const actions = ref<CrudActions>('create')
+const actions = ref<CrudActions | 'updateCollectionPackage'>('create')
 
 const filteredWords = computed(() => {
   if (!selectedCollection.value) {
@@ -61,6 +74,23 @@ const filteredWords = computed(() => {
     word.original.toLowerCase().includes(searchQuery.value.toLowerCase())
     || word.learn.toLowerCase().includes(searchQuery.value.toLowerCase()),
   )
+})
+
+const collectionWordsLimit = computed(() => {
+  if (!selectedCollection.value || !selectedCollection.value.collection_package_name) {
+    return false
+  }
+
+  return settingsStore.appCollectionPackages.find(item => item.id === selectedCollection.value!.collection_package_name)?.value
+})
+
+const hasMaxCollectionWords = computed(() => {
+  if (!selectedCollection.value || !collectionWordsLimit.value) {
+    return false
+  }
+
+  const wordsCount = selectedCollection.value.words_count
+  return collectionWordsLimit.value && wordsCount >= collectionWordsLimit.value
 })
 
 const hasItems = computed(() => !isEmptyArray(filteredWords.value))
@@ -91,6 +121,11 @@ function getModalProps(): ModalProps {
       collection: selectedCollection.value,
       wordUid: selectedWordUid.value,
     },
+    updateCollectionPackage: {
+      onUpdate: handleUpdateCollectionPackage,
+      collection: selectedCollection.value,
+    },
+
   }
 
   return actionProps[actions.value] || {}
@@ -106,7 +141,19 @@ function handleShowCreateWord() {
   modalStore.openModal(activeModal.value.name)
 }
 
-function handleShowUpdateCollection(id: string) {
+function handleShowExpandCollectionLimit() {
+  actions.value = 'updateCollectionPackage'
+
+  activeModal.value = {
+    name: MODAL_NAMES.collectionPackages,
+    heading: 'expandCollectionLimit',
+    byline: 'expandCollectionLimitDescription',
+  }
+
+  modalStore.openModal(activeModal.value.name)
+}
+
+function handleShowUpdateWord(id: string) {
   selectedWordUid.value = id
 
   actions.value = 'update'
@@ -118,7 +165,7 @@ function handleShowUpdateCollection(id: string) {
   modalStore.openModal(activeModal.value.name)
 }
 
-function handleShowDeleteCollection(id: string) {
+function handleShowDeleteWord(id: string) {
   selectedWordUid.value = id
 
   actions.value = 'delete'
@@ -172,6 +219,9 @@ async function handleUpdate(payload: WordPayload) {
     uid: selectedWordUid.value,
     original: payload.original,
     learn: payload.learn,
+    originalArticle: payload.originalArticle,
+    learnArticle: payload.learnArticle,
+    type: payload.wordType,
   })
 
   if (rs) {
@@ -182,12 +232,30 @@ async function handleUpdate(payload: WordPayload) {
   }
 }
 
+async function handleUpdateCollectionPackage(payload: { packageTypeName: string, collectionId: string }) {
+  if (!selectedCollection.value || isEmptyObject(payload) || payload.collectionId !== selectedCollection.value?.id) {
+    ToastService.emitToast(t('collectionPackagageNameFail'), 'error')
+    return
+  }
+
+  const rs = await appStore.updateCollectionPackageType({
+    uid: payload.collectionId,
+    collectionPackageName: payload.packageTypeName,
+  })
+
+  if (rs.success) {
+    ToastService.emitToast(t('collectionPackageUpdated'), 'success')
+    resetModal()
+  } else {
+    ToastService.emitToast(t(rs.errorCode || 'failedUpdatePackage'), 'error')
+  }
+}
+
 onMounted(async () => {
   const collection = await appStore.getCollectionById(route.params.uid)
-
   if (collection) {
-    selectedCollection.value = collection
-    appStore.fetchCollectionWords(selectedCollection.value?.id)
+    selectedCollectionId.value = collection.id
+    appStore.fetchCollectionWords(collection.id)
   }
 })
 </script>
@@ -216,20 +284,36 @@ onMounted(async () => {
         v-for="(word, index) in filteredWords"
         :key="index"
         :uid="word.uid"
+        :word-type="word.type"
         :original="word.original"
         :learn="word.learn"
+        :original-article="word.originalArticle"
+        :learn-article="word.learnArticle"
         :locale-original="selectedCollection?.locale_original!"
         :locale-learn="selectedCollection?.locale_learn!"
-        @update="handleShowUpdateCollection"
-        @delete="handleShowDeleteCollection"
+        @update="handleShowUpdateWord"
+        @delete="handleShowDeleteWord"
       />
 
-      <p
-        v-if="settingsStore.maxWordsPerCollection"
-        class="text-sm text-grey"
+      <div
+        class="text-sm flex gap-4"
+        :class="hasMaxCollectionWords ? 'text-quaternary-light' : 'text-grey'"
       >
-        {{ $t('collectionWordLimit', { limit: settingsStore.maxWordsPerCollection }) }}
-      </p>
+        <p
+          v-if="selectedCollection"
+          class="flex-none"
+        >
+          {{ selectedCollection.words_count }} / {{ collectionWordsLimit }}
+        </p>
+
+        <p
+          v-if="hasMaxCollectionWords"
+          class="flex-1"
+        >
+          {{ $t('collectionWordLimitReached') }}.<br>
+          {{ $t('collectionWordLimit') }}
+        </p>
+      </div>
 
       <template #footer>
         <Button
@@ -237,9 +321,9 @@ onMounted(async () => {
           border-color="tertiary-light"
           size="md"
           class="min-w-48"
-          @click="handleShowCreateWord"
+          @click="() => (hasMaxCollectionWords ? handleShowExpandCollectionLimit() : handleShowCreateWord())"
         >
-          {{ $t('addAWord') }}
+          {{ $t(hasMaxCollectionWords ? 'expandCollectionLimit' : 'addAWord') }}
         </Button>
       </template>
     </PageContent>
@@ -247,6 +331,7 @@ onMounted(async () => {
     <Modal
       :name="activeModal ? activeModal.name : ''"
       :heading="(activeModal && activeModal.heading) ? $t(activeModal.heading) : ''"
+      :byline="(activeModal && activeModal.byline) ? $t(activeModal.byline) : ''"
     >
       <Component
         :is="modalComponent"

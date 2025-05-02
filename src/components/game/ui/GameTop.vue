@@ -83,7 +83,10 @@ onMounted (() => {
         <span class="flex justify-center gap-2">
           <Flag :country-code="gameRoundStore.roundWordLocales?.original || ''" />
 
-          {{ gameRoundStore.roundWordOriginal }}
+          <div>
+            <span class="text-senary text-xs block -mb-1.5">The</span>
+            {{ gameRoundStore.roundWordOriginal }}
+          </div>
         </span>
 
         <div class="flex items-center justify-center w-14 h-full text-sm font-semibold bg-secondary-dark bg-opacity-5 border-secondary-light border-l xs:text-sm">

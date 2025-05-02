@@ -4,18 +4,20 @@ import { useAppStore } from './app.store'
 
 interface SettingsState {
   isLoading: boolean
-  maxWordsPerCollection: number
-  maxWordsPerCollectionExpanded?: {
-    sm: number
-    md: number
-    lg: number
-    xl: number
-  }
+  appLocales: AppLocaleCode[]
+  appLocalesArticles: Partial<Record<AppLocaleCode, AppLocaleArticles>>
+  appWordTypes: AppWordType[]
+  appCollectionPackagesOrder: string[]
+  appCollectionPackages: AppCollectionPackage[]
 }
 
 export const useSettingsStore = defineStore('settings', {
   state: (): SettingsState => ({
-    maxWordsPerCollection: 0,
+    appLocales: [],
+    appWordTypes: [],
+    appLocalesArticles: {},
+    appCollectionPackages: [],
+    appCollectionPackagesOrder: ['sm', 'md', 'lg', 'xl', 'xxl'],
     isLoading: false,
   }),
 
@@ -34,8 +36,14 @@ export const useSettingsStore = defineStore('settings', {
       this.isLoading = true
       const settings = await supabase.fetchSettings()
 
-      this.maxWordsPerCollection = settings.collection_limits.max_words
-      this.maxWordsPerCollectionExpanded = settings.collection_limits.max_words_expanded
+      this.appLocales = settings.locales_data.map((locale: any) => locale.id)
+      this.appLocalesArticles = settings.locales_data.reduce((acc, locale) => ({
+        ...acc,
+        [locale.id]: locale.articles,
+      }), {})
+
+      this.appWordTypes = settings.word_types
+      this.appCollectionPackages = settings.collection_limits.words_packages
       this.isLoading = false
     },
   },

@@ -11,7 +11,7 @@ declare global {
   }
 
   interface FormSelectOption {
-    value: string
+    value: string | number
     label: string
     icon?: string
     image?: string
@@ -49,15 +49,29 @@ declare global {
 
   type AppLocaleCode = 'en' | 'es' | 'de' | 'it' | 'pt'
 
+  type AppWordType = 'noun' | 'verb' | 'adjective' | 'adverb' | 'pronoun' | 'preposition' | 'conjunction' | 'interjection'
+
+  interface AppLocaleArticles {
+    definite: string[]
+    indefinite: string[]
+  }
+
+  interface AppCollectionPackage {
+    id: string
+    value: number
+    price: number
+  }
+
   interface AppSettings {
+    locales_data: {
+      id: AppLocaleCode
+      name: string
+      articles: AppLocaleArticles
+      enable: boolean
+    }[]
+    word_types: AppWordType[]
     collection_limits: {
-      max_words: number
-      max_words_expanded: {
-        sm: number
-        md: number
-        lg: number
-        xl: number
-      }
+      words_packages: AppCollectionPackage[]
     }
   }
 
@@ -67,12 +81,16 @@ declare global {
     locale_learn: AppLocaleCode
     locale_original: AppLocaleCode
     words_count: number
+    collection_package_name?: string
   }
 
   interface AppWord {
     uid: string
     original: string
     learn: string
+    type: AppWordType
+    learnArticle?: string
+    originalArticle?: string
     locales?: GameLocale
   }
 
@@ -94,6 +112,12 @@ declare global {
     name: string
     localeOriginal: AppLocaleCode
     localeLearn: AppLocaleCode
+    collectionPackageName?: string
+  }
+
+  interface CollectionPackageUpdate {
+    uid: string
+    collectionPackageName: string
   }
 
   // Game

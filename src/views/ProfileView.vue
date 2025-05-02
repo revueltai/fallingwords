@@ -10,7 +10,7 @@ import { useAppStore } from '@/stores/app.store'
 import { useModalStore } from '@/stores/modal.store'
 import { useStreakStore } from '@/stores/streak.store'
 import { useUserStore } from '@/stores/user.store'
-import { formatDate } from '@/utils'
+import { createSelectOptions, formatDate } from '@/utils'
 import { computed, ref } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { useRouter } from 'vue-router'
@@ -31,19 +31,6 @@ const ModalComponentMap = {
 const gameMaxroundsCount = ref(userStore.gameMaxroundsCount)
 
 const activeModal = ref<ModalConfig | null>(null)
-
-const gameMaxroundsOptions = computed(() => {
-  const output = []
-
-  for (let index = 1; index <= 10; index++) {
-    output.push({
-      label: index.toString(),
-      value: index,
-    })
-  }
-
-  return output
-})
 
 const createdAtDate = computed(() => {
   const date = formatDate(userStore.createdAt!)
@@ -193,7 +180,7 @@ async function handleDeleteAccount() {
       <div>
         <Select
           v-model="gameMaxroundsCount"
-          :options="gameMaxroundsOptions"
+          :options="createSelectOptions({ start: 1, end: 10 })"
           name="userNativeLocale"
           :label="$t('gameMaxRoundsCount')"
           :select-label="$t('selectValue')"

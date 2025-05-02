@@ -8,6 +8,7 @@ interface Props {
   text?: string | number
   borderColor?: Color
   backgroundColor?: Color
+  disabled?: boolean
   padding?: string | 'none'
 }
 
@@ -19,6 +20,7 @@ withDefaults(defineProps<Props>(), {
   borderColor: 'secondary-light',
   backgroundColor: 'secondary-dark',
   padding: 'px-4 pt-1 pb-2',
+  disabled: false,
 })
 </script>
 
@@ -28,6 +30,7 @@ withDefaults(defineProps<Props>(), {
     class="flex gap-1 items-center border rounded-full justify-center"
   >
     <Button
+      :disabled="disabled"
       class="mt-2 self-start w-full pr-3"
       size="sm"
       background-color="secondary-dark"

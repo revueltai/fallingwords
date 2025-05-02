@@ -4,6 +4,8 @@ import { supabase } from '@/services/SupabaseService'
 import { enterFullscreen, isEmptyArray } from '@/utils'
 import { defineStore } from 'pinia'
 import { computed, ref, shallowRef } from 'vue'
+import { useSettingsStore } from './settings.store'
+import { useUserStore } from './user.store'
 
 type CollectionRow = Database['public']['Tables']['collections']['Row']
 
@@ -39,7 +41,7 @@ export const useAppStore = defineStore('app', () => {
    * @param {('original' | 'learn')} type - Type of locale to extract.
    * @returns {string[]} Array of unique locales.
    */
-  function getUniqueLocales(type: 'original' | 'learn') {
+  function getUniqueLocales(type: 'original' | 'learn'): string[] {
     return [...new Set(collections.value.map(c => type === 'original'
       ? c.locale_original
       : c.locale_learn),
@@ -130,6 +132,9 @@ export const useAppStore = defineStore('app', () => {
         uid: word.id,
         original: word.original,
         learn: word.learn,
+        originalArticle: word.original_article || '',
+        learnArticle: word.learn_article || '',
+        type: word.type || '',
       }))
 
       return true
@@ -157,11 +162,24 @@ export const useAppStore = defineStore('app', () => {
    * @returns {Promise<AppWord | undefined>} The found word or undefined.
    */
   async function getWordById(collectionId: string, wordId: string): Promise<AppWord | undefined> {
-    if (!collectionWords.value[collectionId]) {
-      await fetchCollectionWords(collectionId)
+    if (collectionWords.value[collectionId]) {
+      return collectionWords.value[collectionId]?.find(word => word.uid === wordId)
     }
 
-    return collectionWords.value[collectionId]?.find(word => word.uid === wordId)
+    const word = await supabase.fetchWord(wordId)
+
+    if (!word) {
+      throw new Error('FailedGetWord')
+    }
+
+    return {
+      uid: word.id,
+      original: word.original,
+      learn: word.learn,
+      originalArticle: word.original_article || '', // Convert null to empty string
+      learnArticle: word.learn_article || '', // Convert null to empty string
+      type: word.type || '',
+    }
   }
 
   /**
@@ -186,10 +204,19 @@ export const useAppStore = defineStore('app', () => {
    * Creates a new word in the specified collection.
    *
    * @param {string} collectionId - ID of the collection.
-   * @param {{ original: string, learn: string }} payload - Word data to insert.
+   * @param {{ original: string, learn: string, originalArticle: string, learnArticle: string, wordType: AppWordType }} payload - Word data to insert.
    * @returns {Promise<string>} ID of the created word.
    */
-  async function createWord(collectionId: string, payload: { original: string, learn: string }): Promise<string> {
+  async function createWord(
+    collectionId: string,
+    payload: {
+      original: string
+      learn: string
+      originalArticle: string
+      learnArticle: string
+      wordType: AppWordType
+    },
+  ): Promise<string> {
     if (!collectionId) {
       throw new Error('MissingCollectionId')
     }
@@ -199,6 +226,9 @@ export const useAppStore = defineStore('app', () => {
         collection_id: collectionId,
         original: payload.original,
         learn: payload.learn,
+        original_article: payload.originalArticle,
+        learn_article: payload.learnArticle,
+        type: payload.wordType,
       })
 
       if (!rs) {
@@ -213,6 +243,9 @@ export const useAppStore = defineStore('app', () => {
         uid: rs.id,
         original: rs.original,
         learn: rs.learn,
+        type: rs.type || '',
+        originalArticle: rs.original_article || '',
+        learnArticle: rs.learn_article || '',
       })
 
       await updateCollectionState(collectionId)
@@ -223,7 +256,6 @@ export const useAppStore = defineStore('app', () => {
         throw new Error('MaxWordsLimitReached')
       }
 
-      console.error('FailedCreateWord:', error)
       throw error
     }
   }
@@ -309,6 +341,51 @@ export const useAppStore = defineStore('app', () => {
   }
 
   /**
+   * Updates collection package type after verifying gem balance
+   *
+   * @param {CollectionPackageUpdate} payload - Package update data
+   * @returns {Promise<{ success: boolean; errorCode?: string }>} Success status and error message if any
+   */
+  async function updateCollectionPackageType(payload: CollectionPackageUpdate): Promise<{ success: boolean, errorCode?: string }> {
+    if (!payload.uid || !payload.collectionPackageName) {
+      return { success: false, errorCode: 'missingUpdateData' }
+    }
+
+    const userStore = useUserStore()
+    const settingsStore = useSettingsStore()
+
+    const packageData = settingsStore.appCollectionPackages
+      .find(pkg => pkg.id === payload.collectionPackageName)
+
+    if (!packageData) {
+      return { success: false, errorCode: 'invalidPackageName' }
+    }
+
+    if (!userStore.hasEnoughGems(packageData.price)) {
+      return { success: false, errorCode: 'notEnoughGems' }
+    }
+
+    try {
+      const rs = await supabase.updateCollection(
+        payload.uid,
+        { collection_package_name: payload.collectionPackageName },
+      )
+
+      if (!rs) {
+        return { success: false, errorCode: 'failedUpdatePackage' }
+      }
+
+      userStore.decreaseGems(packageData.price)
+      await updateCollectionState(payload.uid)
+
+      return { success: true }
+    } catch (error) {
+      console.error('FailedUpdateCollectionPackage:', error)
+      return { success: false, errorCode: 'failedUpdatePackage' }
+    }
+  }
+
+  /**
    * Updates an existing word in a collection.
    *
    * @param {string} collectionId - ID of the collection.
@@ -324,6 +401,9 @@ export const useAppStore = defineStore('app', () => {
       const rs = await supabase.updateWord(payload.uid, {
         original: payload.original,
         learn: payload.learn,
+        original_article: payload.originalArticle || null,
+        learn_article: payload.learnArticle || null,
+        type: payload.type || null,
       })
 
       if (!rs) {
@@ -338,6 +418,9 @@ export const useAppStore = defineStore('app', () => {
             uid: rs.id,
             original: rs.original,
             learn: rs.learn,
+            type: rs.type,
+            originalArticle: rs.original_article,
+            learnArticle: rs.learn_article,
           }
         }
       }
@@ -429,5 +512,6 @@ export const useAppStore = defineStore('app', () => {
     deleteWord,
     getCollectionById,
     getWordById,
+    updateCollectionPackageType,
   }
 })

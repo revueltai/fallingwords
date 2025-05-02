@@ -14,6 +14,7 @@ interface Props {
   direction?: 'row' | 'col'
   padding?: string
   cssClasses?: string
+  disabled?: boolean
 }
 
 const props = withDefaults(defineProps<Props>(), {
@@ -24,42 +25,74 @@ const props = withDefaults(defineProps<Props>(), {
   direction: 'col',
   padding: 'px-2 py-4',
   cssClasses: '',
+  disabled: false,
 })
 
 const emit = defineEmits(['click'])
 
 const cssClasses = computed(() => {
-  return `border-${props.borderColor} bg-${props.backgroundColor} hover:border-${props.borderColorHover} hover:bg-${props.backgroundColorHover} flex-${props.direction} ${props.padding} ${props.cssClasses}`
+  const baseClasses = `border-${props.borderColor} bg-${props.backgroundColor} flex-${props.direction} ${props.padding} ${props.cssClasses}`
+  const hoverClasses = props.disabled
+    ? ''
+    : `hover:border-${props.borderColorHover} hover:bg-${props.backgroundColorHover}`
+  const disabledClasses = props.disabled
+    ? 'opacity-50 cursor-not-allowed'
+    : 'cursor-pointer'
+
+  return `${baseClasses} ${hoverClasses} ${disabledClasses}`
 })
+
+function handleClick() {
+  if (!props.disabled) {
+    emit('click', props.uid)
+  }
+}
 </script>
 
 <template>
-  <div
-    :class="cssClasses"
-    class="flex items-center rounded-2xl gap-3 border border-b-4 transition-colors cursor-pointer"
-  >
-    <div class="relative">
-      <img
-        :src="`/images/shop/${asset}.svg`"
-        width="70"
-        height="80"
-      >
-
-      <span
-        v-for="(el, index) in amount"
-        :key="index"
-        class="absolute right-0 bottom-0 bg-senary rounded-md px-1"
-      >
-        + {{ el }}
+  <div class="relative">
+    <span
+      v-if="disabled"
+      class="absolute z-10 left-0 top-0 w-full h-full flex items-center justify-center p-3"
+    >
+      <span class="text-sm bg-tertiary rounded-lg p-3 flex flex-col items-center gap-1">
+        <Icon
+          name="check"
+          size="md"
+          color="tertiary-light"
+        />
+        {{ $t('shopItemOwned') }}
       </span>
-    </div>
+    </span>
 
-    <ItemIndicator
-      :text="value"
-      border-color="transparent"
-      background-color="transparent"
-      padding="none"
-      @click="emit('click', uid)"
-    />
+    <div
+      :class="cssClasses"
+      class="relative flex items-center rounded-2xl gap-3 border border-b-4 transition-colors cursor-pointer"
+    >
+      <div class="relative">
+        <img
+          :src="`/images/shop/${asset}.svg`"
+          width="70"
+          height="80"
+        >
+
+        <span
+          v-for="(el, index) in amount"
+          :key="index"
+          class="absolute right-0 bottom-0 bg-senary rounded-md px-1"
+        >
+          + {{ el }}
+        </span>
+      </div>
+
+      <ItemIndicator
+        :text="value"
+        border-color="transparent"
+        background-color="transparent"
+        padding="none"
+        :disabled="disabled"
+        @click="handleClick"
+      />
+    </div>
   </div>
 </template>

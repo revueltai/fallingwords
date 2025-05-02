@@ -71,7 +71,7 @@ function handleIconClick() {
 
     <div
       :class="cssClasses"
-      class="input-wrapper flex items-center gap-2 bg-white border-2 border-grey p-2 rounded-lg transition-colors hover:border-primary invalid:text-quaternary form-shadow-top"
+      class="input-wrapper flex items-center gap-2 bg-white border-2 border-grey p-2 rounded-lg transition-colors hover:border-primary invalid:text-quaternary form-shadow-top h-[44px]"
     >
       <Flag
         v-if="countryCode"
@@ -97,7 +97,7 @@ function handleIconClick() {
         :placeholder="placeholder"
         :required="isRequired"
         :disabled="disabled"
-        class="w-full bg-transparent outline-none text-black disabled:text-grey invalid:text-quaternary transition-colors"
+        class="w-full bg-transparent outline-none text-black disabled:text-grey invalid:text-quaternary transition-colors h-full"
         @input="emit('update:modelValue', ($event.target as HTMLInputElement).value)"
         @blur="emit('blur', $event)"
       >

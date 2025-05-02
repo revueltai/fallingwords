@@ -1,9 +1,10 @@
 import type { I18n } from 'vue-i18n'
 import type { RouteLocationNormalized, Router, RouteRecordRaw } from 'vue-router'
-import { APP_LOCALES } from '@/configs/constants'
 import { getLocale, isI18nInitialized, loadLocaleMessages, setI18nLanguage } from '@/services/I18nService'
 import { useModalStore } from '@/stores/modal.store'
+import { useSettingsStore } from '@/stores/settings.store'
 import { useUserStore } from '@/stores/user.store'
+import { isEmptyArray } from '@/utils'
 import { createRouter, createWebHistory } from 'vue-router'
 
 const publicRoutes = ['Splash', 'Welcome']
@@ -28,10 +29,11 @@ async function validateUser(to: RouteLocationNormalized): Promise<{ name: string
 }
 
 async function setI18nAppLanguage(i18n: I18n) {
-  const appCurrentLocale = getLocale(i18n)
+  const settingsStore = useSettingsStore()
+  const appCurrentLocale = getLocale(i18n) as AppLocaleCode
 
   if (!isI18nInitialized) {
-    if (APP_LOCALES.includes(appCurrentLocale)) {
+    if (settingsStore.appLocales.includes(appCurrentLocale)) {
       if (!i18n.global.availableLocales.includes(appCurrentLocale)) {
         await loadLocaleMessages(i18n, appCurrentLocale)
       }
@@ -41,7 +43,7 @@ async function setI18nAppLanguage(i18n: I18n) {
   }
 }
 
-export function setupRouter(i18n: I18n): Router {
+export function setupRouter(i18n: I18n, initialLocale: AppLocaleCode): Router {
   const routes: RouteRecordRaw[] = [
     {
       path: '/',
@@ -111,6 +113,18 @@ export function setupRouter(i18n: I18n): Router {
     modalStore.closeModal()
 
     setI18nAppLanguage(i18n)
+
+    const settingsStore = useSettingsStore()
+
+    if (isEmptyArray(settingsStore.appLocales)) {
+      await settingsStore.loadSettings()
+    }
+
+    const validLocale = settingsStore.appLocales.includes(initialLocale)
+      ? initialLocale
+      : 'en'
+
+    i18n.global.locale = validLocale
 
     const route = await validateUser(to)
     if (route) {

@@ -1,5 +1,5 @@
 import type { I18n, I18nOptions, Locale } from 'vue-i18n'
-import { APP_LOCALES } from '@/configs/constants'
+import { useSettingsStore } from '@/stores/settings.store'
 import { nextTick } from 'vue'
 import { createI18n } from 'vue-i18n'
 
@@ -8,10 +8,16 @@ const getResourceMessages = (r: any) => r.default || r
 // eslint-disable-next-line import/no-mutable-exports
 export let isI18nInitialized = false
 
+/**
+ * Detects the browser's language setting.
+ * If no language is detected, it returns the provided fallback language.
+ *
+ * @param {string} fallback - The fallback language to use if no browser language is detected.
+ * @returns {string} The detected or fallback language.
+ */
 export function detectBrowserLanguage(fallback: string = 'en'): string {
-  const browserLocale = navigator.language || navigator.languages?.[0]
-  const locale = APP_LOCALES.find(loc => browserLocale.startsWith(loc))
-  return locale || fallback
+  const browserLocale = navigator.language || navigator.languages?.[0] || fallback
+  return browserLocale.split('-')[0]
 }
 
 /**
@@ -68,4 +74,11 @@ export async function loadLocaleMessages(i18n: I18n, locale: Locale): Promise<vo
   }
 
   return nextTick()
+}
+
+export function validateAppLocale(locale: AppLocaleCode, fallback: string = 'en'): string {
+  const settingsStore = useSettingsStore()
+  return settingsStore.appLocales.includes(locale)
+    ? locale
+    : fallback
 }
