@@ -94,6 +94,14 @@ declare global {
     locales?: GameLocale
   }
 
+  interface AppWordPayload {
+    original: string
+    learn: string
+    originalArticle: string
+    learnArticle: string
+    wordType: AppWordType
+  }
+
   interface AppPowerups {
     ice: number
     fire: number

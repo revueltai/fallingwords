@@ -17,14 +17,6 @@ import { computed, onMounted, ref } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { useRoute } from 'vue-router'
 
-interface WordPayload {
-  original: string
-  learn: string
-  originalArticle: string
-  learnArticle: string
-  wordType: AppWordType
-}
-
 const route = useRoute()
 
 const { t } = useI18n()
@@ -199,7 +191,7 @@ function handleDelete() {
   }
 }
 
-async function handleCreate(payload: WordPayload) {
+async function handleCreate(payload: AppWordPayload) {
   if (!(payload.original && payload.learn)) {
     ToastService.emitToast(t('cannotSaveWord'), 'error')
     return
@@ -222,7 +214,7 @@ async function handleCreate(payload: WordPayload) {
   }
 }
 
-async function handleUpdate(payload: WordPayload) {
+async function handleUpdate(payload: AppWordPayload) {
   if (!(payload.original && payload.learn)) {
     ToastService.emitToast(t('cannotSaveWord'), 'error')
     return

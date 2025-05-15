@@ -118,7 +118,7 @@ async function handleSetData() {
   })
 }
 
-async function handleStoreData() {
+async function handleSaveData() {
   if (props.stepId !== 'wordsPrompt') {
     return
   }
@@ -127,7 +127,7 @@ async function handleStoreData() {
   const rs = LocalStorageService.saveStoreData(APP_LOCALSTORAGE_KEYS.userFirstSession, {
     ...storageData,
     word: {
-      type: wordType.value,
+      wordType: wordType.value,
       original: original.value,
       originalArticle: originalArticle.value,
       learn: learn.value,
@@ -142,13 +142,13 @@ async function handleStoreData() {
 
 onMounted(async () => {
   Bus.on('firstSessionSetStepData', handleSetData)
-  Bus.on('firstSessionSaveStepData', handleStoreData)
+  Bus.on('firstSessionSaveStepData', handleSaveData)
   Bus.emit('firstSessionGetData')
 })
 
 onUnmounted(() => {
   Bus.off('firstSessionSetStepData', handleSetData)
-  Bus.off('firstSessionSaveStepData', handleStoreData)
+  Bus.off('firstSessionSaveStepData', handleSaveData)
 })
 </script>
 

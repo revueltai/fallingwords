@@ -103,13 +103,17 @@ async function handleValidate(event: Event) {
   Bus.emit('firstSessionEnableCta')
 }
 
-async function createFirstWord(collectionId: string, storageData: any) {
+async function createFirstWord(collectionId: string, storageData: { word: AppWordPayload }) {
   const rsFirstWordId = await appStore.createWord(collectionId, {
     original: storageData.word.original,
     learn: storageData.word.learn,
+    originalArticle: storageData.word.originalArticle,
+    learnArticle: storageData.word.learnArticle,
+    wordType: storageData.word.wordType,
   })
 
   if (rsFirstWordId) {
+    LocalStorageService.deleteSingleLocalstorageAppData(APP_LOCALSTORAGE_KEYS.userFirstSession)
     Bus.emit('firstSessionGotoNextStep')
   }
 }
