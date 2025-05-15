@@ -1,5 +1,3 @@
-export const APP_LOCALES = ['en', 'de', 'es', 'it', 'pt']
-
 export const APP_LOCALSTORAGE_KEYS = {
   userFirstSession: 'fwUserFirstSession',
   userAccountData: 'fwUserAccount',
@@ -243,9 +241,11 @@ export const GAME_DEFAULTS: {
 }
 
 export const MODAL_NAMES = {
+
   firstSession: 'firstSession',
   shop: 'shop',
   collections: 'collections',
+  collectionPackages: 'collectionPackages',
   words: 'words',
   settings: 'settings',
   deleteAccount: 'deleteAccount',

@@ -1,11 +1,12 @@
 <script setup lang="ts">
 import { isMobile } from '@/utils'
-import { computed, ref } from 'vue'
+import { computed, onMounted, ref } from 'vue'
 
 interface Props {
   label?: string
   name: string
   selectLabel?: string
+  showPlaceholder?: boolean
   required?: boolean
   disabled?: boolean
   asset?: string
@@ -18,6 +19,7 @@ const props = withDefaults(defineProps<Props>(), {
   iconName: '',
   asset: '',
   selectLabel: 'Select an option',
+  showPlaceholder: true,
   required: false,
   disabled: false,
   options: () => [],
@@ -25,6 +27,13 @@ const props = withDefaults(defineProps<Props>(), {
 
 const emit = defineEmits(['update:modelValue'])
 const selectModel = defineModel()
+
+onMounted(() => {
+  if (props.options.length === 1) {
+    selectModel.value = props.options[0].value
+    emit('update:modelValue', props.options[0].value)
+  }
+})
 
 const isTouched = ref(false)
 
@@ -60,7 +69,7 @@ function handleChange(event: Event) {
 
     <div
       :class="cssClasses"
-      class="bg-white border-2 border-grey p-2 rounded-lg form-shadow-top transition-colors hover:border-primary flex gap-2 select-wrapper"
+      class="bg-white border-2 border-grey p-2 rounded-lg form-shadow-top transition-colors hover:border-primary flex gap-2 select-wrapper h-[44px]"
     >
       <Icon
         v-if="iconName"
@@ -73,16 +82,22 @@ function handleChange(event: Event) {
         :country-code="asset"
         :size="isMobile() ? 'sm' : 'md'"
       />
+
       <select
         :id="name"
         v-model="selectModel"
         :name="name"
         :required="isRequired"
         :disabled="disabled"
-        class="bg-transparent outline-none text-black disabled:text-grey invalid:text-quaternary w-full"
+        class="bg-transparent outline-none disabled:text-grey invalid:text-quaternary w-full h-full"
+        :class="showPlaceholder && !selectModel ? 'text-grey' : 'text-black'"
         @change="handleChange"
       >
-        <option value="" disabled selected hidden>
+        <option
+          v-if="showPlaceholder"
+          value=""
+          disabled
+        >
           {{ selectLabel }}
         </option>
 

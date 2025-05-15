@@ -78,6 +78,7 @@ export const useGameStore = defineStore('game', {
               uid: word.id,
               original: word.original,
               learn: word.learn,
+              type: word.type || '',
               locales: {
                 original: collection.locale_original,
                 learn: collection.locale_learn,

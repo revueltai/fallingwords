@@ -5,6 +5,9 @@ interface Props {
   uid: string
   original: string
   learn: string
+  wordType: AppWordType
+  originalArticle: string
+  learnArticle: string
   localeOriginal: AppLocaleCode
   localeLearn: AppLocaleCode
 }
@@ -32,11 +35,13 @@ function handleClick() {
           <Word
             :country-code="localeOriginal"
             :word="original"
+            :article="originalArticle"
           />
 
           <Word
             :country-code="localeLearn"
             :word="learn"
+            :article="learnArticle"
           />
         </div>
       </div>

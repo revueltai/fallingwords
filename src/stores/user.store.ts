@@ -202,6 +202,10 @@ export const useUserStore = defineStore('user', {
       }
     },
 
+    hasEnoughGems(amount: number): boolean {
+      return this.gems >= amount
+    },
+
     increasePowerups(type: PowerupIngame, amount: number = 1) {
       if (type && this.powerups && !isEmptyObject(this.powerups)) {
         this.powerups[type] = (this.powerups[type] ?? 0) + amount

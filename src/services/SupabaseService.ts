@@ -375,21 +375,30 @@ export class SupabaseService {
   }
 
   async fetchSettings(): Promise<AppSettings> {
-    const { data, error } = await this.client
+    const { data: settingsData, error } = await this.client
       .from('settings')
       .select('key, value')
 
-    if (error) {
+    const { data: localeData, error: localeError } = await this.client
+      .from('locales')
+      .select('id, name, enabled, articles')
+
+    if (error || localeError) {
       throw new Error('FailedFetchSettings')
     }
 
-    return data.reduce((
-      acc: AppSettings,
+    const settingsConfig = settingsData.reduce((
+      acc: any,
       setting: { key: keyof AppSettings, value: any },
     ) => {
       acc[setting.key] = setting.value
       return acc
     }, {} as AppSettings)
+
+    return {
+      locales_data: localeData,
+      ...settingsConfig,
+    }
   }
 
   async fetchStreak(): Promise<{
@@ -539,6 +548,24 @@ export class SupabaseService {
     return rs
   }
 
+  async fetchWord(wordId: string): Promise<WordRow | null> {
+    const { data, error } = await this.client
+      .from('words')
+      .select('*')
+      .eq('id', wordId)
+      .single()
+
+    if (error) {
+      if (noRowsReturned(error.code)) {
+        return null
+      }
+
+      throw error
+    }
+
+    return data
+  }
+
   async fetchWords(collectionId: string) {
     const { data, error } = await this.client
       .from('words')
@@ -554,10 +581,13 @@ export class SupabaseService {
 
   async insertWord(payload: WordInsert): Promise<WordRow> {
     const { data, error } = await this.client
-      .rpc('insert_word_with_limit', {
+      .rpc('create_word_in_collection', {
         p_collection_id: payload.collection_id,
         p_original: payload.original,
         p_learn: payload.learn,
+        p_original_article: payload.original_article,
+        p_learn_article: payload.learn_article,
+        p_type: payload.type,
       })
 
     if (error) {

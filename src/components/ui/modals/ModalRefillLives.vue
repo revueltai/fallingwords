@@ -17,8 +17,6 @@ const livesRefillPackage = shopConfig.lives[0]
 
 const refillTime = LIFE_REFILL_TIME / (60 * 1000)
 
-const hasEnoughGems = computed(() => userStore.gems >= livesRefillPackage.price)
-
 function handleCloseModal() {
   modalStore.closeModal()
 }
@@ -41,7 +39,7 @@ function handleRefillLives() {
 
   <NextLifeIndicator />
 
-  <template v-if="hasEnoughGems">
+  <template v-if="userStore.hasEnoughGems(livesRefillPackage.price)">
     <div class="flex flex-col gap-2 justify-center mt-8">
       <p class="text-md text-center">
         <i18n-t keypath="refillPrompt" scope="global">

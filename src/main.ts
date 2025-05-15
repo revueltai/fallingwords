@@ -21,21 +21,20 @@ import { createApp } from 'vue'
 
 import '@/assets/main.css'
 
-const locale = detectBrowserLanguage()
+const initialLocale = detectBrowserLanguage()
+
+const app = createApp(App)
+app.use(createPinia())
 
 const i18n = setupI18n({
   legacy: false,
   globalInjection: true,
-  locale,
+  locale: initialLocale,
   fallbackLocale: 'en',
   messages: { en },
 })
 
-const router = setupRouter(i18n)
-
-const app = createApp(App)
-
-app.use(createPinia())
+const router = setupRouter(i18n, initialLocale as AppLocaleCode)
 app.use(i18n)
 app.use(router)
 

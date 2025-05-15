@@ -6,6 +6,7 @@ export interface Database {
           id: string
           name: string
           enabled: boolean
+          articles: AppLocaleArticles
           created_at: string
         }
         Insert: {
@@ -45,6 +46,7 @@ export interface Database {
           name: string
           user_id: string
           words_count: number
+          collection_package_name: string
           locale_original: AppLocaleCode
           locale_learn: AppLocaleCode
         }
@@ -58,6 +60,7 @@ export interface Database {
           name?: string
           locale_original?: AppLocaleCode
           locale_learn?: AppLocaleCode
+          collection_package_name?: string
         }
       }
       words: {
@@ -66,16 +69,25 @@ export interface Database {
           created_at: string
           collection_id: string
           original: string
+          original_article: string
           learn: string
+          learn_article: string
+          type: AppWordType
         }
         Insert: {
           collection_id: string
           original: string
           learn: string
+          original_article: string
+          learn_article: string
+          type: AppWordType
         }
         Update: {
           original?: string
           learn?: string
+          original_article: string | null
+          learn_article: string | null
+          type: AppWordType
         }
       }
       streak: {

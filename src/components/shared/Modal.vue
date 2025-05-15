@@ -6,6 +6,7 @@ interface Props {
   headerAsset?: string
   containerEl?: string
   heading?: string
+  byline?: string
   hasCloseButton?: boolean
 }
 
@@ -53,13 +54,22 @@ function handleClose() {
           v-if="$slots.header || heading || headerAsset"
           class="flex justify-between items-center mb-4 text-center"
         >
-          <h3
-            v-if="heading"
-            class="text-center w-full text-xl"
-            :class="headerAsset && 'mt-6'"
-          >
-            {{ heading }}
-          </h3>
+          <div>
+            <h3
+              v-if="heading"
+              class="text-center w-full text-xl"
+              :class="headerAsset && 'mt-6'"
+            >
+              {{ heading }}
+            </h3>
+
+            <p
+              v-if="byline"
+              class="px-2 text-sm text-primary-light"
+            >
+              {{ byline }}
+            </p>
+          </div>
 
           <div
             v-if="headerAsset"

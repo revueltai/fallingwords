@@ -24,11 +24,11 @@ const action = ref<'missingGems' | 'confirmPurchase' | null>(null)
 
 const shopBlocks = computed(() => [
   {
-    heading: 'More Lives',
+    heading: 'moreLives',
     list: shopConfig.lives,
   },
   {
-    heading: 'Boost Your Game',
+    heading: 'boostYourGame',
     list: shopConfig.powerups,
   },
 ])
@@ -47,15 +47,20 @@ function findShopItemByUid(uid: string): ShopItem | null {
 
 function handleShowModalPurchase(uid: string) {
   itemToPurchase.value = findShopItemByUid(uid)
-  const missingGems = (itemToPurchase.value && itemToPurchase.value.price > userStore.gems)
 
-  modalComponent.value = missingGems
-    ? ModalShopMissingGems
-    : ModalShopConfirmPurchase
+  if (!itemToPurchase.value) {
+    return
+  }
 
-  action.value = missingGems
-    ? 'missingGems'
-    : 'confirmPurchase'
+  const hasEnoughGems = userStore.hasEnoughGems(itemToPurchase.value.price)
+
+  modalComponent.value = hasEnoughGems
+    ? ModalShopConfirmPurchase
+    : ModalShopMissingGems
+
+  action.value = hasEnoughGems
+    ? 'confirmPurchase'
+    : 'missingGems'
 
   modalStore.openModal(MODAL_NAMES.shop)
 }
@@ -113,7 +118,7 @@ function handlePurchase() {
         :key="index"
       >
         <p class="text-primary mb-2 text-sm sm:text-md">
-          {{ shopBlock.heading }}
+          {{ $t(shopBlock.heading) }}
         </p>
 
         <div class="grid grid-cols-3 gap-4">
