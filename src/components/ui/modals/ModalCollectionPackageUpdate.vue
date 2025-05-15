@@ -31,8 +31,8 @@ async function handleUpdateLimit(packageTypeName: string) {
       <AppShopItem
         v-if="item.id !== 'sm'"
         :uid="item.id"
-        :amount="item"
-        asset=""
+        :amount="{ words: `${item.value} ${$t('words')}` }"
+        asset="shopCollectionPackage"
         :disabled="isPackageDisabled(item.id)"
         :value="item.price"
         @click="handleUpdateLimit"

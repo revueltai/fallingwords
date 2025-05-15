@@ -275,5 +275,6 @@
   "invalidPackageName": "Invalid collection package Name.",
   "missingUpdateData": "Missing update data.",
   "failedUpdatePackage": "Failed to update package.",
-  "shopItemOwned": "You already own this item."
+  "shopItemOwned": "You already own this item.",
+  "cantAddWordsToCollection": "Can't add more words to this collection"
 }

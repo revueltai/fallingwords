@@ -97,6 +97,19 @@ const hasItems = computed(() => !isEmptyArray(filteredWords.value))
 
 const modalComponent = computed(() => (ModalComponentMap as any)[actions.value] || null)
 
+const isLastPackage = computed(() => {
+  const lastPackageIndex = settingsStore.appCollectionPackagesOrder.length - 1
+  return selectedCollection.value && selectedCollection.value.collection_package_name === settingsStore.appCollectionPackagesOrder[lastPackageIndex]
+})
+
+const buttonText = computed(() => {
+  if (hasMaxCollectionWords.value) {
+    return 'expandCollectionLimit'
+  }
+
+  return 'addAWord'
+})
+
 function resetModal() {
   modalStore.closeModal()
 }
@@ -251,8 +264,22 @@ async function handleUpdateCollectionPackage(payload: { packageTypeName: string,
   }
 }
 
+function handleClick() {
+  if (isLastPackage.value) {
+    return
+  }
+
+  if (hasMaxCollectionWords.value) {
+    handleShowExpandCollectionLimit()
+    return
+  }
+
+  handleShowCreateWord()
+}
+
 onMounted(async () => {
   const collection = await appStore.getCollectionById(route.params.uid)
+
   if (collection) {
     selectedCollectionId.value = collection.id
     appStore.fetchCollectionWords(collection.id)
@@ -306,24 +333,28 @@ onMounted(async () => {
           {{ selectedCollection.words_count }} / {{ collectionWordsLimit }}
         </p>
 
-        <p
+        <div
           v-if="hasMaxCollectionWords"
           class="flex-1"
         >
-          {{ $t('collectionWordLimitReached') }}.<br>
-          {{ $t('collectionWordLimit') }}
-        </p>
+          {{ $t('collectionWordLimitReached') }}.
+
+          <div v-if="!isLastPackage">
+            {{ $t('collectionWordLimit') }}
+          </div>
+        </div>
       </div>
 
       <template #footer>
         <Button
+          v-if="!(isLastPackage && hasMaxCollectionWords)"
           background-color="tertiary"
           border-color="tertiary-light"
           size="md"
           class="min-w-48"
-          @click="() => (hasMaxCollectionWords ? handleShowExpandCollectionLimit() : handleShowCreateWord())"
+          @click="handleClick"
         >
-          {{ $t(hasMaxCollectionWords ? 'expandCollectionLimit' : 'addAWord') }}
+          {{ $t(buttonText) }}
         </Button>
       </template>
     </PageContent>
