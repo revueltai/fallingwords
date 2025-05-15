@@ -2,7 +2,7 @@
 import { useErrorService } from '@/composables/useErrorService'
 import { ToastService } from '@/services/ToastService'
 import { useSettingsStore } from '@/stores/settings.store'
-import { createSelectOptions } from '@/utils'
+import { createSelectOptions, isWordNounType } from '@/utils'
 import { computed, onMounted, ref } from 'vue'
 import { useI18n } from 'vue-i18n'
 
@@ -65,7 +65,7 @@ const wordFieldsData = ref([
   },
 ])
 
-const showArticleSelect = computed(() => wordType.value === 'noun')
+const showArticleSelect = computed(() => isWordNounType(wordType.value))
 
 function validateForm(): boolean {
   if (showArticleSelect.value && !(originalArticle.value && learnArticle.value)) {

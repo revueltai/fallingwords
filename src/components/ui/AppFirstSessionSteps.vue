@@ -141,9 +141,9 @@ onUnmounted(() => {
             v-if="activeStep.icon"
             class="absolute bottom-0 right-0 -translate-x-1/2 -translate-y-1/2"
           >
-            <div class="flex items-center justify-center rounded-full bg-senary-dark border border-senary-light w-9 h-9">
+            <div class="flex items-center justify-center rounded-full bg-senary-dark border border-senary-light w-9 h-9 sm:w-12 sm:h-12">
               <Icon
-                :size="isMobile() ? 'sm' : 'md'"
+                :size="isMobile() ? 'sm' : 'lg'"
                 :type="activeStep.icon.type || 'stroke'"
                 :name="activeStep.icon.name"
                 :color="activeStep.icon.color"

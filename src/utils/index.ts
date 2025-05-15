@@ -378,3 +378,44 @@ export function enterFullscreen() {
     // })
   }
 }
+
+/***
+ * Reveals a word in a game, replacing the unrevealed letters with '?'.
+ * If the current index is less than the word length, it reveals the next letter.
+ * If the current index is equal to the word length, it resets the word to its original state.
+ *
+ * @param {string} targetWord - The word to be revealed.
+ * @param {string} hiddenWord - The word with unrevealed letters.
+ * @param {number} currentIndex - The current index of the letter being revealed.
+ * @returns {{currentWord: string; currentIndex: number}} - The updated state with the current word and index.
+ */
+export function handleWordReveal(
+  targetWord: string,
+  hiddenWord: string,
+  currentIndex: number,
+): {
+    currentWord: string
+    currentIndex: number
+  } {
+  if (currentIndex < targetWord.length) {
+    return {
+      currentWord: targetWord.slice(0, currentIndex + 1) + '?'.repeat(targetWord.length - (currentIndex + 1)),
+      currentIndex: currentIndex + 1,
+    }
+  }
+
+  return {
+    currentWord: hiddenWord,
+    currentIndex: 0,
+  }
+}
+
+/***
+ * Checks if the given word is of type `noun`.
+ *
+ * @param {string} wordType - The word type to check.
+ * @returns {boolean} - True if the word is a noun type, otherwise false.
+ */
+export function isWordNounType(wordType: string): boolean {
+  return wordType === 'noun'
+}

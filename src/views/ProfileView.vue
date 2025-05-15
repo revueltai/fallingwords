@@ -6,6 +6,7 @@ import PageContent from '@/components/ui/PageContent.vue'
 import ProfileItem from '@/components/ui/ProfileItem.vue'
 import ProfileStatItem from '@/components/ui/ProfileStatItem.vue'
 import { MODAL_NAMES } from '@/configs/constants'
+import { ToastService } from '@/services/ToastService'
 import { useAppStore } from '@/stores/app.store'
 import { useModalStore } from '@/stores/modal.store'
 import { useStreakStore } from '@/stores/streak.store'
@@ -68,6 +69,7 @@ function handleShowModalDeleteAccount() {
 
 async function handleChangeGameMaxRounds() {
   userStore.gameMaxroundsCount = gameMaxroundsCount.value
+  ToastService.emitToast(t('gameMaxRoundsCountUpdated'), 'success')
 }
 
 async function handleLogout() {

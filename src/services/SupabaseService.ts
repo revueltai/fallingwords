@@ -387,6 +387,10 @@ export class SupabaseService {
       throw new Error('FailedFetchSettings')
     }
 
+    if (!settingsData || !localeData) {
+      throw new Error('NoSettingsData')
+    }
+
     const settingsConfig = settingsData.reduce((
       acc: any,
       setting: { key: keyof AppSettings, value: any },

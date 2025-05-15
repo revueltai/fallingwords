@@ -1,23 +1,38 @@
 const SuggestionsLocale: SuggestionsLocale = {
   en: {
     collectionName: 'Animals',
-    wordName: 'Dog',
+    wordName: {
+      article: 'the',
+      word: 'Dog',
+    },
   },
   es: {
     collectionName: 'Animales',
-    wordName: 'Perro',
+    wordName: {
+      article: 'el',
+      word: 'Perro',
+    },
   },
   de: {
     collectionName: 'Tiere',
-    wordName: 'Hund',
+    wordName: {
+      article: 'der',
+      word: 'Hund',
+    },
   },
   it: {
     collectionName: 'Animali',
-    wordName: 'Cane',
+    wordName: {
+      article: 'il',
+      word: 'Cane',
+    },
   },
   pt: {
     collectionName: 'Animais',
-    wordName: 'Cão',
+    wordName: {
+      article: 'o',
+      word: 'Cão',
+    },
   },
 }
 

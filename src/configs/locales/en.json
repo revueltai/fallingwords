@@ -64,7 +64,7 @@
   "highlightsLetters": "Highlights the correct letters",
   "slowsDownLetters": "Slows Down letters",
   "clearsBoard": "Clears the board",
-  "CantThinkOfA": "Can't think of a",
+  "cantThinkOfA": "Can't think of a",
   "getASuggestion": "Get a suggestion",
   "whatsYourName": "What’s your name?",
   "nameLabel": "Name",
@@ -276,5 +276,6 @@
   "missingUpdateData": "Missing update data.",
   "failedUpdatePackage": "Failed to update package.",
   "shopItemOwned": "You already own this item.",
-  "cantAddWordsToCollection": "Can't add more words to this collection"
+  "cantAddWordsToCollection": "Can't add more words to this collection",
+  "gameMaxRoundsCountUpdated": "Game Maximum rounds count updated!"
 }

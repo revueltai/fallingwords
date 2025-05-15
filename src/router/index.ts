@@ -116,10 +116,6 @@ export function setupRouter(i18n: I18n, initialLocale: AppLocaleCode): Router {
 
     const settingsStore = useSettingsStore()
 
-    if (isEmptyArray(settingsStore.appLocales)) {
-      await settingsStore.loadSettings()
-    }
-
     const validLocale = settingsStore.appLocales.includes(initialLocale)
       ? initialLocale
       : 'en'

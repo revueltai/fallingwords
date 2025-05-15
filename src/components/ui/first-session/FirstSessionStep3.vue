@@ -15,7 +15,7 @@ const props = withDefaults(defineProps<Props>(), {
 
 const targetOriginalWord = SuggestionsLocale[props.userOriginalLocale as AppLocaleCode].wordName
 const targetLearnWord = SuggestionsLocale[props.userLearnLocale as AppLocaleCode].wordName
-const targetLearnWordHidden = '?'.repeat(targetLearnWord.length)
+const targetLearnWordHidden = '?'.repeat(targetLearnWord.word.length)
 </script>
 
 <template>
@@ -24,7 +24,8 @@ const targetLearnWordHidden = '?'.repeat(targetLearnWord.length)
       <div class="flex w-full justify-between gap-4">
         <Word
           :country-code="userOriginalLocale"
-          :word="targetOriginalWord"
+          :article="targetOriginalWord.article"
+          :word="targetOriginalWord.word"
         />
 
         <WordIndicator
@@ -36,6 +37,7 @@ const targetLearnWordHidden = '?'.repeat(targetLearnWord.length)
       <div class="flex w-full justify-between gap-4">
         <Word
           :country-code="userLearnLocale"
+          :article="targetLearnWord.article"
           :word="targetLearnWordHidden"
         />
 

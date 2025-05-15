@@ -139,7 +139,7 @@ declare global {
   interface BoardLetter {
     id: number
     type: string
-    letter: string// | null
+    letter: string
     powerup: Powerup | null
   }
 
@@ -258,7 +258,10 @@ declare global {
 
   interface SuggestionsLocaleItem {
     collectionName: string
-    wordName: string
+    wordName: {
+      article: string
+      word: string
+    }
   }
 
   type SuggestionsLocale = Record<AppLocaleCode, SuggestionsLocaleItem>

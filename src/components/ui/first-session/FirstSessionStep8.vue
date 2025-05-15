@@ -3,7 +3,9 @@ import FirstSessionSuggestion from '@/components/ui/first-session/FirstSessionSu
 import { APP_LOCALSTORAGE_KEYS } from '@/configs/constants'
 import { Bus } from '@/services/EventBusService'
 import { LocalStorageService } from '@/services/LocalStorageService'
-import { onMounted, onUnmounted, ref } from 'vue'
+import { useSettingsStore } from '@/stores/settings.store'
+import { createSelectOptions, isWordNounType } from '@/utils'
+import { computed, onMounted, onUnmounted, ref } from 'vue'
 import { useRouter } from 'vue-router'
 
 interface Props {
@@ -12,58 +14,108 @@ interface Props {
   userLearnLocale: AppLocaleCode | ''
 }
 
+interface LocalesData {
+  name: string
+  localeOriginal: AppLocaleCode
+  localeLearn: AppLocaleCode
+}
+
 const props = defineProps<Props>()
 
 const router = useRouter()
 
+const settingsStore = useSettingsStore()
+
+const selectedLocalesData = ref<LocalesData | null>(null)
+const localeOriginal = ref<AppLocaleCode | null>(null)
+const localeLearn = ref<AppLocaleCode | null>(null)
+const wordType = ref('')
 const original = ref('')
+const originalArticle = ref('')
 const learn = ref('')
-const selectedCollection = ref<AppCollection | null>(null)
-const locales = ref<GameLocale | null>(null)
+const learnArticle = ref('')
+const articleOptionsOriginal = ref<FormSelectOption[]>([])
+const articleOptionsLearn = ref<FormSelectOption[]>([])
 
 const formErrors = ref({
+  wordType: '',
   original: '',
   learn: '',
+  originalArticle: '',
+  learnArticle: '',
 })
 
-function handleSetSuggestionName(payload: { wordOriginalName: string, wordLearnName: string }) {
+const showArticleSelect = computed(() => isWordNounType(wordType.value))
+
+function validateForm() {
+  if (showArticleSelect.value && !(originalArticle.value && learnArticle.value)) {
+    return false
+  }
+
+  if (!(original.value && learn.value && wordType.value)) {
+    return false
+  }
+
+  return true
+}
+
+function handleSetSuggestionName(payload: {
+  wordOriginalName: string
+  wordLearnName: string
+  wordOriginalArticle: string
+  wordLearnArticle: string
+}) {
+  wordType.value = 'noun'
+
   if (payload.wordOriginalName) {
     original.value = payload.wordOriginalName
+    originalArticle.value = payload.wordOriginalArticle
   }
 
   if (payload.wordLearnName) {
     learn.value = payload.wordLearnName
+    learnArticle.value = payload.wordLearnArticle
   }
 
-  handleValidate()
+  handleSubmit()
 }
 
-function validateForm(): boolean {
-  return !!(original.value && learn.value)
+function handleWordTypeChange() {
+  originalArticle.value = ''
+  learnArticle.value = ''
+  original.value = ''
+  learn.value = ''
 }
 
-async function handleValidate(event: Event | null = null) {
+function handleSubmit(event: Event | null = null) {
   if (event) {
     event.preventDefault()
   }
 
-  if (validateForm()) {
+  const formIsValid = validateForm()
+  if (formIsValid) {
     Bus.emit('firstSessionEnableCta')
   }
 }
 
 async function handleSetData() {
-  selectedCollection.value = LocalStorageService.loadStoreData(APP_LOCALSTORAGE_KEYS.userFirstSession)
+  selectedLocalesData.value = LocalStorageService.loadStoreData(APP_LOCALSTORAGE_KEYS.userFirstSession)
 
-  if (!selectedCollection.value) {
+  if (!selectedLocalesData.value) {
     router.push({ name: 'Welcome' })
     return
   }
 
-  locales.value = {
-    original: selectedCollection.value.locale_original,
-    learn: selectedCollection.value.locale_learn,
-  }
+  localeOriginal.value = selectedLocalesData.value.localeOriginal
+  localeLearn.value = selectedLocalesData.value.localeLearn
+
+  articleOptionsOriginal.value = createSelectOptions({
+    values: settingsStore.appLocalesArticles[localeOriginal.value]?.definite,
+  })
+
+  articleOptionsLearn.value = createSelectOptions({
+    values: settingsStore.appLocalesArticles[localeLearn.value]?.definite,
+  })
 }
 
 async function handleStoreData() {
@@ -75,8 +127,11 @@ async function handleStoreData() {
   const rs = LocalStorageService.saveStoreData(APP_LOCALSTORAGE_KEYS.userFirstSession, {
     ...storageData,
     word: {
+      type: wordType.value,
       original: original.value,
+      originalArticle: originalArticle.value,
       learn: learn.value,
+      learnArticle: learnArticle.value,
     },
   })
 
@@ -99,38 +154,88 @@ onUnmounted(() => {
 
 <template>
   <form
-    v-if="selectedCollection"
+    v-if="selectedLocalesData"
     class="anim-scale-in-timed"
+    @submit.prevent="handleSubmit"
   >
     <div class="mb-8 flex flex-col gap-2 sm:gap-4">
       <p class="mb-4">
         {{ $t('enterWordFor') }}
-        <span class="text-primary">{{ selectedCollection?.name }}</span>
+
+        <span class="text-primary">
+          {{ selectedLocalesData?.name }}
+        </span>
       </p>
 
-      <Input
-        v-model="original"
-        name="original"
-        type="text"
-        :label="$t('originalWord')"
-        :placeholder="$t('enterOriginalWord')"
-        required
-        :country-code="locales?.original"
-        :error="formErrors.original"
-        @input="handleValidate"
+      <Select
+        v-model="wordType"
+        :label="$t('wordType')"
+        :select-label="$t('selectValue')"
+        :options="createSelectOptions({
+          values: settingsStore.appWordTypes,
+          labelFormatter: (v) => $t(v),
+        })"
+        name="wordType"
+        @change="handleWordTypeChange"
       />
 
-      <Input
-        v-model="learn"
-        name="learn"
-        type="text"
-        :label="$t('wordToLearn')"
-        :placeholder="$t('enterWordToLearn')"
-        required
-        :country-code="locales?.learn"
-        :error="formErrors.learn"
-        @input="handleValidate"
-      />
+      <div class="flex flex-col items-start w-full">
+        <Label
+          v-if="showArticleSelect"
+          :label="$t('originalWord')"
+        />
+
+        <div class="flex gap-3 w-full">
+          <Select
+            v-if="showArticleSelect"
+            v-model="originalArticle"
+            name="originalArticle"
+            :asset="showArticleSelect && localeOriginal"
+            :options="articleOptionsOriginal"
+          />
+
+          <Input
+            v-model="original"
+            name="original"
+            type="text"
+            :label="!showArticleSelect ? $t('originalWord') : null"
+            :placeholder="$t('enterOriginalWord')"
+            :country-code="!showArticleSelect ? localeOriginal : ''"
+            :error="formErrors.original"
+            required
+            class="w-full"
+          />
+        </div>
+      </div>
+
+      <div class="flex flex-col items-start w-full">
+        <Label
+          v-if="showArticleSelect"
+          :label="$t('wordToLearn')"
+        />
+
+        <div class="flex gap-3 w-full">
+          <Select
+            v-if="showArticleSelect"
+            v-model="learnArticle"
+            name="learnArticle"
+            :asset="showArticleSelect && localeLearn"
+            :options="articleOptionsLearn"
+          />
+
+          <Input
+            v-model="learn"
+            name="learn"
+            type="text"
+            :label="!showArticleSelect ? $t('wordToLearn') : null"
+            :placeholder="$t('enterWordToLearn')"
+            :country-code="!showArticleSelect ? localeLearn : ''"
+            :error="formErrors.learn"
+            required
+            class="w-full"
+          />
+        </div>
+      </div>
 
       <FirstSessionSuggestion
         text="Word"

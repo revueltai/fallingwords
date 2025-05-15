@@ -21,8 +21,10 @@ function handleSetSuggestionName() {
 
   emit('click', {
     collectionName: suggestionOriginal?.collectionName,
-    wordOriginalName: suggestionOriginal?.wordName,
-    wordLearnName: suggestionLearn?.wordName,
+    wordOriginalName: suggestionOriginal?.wordName.word,
+    wordOriginalArticle: suggestionOriginal?.wordName.article,
+    wordLearnName: suggestionLearn?.wordName.word,
+    wordLearnArticle: suggestionLearn?.wordName.article,
   })
 }
 </script>
@@ -30,7 +32,7 @@ function handleSetSuggestionName() {
 <template>
   <div>
     <p class="mt-4 mb-2 text-sm">
-      {{ $t('CantThinkOfA') }} {{ text }}?
+      {{ $t('cantThinkOfA') }} {{ text }}?
     </p>
 
     <Button
