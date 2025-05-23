@@ -1,5 +1,6 @@
 import type { Database } from '@/types/supabase'
 import type { SupabaseClient } from '@supabase/supabase-js'
+import { USER_ACCOUNT_DEFAULTS } from '@/configs/constants'
 import { isEmptyObject } from '@/utils'
 import { createClient } from '@supabase/supabase-js'
 
@@ -200,6 +201,7 @@ export class SupabaseService {
       .from('user_data')
       .insert({
         user_id: user.id,
+        game_maxrounds_count: USER_ACCOUNT_DEFAULTS.game_maxrounds_count,
         ...payload,
       })
       .select()

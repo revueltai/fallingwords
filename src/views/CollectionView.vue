@@ -31,6 +31,7 @@ const ModalComponentMap = {
   updateCollectionPackage: ModalCollectionPackageUpdate,
 }
 
+const isLoading = ref(true)
 const activeModal = ref<ModalConfig | null>(null)
 const searchQuery = ref('')
 const selectedCollectionId = ref<string | null>(null)
@@ -270,11 +271,15 @@ function handleClick() {
 }
 
 onMounted(async () => {
-  const collection = await appStore.getCollectionById(route.params.uid)
+  try {
+    const collection = await appStore.getCollectionById(route.params.uid)
 
-  if (collection) {
-    selectedCollectionId.value = collection.id
-    appStore.fetchCollectionWords(collection.id)
+    if (collection) {
+      selectedCollectionId.value = collection.id
+      await appStore.fetchCollectionWords(collection.id)
+    }
+  } finally {
+    isLoading.value = false
   }
 })
 </script>
@@ -296,6 +301,7 @@ onMounted(async () => {
       :is-empty="!hasItems"
       :empty-heading="$t('noWordsInCollection')"
       :empty-byline="$t('addYourFirstWord')"
+      :is-loading="isLoading"
       empty-icon-name="word"
       empty-icon-stroke="stroke"
     >

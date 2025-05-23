@@ -8,6 +8,7 @@ interface Props {
   subheading?: string
   padding?: string
   showFooter?: boolean
+  isLoading?: boolean
 }
 
 const props = withDefaults(defineProps<Props>(), {
@@ -15,6 +16,7 @@ const props = withDefaults(defineProps<Props>(), {
   subheading: '',
   padding: 'px-4',
   showFooter: true,
+  isLoading: false,
 })
 
 const appStore = useAppStore()
@@ -36,7 +38,10 @@ const cssClasses = computed(() => appStore.appUiElementHeights.appFooter && prop
     :style="cssStyles"
     :class="cssClasses"
   >
+    <Loader v-if="isLoading" />
+
     <div
+      v-else
       class="flex flex-col gap-4 w-full h-full"
       :class="padding !== 'none' ? padding : ''"
     >

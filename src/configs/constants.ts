@@ -193,6 +193,7 @@ export const UI: {
 }
 
 export const USER_ACCOUNT_DEFAULTS: {
+  game_maxrounds_count: number
   lives: number
   gems: number
   powerups: {
@@ -201,6 +202,7 @@ export const USER_ACCOUNT_DEFAULTS: {
     wind: number
   }
 } = {
+  game_maxrounds_count: 7,
   lives: 5,
   gems: 30,
   powerups: {

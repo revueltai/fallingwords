@@ -6,6 +6,7 @@ import Flag from '@/components/shared/Flag.vue'
 import Icon from '@/components/shared/Icon.vue'
 import Input from '@/components/shared/Input.vue'
 import Label from '@/components/shared/Label.vue'
+import Loader from '@/components/shared/Loader.vue'
 import Modal from '@/components/shared/Modal.vue'
 import ProgressBar from '@/components/shared/ProgressBar.vue'
 import Select from '@/components/shared/Select.vue'
@@ -42,6 +43,7 @@ app.component('TextBlock', TextBlock)
 app.component('Breadcrumbs', Breadcrumbs)
 app.component('Modal', Modal)
 app.component('Flag', Flag)
+app.component('Loader', Loader)
 app.component('Toast', Toast)
 app.component('Label', Label)
 app.component('Switch', Switch)

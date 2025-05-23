@@ -11,6 +11,7 @@ interface Props {
   emptyIconName?: IconName
   emptyIconType?: IconType
   overflow?: 'hidden' | 'visible'
+  isLoading?: boolean
 }
 
 const props = withDefaults(defineProps<Props>(), {
@@ -19,6 +20,7 @@ const props = withDefaults(defineProps<Props>(), {
   overflow: 'hidden',
   emptyHeading: '',
   emptyByline: '',
+  isLoading: false,
 })
 
 const cssClasses = computed(() => `grid-cols-${props.columns}`)
@@ -33,7 +35,10 @@ const footerIsHidden = computed(() => !props.isEmpty && !props.hasFooter)
     class="flex flex-col flex-grow"
     :class="cssClassesWrapper"
   >
+    <Loader v-if="isLoading" />
+
     <div
+      v-else
       class="u-gradient-mask h-full py-2 grid gap-6 items-start auto-rows-min flex-grow overflow-y-auto"
       :class="cssClasses"
     >

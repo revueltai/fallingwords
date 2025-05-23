@@ -39,7 +39,7 @@ function initialState(): UserState {
     lifeRegenerationInterval: null,
     originalLocale: null,
     learnLocale: null,
-    gameMaxroundsCount: 0,
+    gameMaxroundsCount: 7,
   }
 }
 
@@ -109,6 +109,7 @@ export const useUserStore = defineStore('user', {
         this.powerups = userDataEntry.powerups || USER_ACCOUNT_DEFAULTS.powerups
         this.lives = userDataEntry.lives || USER_ACCOUNT_DEFAULTS.lives
         this.gems = userDataEntry.gems || USER_ACCOUNT_DEFAULTS.gems
+        this.gameMaxroundsCount = userDataEntry.game_maxrounds_count || USER_ACCOUNT_DEFAULTS.game_maxrounds_count
 
         LocalStorageService.saveStoreData(APP_LOCALSTORAGE_KEYS.userAccountData, {
           uid: this.uid,

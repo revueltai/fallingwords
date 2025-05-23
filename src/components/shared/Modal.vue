@@ -34,7 +34,7 @@ function handleClose() {
       class="modal absolute inset-0 w-full h-full flex items-center justify-center z-50 anim-fade-in-timed"
       @click.self="handleClose"
     >
-      <div class="relative min-w-80 max-w-sm text-white rounded-2xl shadow-2xl border border-secondary-light bg-secondary p-8 text-center ">
+      <div class="relative min-w-xs max-w-xs text-white rounded-2xl shadow-2xl border border-secondary-light bg-secondary p-8 text-center sm:max-w-sm">
         <Button
           v-if="hasCloseButton"
           background-color="quaternary"
@@ -52,9 +52,9 @@ function handleClose() {
 
         <div
           v-if="$slots.header || heading || headerAsset"
-          class="flex justify-between items-center mb-4 text-center"
+          class="flex justify-between items-center mb-4 text-center w-full"
         >
-          <div>
+          <div class="w-full">
             <h3
               v-if="heading"
               class="text-center w-full text-xl"
