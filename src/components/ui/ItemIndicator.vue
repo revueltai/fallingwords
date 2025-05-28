@@ -19,7 +19,7 @@ withDefaults(defineProps<Props>(), {
   text: '',
   borderColor: 'secondary-light',
   backgroundColor: 'secondary-dark',
-  padding: 'px-4 pt-1 pb-2',
+  padding: 'px-4 py-2',
   disabled: false,
 })
 </script>

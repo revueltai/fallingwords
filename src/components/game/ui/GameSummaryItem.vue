@@ -14,10 +14,12 @@ const roundStars = computed(() => getRoundStars(props.summary.score!))
 const wordsData = [
   {
     word: props.word.original,
+    article: props.word.originalArticle,
     countryCode: props.word.locales?.original,
   },
   {
     word: props.word.learn,
+    article: props.word.learnArticle,
     countryCode: props.word.locales?.learn,
   },
 ]
@@ -40,9 +42,18 @@ function isFullStar(star: string) {
           :size="isMobile() ? 'sm' : 'md'"
         />
 
-        <span class="truncate text-xs sm:text-sm">
-          {{ wordItem.word }}
-        </span>
+        <div class="text-xs sm:text-sm">
+          <span
+            v-if="wordItem.article"
+            class="text-grey mr-1"
+          >
+            {{ wordItem.article }}
+          </span>
+
+          <span class="capitalize truncate">
+            {{ wordItem.word }}
+          </span>
+        </div>
       </div>
     </div>
 

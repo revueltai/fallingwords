@@ -77,7 +77,9 @@ export const useGameStore = defineStore('game', {
             const mappedWords = words.map(word => ({
               uid: word.id,
               original: word.original,
+              originalArticle: word.original_article || '',
               learn: word.learn,
+              learnArticle: word.learn_article || '',
               type: word.type || '',
               locales: {
                 original: collection.locale_original,
