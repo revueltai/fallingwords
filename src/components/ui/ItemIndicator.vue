@@ -29,24 +29,15 @@ withDefaults(defineProps<Props>(), {
     :class="`bg-${backgroundColor} border-${borderColor} ${padding !== 'none' ? padding : ''}`"
     class="flex gap-1 items-center border rounded-full justify-center"
   >
-    <Button
-      :disabled="disabled"
-      class="mt-2 self-start w-full pr-3"
-      size="sm"
-      background-color="secondary-dark"
-      border-color="secondary-light"
-      has-icon
-    >
-      <Icon
-        :name="iconName"
-        :color="iconColor"
-        :type="iconType"
-        :size="isMobile() ? 'sm' : 'lg'"
-      />
+    <Icon
+      :name="iconName"
+      :color="iconColor"
+      :type="iconType"
+      :size="isMobile() ? 'sm' : 'lg'"
+    />
 
-      <span class="text-md sm:text-lg">
-        {{ text }}
-      </span>
-    </Button>
+    <span class="text-md sm:text-lg">
+      {{ text }}
+    </span>
   </div>
 </template>

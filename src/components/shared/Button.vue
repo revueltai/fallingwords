@@ -99,7 +99,7 @@ const cssClasses = computed(() => {
   )
 
   if (props.hasIcon) {
-    payload.push('gap-2')
+    payload.push('gap-2 pr-4 pl-3')
   }
 
   if (props.iconOnly) {

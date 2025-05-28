@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import ItemIndicator from '@/components/ui/ItemIndicator.vue'
+import { isMobile } from '@/utils'
 import { computed } from 'vue'
 
 interface Props {
@@ -85,14 +85,26 @@ function handleClick() {
         </span>
       </div>
 
-      <ItemIndicator
-        :text="value"
-        border-color="transparent"
-        background-color="transparent"
-        padding="none"
+      <Button
+        class="mt-3 self-start mx-auto"
+        size="sm"
+        background-color="secondary-dark"
+        border-color="secondary-light"
+        has-icon
         :disabled="disabled"
         @click="handleClick"
-      />
+      >
+        <Icon
+          name="gem"
+          color="white"
+          type="fill"
+          :size="isMobile() ? 'sm' : 'lg'"
+        />
+
+        <span class="text-md sm:text-lg">
+          {{ value }}
+        </span>
+      </Button>
     </div>
   </div>
 </template>
